@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox RP Store - Armas & Dinheiro</title>
+    <title>BlackMarket RP - Loja Oficial</title>
     <style>
         :root {
             --primary: #00ff88;
             --secondary: #bd00ff;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
+            --bg: #0a0a0a;
+            --card-bg: #151515;
             --text: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 0;
+            padding-bottom: 50px;
         }
 
         /* Header */
         header {
-            background: linear-gradient(180deg, #000, #1a1a1a);
-            padding: 20px;
+            background: #000;
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,213 +34,205 @@
             z-index: 100;
         }
 
-        h1 { margin: 0; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); font-size: 1.5rem; }
+        h1 { margin: 0; color: var(--primary); font-size: 1.4rem; text-transform: uppercase; }
 
         .cart-btn {
             background: var(--secondary);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 15px;
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            transition: 0.3s;
         }
-        .cart-btn:hover { box-shadow: 0 0 15px var(--secondary); }
 
         /* Layout */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         .category-title {
-            border-left: 5px solid var(--primary);
+            border-left: 4px solid var(--secondary);
             padding-left: 15px;
-            margin-top: 40px;
-            text-transform: uppercase;
+            margin: 40px 0 20px;
+            color: var(--primary);
         }
 
-        /* Grid de Produtos */
+        /* Grid */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
         }
 
         .product-card {
             background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            border: 1px solid #222;
+            transition: 0.3s;
         }
 
-        .product-card:hover { 
-            transform: translateY(-5px); 
-            border-color: var(--primary);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
-        }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
         .product-img {
             width: 100%;
-            height: 150px;
+            height: 140px;
             object-fit: contain;
-            border-radius: 5px;
-            background: #252525;
-            padding: 10px;
-            box-sizing: border-box;
+            filter: drop-shadow(0 0 5px rgba(0,255,136,0.2));
+            margin-bottom: 10px;
         }
 
-        .price { color: var(--primary); font-size: 1.3em; font-weight: bold; margin: 5px 0; }
-        .stock { font-size: 0.8em; color: #888; }
-
-        button.buy-btn {
+        .price { color: var(--primary); font-size: 1.4em; font-weight: bold; margin: 10px 0; }
+        
+        .buy-btn {
             background: transparent;
-            border: 2px solid var(--primary);
+            border: 1px solid var(--primary);
             color: var(--primary);
-            padding: 10px;
+            padding: 8px;
             width: 100%;
             cursor: pointer;
+            border-radius: 4px;
             font-weight: bold;
-            transition: 0.3s;
-            border-radius: 5px;
-            margin-top: 10px;
+            transition: 0.2s;
         }
-        button.buy-btn:hover { background: var(--primary); color: #000; }
+
+        .buy-btn:hover { background: var(--primary); color: #000; }
 
         /* Admin Panel */
         #admin-panel {
-            display: none; 
-            background: #2a2a2a;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 2px dashed var(--secondary);
+            display: none;
+            background: #1a1a1a;
+            padding: 25px;
             border-radius: 10px;
+            border: 2px dashed var(--secondary);
+            margin-bottom: 30px;
+        }
+
+        .admin-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         input {
-            width: 95%;
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
             background: #000;
-            border: 1px solid #555;
-            color: white;
+            border: 1px solid #444;
+            color: #fff;
             border-radius: 5px;
         }
 
-        /* Modal Carrinho */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
+
         .modal-content {
-            background: var(--card-bg);
-            padding: 20px;
-            width: 400px;
-            max-width: 90%;
-            border-radius: 10px;
+            background: #111;
+            padding: 25px;
+            width: 350px;
+            border-radius: 15px;
             border: 1px solid var(--secondary);
-            box-shadow: 0 0 30px rgba(189, 0, 255, 0.2);
             text-align: center;
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-            border-top: 1px solid #333;
-            font-size: 0.8em;
-            background: #0a0a0a;
+        .pix-box {
+            background: #fff;
+            color: #000;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
-        .admin-link { color: #333; cursor: pointer; text-decoration: none; }
+
+        .copy-btn {
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            cursor: pointer;
+        }
+
+        footer { text-align: center; margin-top: 50px; opacity: 0.5; font-size: 0.8em; }
+        .admin-link { cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>⚔️ BlackMarket RP</h1>
-    <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho (<span id="cart-count">0</span>)</button>
+    <h1>⚔️ BLACKMARKET RP</h1>
+    <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho: <span id="cart-count">0</span></button>
 </header>
 
 <div class="container">
-    <div style="background: #333; color: #fff; padding: 10px; border-radius: 5px; font-size: 0.8em; margin-bottom: 20px; text-align: center;">
-        ℹ️ Dica: Se as imagens não aparecerem, certifique-se de que os arquivos (glock.png, ak.png, etc.) estão na mesma pasta que este arquivo HTML.
-    </div>
 
     <div id="admin-panel">
-        <h2 style="color: var(--secondary);">🛠️ Painel Admin</h2>
-        <input type="text" id="new-name" placeholder="Nome do Item">
-        <input type="number" id="new-price" placeholder="Preço (R$)">
-        <input type="number" id="new-stock" placeholder="Estoque">
-        <input type="text" id="new-img" placeholder="Nome da imagem (ex: c4.png)">
-        <button onclick="addProduct()" class="buy-btn" style="background: var(--secondary); color: white; border: none;">Adicionar Produto</button>
+        <h2 style="margin-top:0; color:var(--secondary)">🛠 Painel Administrativo</h2>
+        <div class="admin-inputs">
+            <input type="text" id="new-name" placeholder="Nome do Item">
+            <input type="number" id="new-price" placeholder="Preço (R$)">
+            <input type="number" id="new-stock" placeholder="Estoque">
+            <input type="text" id="new-img" placeholder="Link da Imagem">
+            <button onclick="addProduct()" style="grid-column: span 2; padding:15px; background:var(--primary); border:none; font-weight:bold; cursor:pointer;">ADICIONAR PRODUTO</button>
+        </div>
     </div>
 
-    <h2 class="category-title">🔫 Arsenal</h2>
+    <h2 class="category-title">🔫 ARSENAL DE ELITE</h2>
     <div class="products-grid" id="products-weapons"></div>
 
-    <h2 class="category-title">💰 Dinheiro Sujo</h2>
+    <h2 class="category-title">💰 PACOTES DE DINHEIRO</h2>
     <div class="products-grid" id="products-money"></div>
 </div>
 
 <div id="cart-modal" class="modal">
     <div class="modal-content">
-        <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 0;">Seu Carrinho</h2>
-        <div id="cart-items" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+        <h2 style="margin-top:0">Seu Pedido</h2>
+        <div id="cart-items" style="text-align:left; margin-bottom:15px; border-bottom:1px solid #333;"></div>
         
-        <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 15px;">
-            Total: R$ <span id="cart-total" style="color: var(--primary);">0.00</span>
-        </div>
-        
-        <div id="pix-area" style="display:none; background: white; padding: 15px; border-radius: 5px; color: black;">
-            <p style="font-weight:bold; margin: 0;">Pagamento via PIX</p>
-            
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=9c176ab9-a6d6-4311-a0ea-21dd7481227f" alt="QR Pix" style="border: 2px solid #000; margin: 10px 0;">
-            
-            <p style="font-size: 0.8em; margin: 5px 0;">Chave Aleatória:</p>
-            <input type="text" value="9c176ab9-a6d6-4311-a0ea-21dd7481227f" readonly style="width: 100%; text-align: center; font-weight: bold; background: #eee; color: #000; border: none; padding: 5px;">
-            
-            <p style="font-size: 0.7em; color: red; margin-top: 10px;">⚠️ Envie o comprovante no Discord!</p>
-            <button onclick="finishOrder()" style="background: green; color: white; padding: 10px; width: 100%; border:none; margin-top:5px; cursor:pointer; font-weight: bold; border-radius: 5px;">✅ Já paguei</button>
+        <div style="font-size: 1.4em; margin-bottom: 20px;">
+            Total: <span style="color:var(--primary)">R$ <span id="cart-total">0.00</span></span>
         </div>
 
-        <button id="btn-checkout" class="buy-btn" style="background: var(--secondary); color: white; border:none;" onclick="showPix()">Finalizar Compra</button>
-        <button class="buy-btn" style="background: #333; color: white; border:none; margin-top: 10px;" onclick="toggleCart()">Continuar Comprando</button>
+        <div id="pix-area" style="display:none">
+            <div class="pix-box">
+                <p style="margin:0; font-weight:bold; font-size:0.9em">CHAVE PIX (Copia e Cola):</p>
+                <p id="pix-key" style="font-size:0.7em; word-break:break-all; margin:10px 0;">9c176ab9-a6d6-4311-a0ea-21dd7481227f</p>
+                <span class="copy-btn" onclick="copyPix()">COPIAR CHAVE</span>
+            </div>
+            <p style="color:red; font-size:0.8em">Envie o comprovante para o ADM no Discord!</p>
+            <button class="buy-btn" onclick="finishOrder()" style="background:green; border:none; color:white; margin-top:10px;">JÁ REALIZEI O PAGAMENTO</button>
+        </div>
+
+        <button id="btn-checkout" class="buy-btn" style="background:var(--secondary); color:white; border:none; margin-bottom:10px;" onclick="showPix()">PAGAR COM PIX</button>
+        <button class="buy-btn" style="border:none; color:#888;" onclick="toggleCart()">VOLTAR</button>
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2024 BlackMarket RP.</p>
-    <span class="admin-link" onclick="adminLogin()">Area Restrita</span>
+    <p>&copy; 2024 BlackMarket RP - <span class="admin-link" onclick="adminLogin()">Acesso Restrito</span></p>
 </footer>
 
 <script>
-    // --- DADOS ---
+    // LISTA DE PRODUTOS COM IMAGENS REAIS DO GOOGLE/FLATICON
     const initialProducts = [
-        // ARMAS
-        { id: 1, type: 'weapon', name: "Glock G18", price: 2.50, stock: 50, image: "glock.png" },
-        { id: 2, type: 'weapon', name: "AK-47 Tática", price: 4.50, stock: 15, image: "ak.png" },
-        { id: 3, type: 'weapon', name: "Fuzil Parafal", price: 4.00, stock: 10, image: "fall.png" },
-        { id: 4, type: 'weapon', name: "Rifle M4A1", price: 5.00, stock: 8, image: "arma.png" },
-        { id: 5, type: 'weapon', name: "Explosivo C4", price: 3.50, stock: 5, image: "c4.png" },
-        { id: 6, type: 'weapon', name: "Furadeira Cofre", price: 2.00, stock: 20, image: "furadeira.png" },
-        { id: 7, type: 'weapon', name: "Munição (x100)", price: 1.00, stock: 100, image: "muni.png" },
-
-        // DINHEIRO (Usando ícones online para estes, mas pode baixar tb)
-        { id: 8, type: 'money', name: "Maleta 100k", price: 3.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" },
-        { id: 9, type: 'money', name: "Maleta 500k", price: 10.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/3135/3135706.png" },
-        { id: 10, type: 'money', name: "1 Milhão Sujo", price: 15.00, stock: 10, image: "https://cdn-icons-png.flaticon.com/512/2488/2488749.png" }
+        { id: 1, type: 'weapon', name: "Glock G18", price: 2.50, stock: 50, image: "https://cdn-icons-png.flaticon.com/512/3400/3400282.png" },
+        { id: 2, type: 'weapon', name: "AK-47 Tática", price: 4.50, stock: 15, image: "https://cdn-icons-png.flaticon.com/512/4119/4119853.png" },
+        { id: 3, type: 'weapon', name: "Fuzil Parafal", price: 4.00, stock: 10, image: "https://cdn-icons-png.flaticon.com/512/4119/4119827.png" },
+        { id: 4, type: 'weapon', name: "Rifle M4A1", price: 5.00, stock: 8, image: "https://cdn-icons-png.flaticon.com/512/8221/8221805.png" },
+        { id: 5, type: 'weapon', name: "C4 Explosivo", price: 3.50, stock: 5, image: "https://cdn-icons-png.flaticon.com/512/2301/2301131.png" },
+        { id: 6, type: 'weapon', name: "Munição x100", price: 1.00, stock: 100, image: "https://cdn-icons-png.flaticon.com/512/4241/4241838.png" },
+        { id: 7, type: 'money', name: "Maleta 100k", price: 3.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" },
+        { id: 8, type: 'money', name: "Maleta 500k", price: 10.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/3135/3135706.png" },
+        { id: 9, type: 'money', name: "1 Milhão Sujo", price: 15.00, stock: 10, image: "https://cdn-icons-png.flaticon.com/512/2488/2488749.png" }
     ];
 
-    let products = JSON.parse(localStorage.getItem('rp_store_v2')) || initialProducts;
+    let products = JSON.parse(localStorage.getItem('rp_store_data')) || initialProducts;
     let cart = [];
 
     function renderProducts() {
@@ -249,18 +241,13 @@
         wContainer.innerHTML = ''; mContainer.innerHTML = '';
         
         products.forEach(p => {
-            // Se a imagem falhar, mostra um aviso
-            const imgHtml = `<img src="${p.image}" class="product-img" onerror="this.src='https://via.placeholder.com/150?text=Sem+Img'">`;
-            
             const html = `
                 <div class="product-card">
-                    ${imgHtml}
-                    <div style="padding: 10px;">
-                        <h3 style="margin:5px 0; font-size:1em;">${p.name}</h3>
-                        <p class="stock" style="margin:0;">Restam: ${p.stock}</p>
-                        <p class="price">R$ ${p.price.toFixed(2)}</p>
-                        <button class="buy-btn" onclick="addToCart(${p.id})">COMPRAR</button>
-                    </div>
+                    <img src="${p.image}" class="product-img">
+                    <h3 style="font-size:1em; margin:5px 0;">${p.name}</h3>
+                    <p style="font-size:0.7em; color:#666;">Estoque: ${p.stock}</p>
+                    <p class="price">R$ ${p.price.toFixed(2)}</p>
+                    <button class="buy-btn" onclick="addToCart(${p.id})">COMPRAR</button>
                 </div>
             `;
             if(p.type === 'money') mContainer.innerHTML += html;
@@ -269,11 +256,11 @@
     }
 
     function adminLogin() {
-        const email = prompt("Email Admin:");
-        if (email === "srleal018@gmail.com") {
+        const email = prompt("Digite o e-mail de acesso:");
+        if(email === "srleal018@gmail.com") {
             document.getElementById('admin-panel').style.display = 'block';
-            window.scrollTo(0, 0);
-        } else { alert("Não autorizado."); }
+            window.scrollTo(0,0);
+        } else { alert("Acesso negado."); }
     }
 
     function addProduct() {
@@ -285,21 +272,21 @@
         if(name && price) {
             products.push({
                 id: Date.now(),
-                type: name.toLowerCase().includes('dinheiro') || name.toLowerCase().includes('maleta') ? 'money' : 'weapon',
-                name, price, stock: stock || 1, image: img || "https://via.placeholder.com/150"
+                type: name.toLowerCase().includes('milhão') || name.toLowerCase().includes('maleta') ? 'money' : 'weapon',
+                name, price, stock: stock || 1, image: img || "https://cdn-icons-png.flaticon.com/512/1043/1043424.png"
             });
-            localStorage.setItem('rp_store_v2', JSON.stringify(products));
+            localStorage.setItem('rp_store_data', JSON.stringify(products));
             renderProducts();
-            alert("Salvo!");
+            alert("Item adicionado!");
         }
     }
 
     function addToCart(id) {
         const p = products.find(x => x.id === id);
-        if(p && p.stock > 0) {
+        if(p.stock > 0) {
             cart.push(p);
             updateCart();
-        } else { alert("Esgotado!"); }
+        } else { alert("Item esgotado!"); }
     }
 
     function updateCart() {
@@ -308,17 +295,14 @@
         let total = 0;
         div.innerHTML = cart.map((item, i) => {
             total += item.price;
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #333; padding-bottom:5px;">
-                <span>${item.name}</span> <span style="color:var(--primary);cursor:pointer;" onclick="remItem(${i})">❌</span>
+            return `<div style="display:flex; justify-content:space-between; font-size:0.9em; margin-bottom:5px;">
+                <span>${item.name}</span> <span>R$ ${item.price.toFixed(2)} <b onclick="remItem(${i})" style="color:red; cursor:pointer; margin-left:10px;">X</b></span>
             </div>`;
         }).join('');
         document.getElementById('cart-total').innerText = total.toFixed(2);
     }
 
-    function remItem(i) {
-        cart.splice(i, 1);
-        updateCart();
-    }
+    function remItem(i) { cart.splice(i, 1); updateCart(); }
 
     function toggleCart() {
         const m = document.getElementById('cart-modal');
@@ -334,8 +318,14 @@
         }
     }
 
+    function copyPix() {
+        const key = document.getElementById('pix-key').innerText;
+        navigator.clipboard.writeText(key);
+        alert("Chave Pix copiada!");
+    }
+
     function finishOrder() {
-        alert("Pedido enviado para o ADM! Aguarde a entrega.");
+        alert("Atenção!\nSeu pedido foi registrado. Agora envie o comprovante para o ADM no Discord para receber seus itens no jogo.");
         cart = []; updateCart(); toggleCart();
     }
 
