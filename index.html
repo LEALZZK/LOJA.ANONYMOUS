@@ -3,56 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUEBREI O SISTEMA - Live Store</title>
+    <title>QUEBREI O SISTEMA - Ultra Animated</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        :root { --primary: #00ff88; --secondary: #007bff; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; --discord: #5865F2; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
-        
-        /* HEADER ESTILO IMAGEM */
-        header { background: #000; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--secondary); sticky: top; z-index: 1000; }
-        .logo-area { display: flex; align-items: center; gap: 20px; }
-        .logo-text { font-weight: 900; text-transform: uppercase; margin: 0; font-size: 1.2rem; cursor: default; }
-        .logo-text span { color: var(--secondary); }
-        
-        .discord-btn { background: var(--discord); color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; animation: glow 2s infinite; font-size: 0.8rem; }
-        @keyframes glow { 0% { box-shadow: 0 0 5px var(--discord); } 50% { box-shadow: 0 0 20px var(--discord); } 100% { box-shadow: 0 0 5px var(--discord); } }
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-        nav a { color: #888; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
-        nav a:hover, nav a.active { color: var(--text); }
+    <style>
+        :root { 
+            --primary: #00ff88; 
+            --secondary: #007bff; 
+            --bg: #0a0a0a; 
+            --card-bg: #151515; 
+            --text: #ffffff; 
+            --discord: #5865F2; 
+        }
+
+        * { transition: all 0.3s ease; }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            overflow-x: hidden;
+        }
+
+        /* HEADER ANIMADO */
+        header { 
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid var(--secondary); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 20px; }
+        .logo-text { font-weight: 900; text-transform: uppercase; margin: 0; font-size: 1.4rem; letter-spacing: 2px; }
+        .logo-text span { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
+        
+        .discord-btn { 
+            background: var(--discord); 
+            color: white; 
+            padding: 8px 18px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            font-size: 0.8rem;
+        }
+        .discord-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--discord); }
+
+        nav a { color: #888; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: bold; position: relative; }
+        nav a:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background: var(--primary); transition: 0.4s; }
+        nav a:hover:after { width: 100%; }
+        nav a.active { color: var(--text); }
 
         /* NOTIFICAÇÕES */
         #notif-box { position: fixed; top: 20px; left: 20px; z-index: 10000; }
-        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; animation: slideIn 0.3s forwards; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; animation: slideInLeft 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideInLeft { from { transform: translateX(-120%); } to { transform: translateX(0); } }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* PRODUTOS */
-        .cat-title { border-left: 4px solid var(--secondary); padding-left: 10px; margin: 40px 0 20px; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 10px; padding: 15px; text-align: center; border: 1px solid #222; }
-        .card img { width: 100%; height: 150px; object-fit: contain; margin-bottom: 10px; border-radius: 5px; }
-        .btn { padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; width: 100%; transition: 0.2s; margin-top: 10px; }
-        .btn-buy { background: var(--secondary); color: white; }
-
-        /* MODAIS */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: #111; width: 95%; max-width: 500px; border-radius: 15px; border: 1px solid var(--secondary); max-height: 90vh; overflow-y: auto; }
-        .modal-body { padding: 20px; }
+        /* CARDS DE PRODUTOS */
+        .cat-title { border-left: 5px solid var(--secondary); padding-left: 15px; margin: 50px 0 30px; text-transform: uppercase; letter-spacing: 1px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
         
-        input, select, textarea { background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 5px; width: 100%; box-sizing: border-box; margin: 5px 0; }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            padding: 20px; 
+            text-align: center; 
+            border: 1px solid #222; 
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+        }
+        .card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; }
+        
+        .btn { padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; width: 100%; }
+        .btn-buy { background: var(--secondary); color: white; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
+        .btn-buy:hover { background: #0056b3; transform: scale(1.05); }
 
-        /* AVALIAÇÕES */
-        #view-reviews { display: none; }
-        .review-item { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--primary); }
+        /* MODAIS ANIMADOS */
+        .modal { 
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 2000; 
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content { 
+            background: #111; width: 95%; max-width: 500px; 
+            border-radius: 20px; border: 1px solid var(--secondary); 
+            animation: zoomIn 0.4s ease;
+        }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        /* AVALIAÇÕES ESTILO CARDS */
+        .review-card { 
+            background: #1a1a1a; padding: 20px; border-radius: 12px; 
+            margin-bottom: 15px; border-left: 4px solid var(--primary);
+            position: relative;
+        }
 
         /* ADMIN */
-        #admin-view { display: none; padding: 20px; background: #0c0c0c; min-height: 100vh; }
-        .admin-card { background: #151515; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
+        #admin-view { display: none; background: #0c0c0c; min-height: 100vh; padding: 20px; }
+        .admin-item { 
+            background: #151515; padding: 15px; border-radius: 10px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; 
+            border: 1px solid #333;
+        }
+
+        input, select, textarea { 
+            background: #000; border: 1px solid #333; color: white; 
+            padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; 
+            margin: 8px 0; outline: none;
+        }
+        input:focus { border-color: var(--secondary); box-shadow: 0 0 10px rgba(0, 123, 255, 0.2); }
     </style>
 </head>
 <body>
@@ -69,22 +158,25 @@
     <nav>
         <a href="#" class="active" onclick="showSection('shop')">Recepção</a>
         <a href="#" onclick="showSection('reviews')">Avaliações</a>
-        <button class="btn" style="width:auto; margin:0; background:var(--secondary)" onclick="openCart()">🛒 CARRINHO (<span id="cart-count">0</span>)</button>
+        <button class="btn" style="width:auto; margin-left:20px; background:var(--secondary)" onclick="openCart()">
+            🛒 CARRINHO (<span id="cart-count">0</span>)
+        </button>
     </nav>
 </header>
 
-<div id="view-shop" class="container">
+<div id="view-shop" class="container" data-aos="fade-up">
     <div id="shop-content"></div>
 </div>
 
-<div id="view-reviews" class="container">
-    <h2 class="cat-title">Feedback dos Clientes</h2>
+<div id="view-reviews" class="container" style="display:none">
+    <h2 class="cat-title" data-aos="fade-right">FEEDBACK DA COMUNIDADE</h2>
     <div id="reviews-list"></div>
-    <div class="admin-card" style="margin-top:40px">
+    
+    <div class="card" style="margin-top:50px; text-align: left;" data-aos="zoom-in">
         <h3>Deixe sua Avaliação</h3>
         <input type="text" id="rev-nick" placeholder="Seu Nick">
-        <textarea id="rev-msg" placeholder="Sua mensagem..."></textarea>
-        <button class="btn btn-buy" onclick="sendReview()">ENVIAR AVALIAÇÃO</button>
+        <textarea id="rev-msg" placeholder="Sua experiência na loja..."></textarea>
+        <button class="btn btn-buy" onclick="sendReview()">PUBLICAR AGORA</button>
     </div>
 </div>
 
@@ -92,66 +184,64 @@
     <div class="modal-content">
         <div class="modal-body">
             <h3>Seu Carrinho</h3>
-            <div id="cart-items-list" style="margin-bottom:20px; font-size:0.9rem"></div>
-            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--primary)">
-                <h4 style="margin:0 0 10px 0; color:var(--primary)"><i class="fas fa-headset"></i> Falar com Staff</h4>
-                <p style="font-size:0.8rem; color:#888">Envie seu Nick abaixo para um vendedor entrar em contato e finalizar seu pedido.</p>
-                <input type="text" id="cust-discord" placeholder="Seu Nick do Discord">
-                <button class="btn btn-buy" onclick="checkout()">FINALIZAR PEDIDO COM STAFF</button>
+            <div id="cart-items-list" style="margin-bottom:20px;"></div>
+            <div style="background:rgba(0,255,136,0.05); padding:20px; border-radius:12px; border:1px solid var(--primary)">
+                <h4 style="margin:0 0 10px 0; color:var(--primary)"><i class="fas fa-headset"></i> Atendimento via Staff</h4>
+                <input type="text" id="cust-discord" placeholder="Seu Discord para contato">
+                <button class="btn btn-buy" style="background:var(--primary); color:#000" onclick="checkout()">CHAMAR VENDEDOR</button>
             </div>
-            <button class="btn" style="background:#222" onclick="closeModal('cart-modal')">FECHAR</button>
+            <button class="btn" style="margin-top:10px; background:transparent" onclick="closeModal('cart-modal')">Voltar ao site</button>
         </div>
     </div>
 </div>
 
 <div id="admin-view">
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h2>PAINEL DE CONTROLO</h2>
-            <button class="btn" style="width:auto; background:red" onclick="location.reload()">SAIR</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
+            <h2>⚙️ GESTÃO ONLINE</h2>
+            <button class="btn" style="width:auto; background:#ff4444" onclick="location.reload()">SAIR DO PAINEL</button>
         </div>
 
-        <div class="admin-card">
-            <h3>Configurações Gerais</h3>
-            <label>Link do Discord (Ícone do Topo):</label>
-            <input type="text" id="adm-discord-url" placeholder="https://discord.gg/exemplo">
-            <button class="btn btn-buy" onclick="updateDiscordLink()">SALVAR LINK</button>
+        <div class="card" style="text-align:left; margin-bottom:20px">
+            <h3>Categorias & Discord</h3>
+            <input type="text" id="adm-discord-url" placeholder="Link do Discord">
+            <button class="btn btn-buy" style="margin-bottom:20px" onclick="updateConfig()">Salvar Discord</button>
+            
+            <input type="text" id="new-cat-name" placeholder="Nova Categoria">
+            <button class="btn btn-buy" onclick="addCategory()">Criar Categoria</button>
+            <div id="admin-cats-list" style="margin-top:15px"></div>
         </div>
 
-        <div class="admin-card">
-            <h3>Criar Categoria</h3>
-            <input type="text" id="new-cat-name" placeholder="Ex: Armas, VIPs, Veículos">
-            <button class="btn btn-buy" onclick="addCategory()">ADICIONAR CATEGORIA</button>
-            <div id="admin-cats" style="margin-top:10px"></div>
-        </div>
-
-        <div class="admin-card">
-            <h3>Gerenciar Produto</h3>
-            <input type="hidden" id="edit-p-id">
-            <input type="text" id="p-name" placeholder="Nome do Produto">
+        <div class="card" style="text-align:left">
+            <h3>Gerenciar Produtos</h3>
+            <input type="text" id="p-name" placeholder="Nome">
             <input type="number" id="p-price" placeholder="Preço">
-            <input type="text" id="p-img" placeholder="Link da Imagem (URL)">
+            <input type="text" id="p-img" placeholder="URL da Imagem">
             <select id="p-cat-select"></select>
-            <button class="btn btn-buy" id="btn-save-p" onclick="saveProduct()">SALVAR PRODUTO</button>
-            <button class="btn" id="btn-cancel-edit" style="display:none; background:#444" onclick="clearProdForm()">CANCELAR EDIÇÃO</button>
+            <button class="btn btn-buy" onclick="saveProduct()">CADASTRAR PRODUTO</button>
+            <div id="admin-prods-list" style="margin-top:20px"></div>
         </div>
 
-        <div class="admin-card">
-            <h3>Produtos Atuais</h3>
-            <div id="admin-prods-list"></div>
+        <div class="card" style="text-align:left; margin-top:20px">
+            <h3>Moderar Avaliações</h3>
+            <div id="admin-reviews-list"></div>
         </div>
-
-        <div class="admin-card">
-            <h3>Pedidos / Chamados Staff</h3>
-            <div id="admin-orders"></div>
+        
+        <div class="card" style="text-align:left; margin-top:20px">
+            <h3>Chamados Staff (Pedidos)</h3>
+            <div id="admin-orders-list"></div>
         </div>
     </div>
 </div>
 
-<footer style="text-align:center; padding:50px; opacity:0.1; cursor:pointer" onclick="openLogin()">Painel Administrativo</footer>
+<footer style="padding:100px 0; text-align:center; opacity:0.1; cursor:pointer" onclick="openAdmin()">
+    Acesso Restrito
+</footer>
 
 <script>
-    // CONFIGURAÇÃO FIREBASE
+    // INICIALIZAÇÃO AOS
+    AOS.init({ duration: 1000, once: true });
+
     const firebaseConfig = {
         apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
         authDomain: "quebrei-o-sistema.firebaseapp.com",
@@ -163,74 +253,76 @@
     const db = firebase.database();
     let cart = [];
 
-    // --- UTILITÁRIOS ---
+    // NOTIFICAÇÕES
     function pushNotif(m) {
         const b = document.getElementById('notif-box');
         const t = document.createElement('div'); t.className='toast'; t.innerText=m;
-        b.appendChild(t); setTimeout(()=>t.remove(), 3000);
+        b.appendChild(t); setTimeout(()=>t.remove(), 4000);
     }
+
     function openModal(id){ document.getElementById(id).style.display='flex'; }
     function closeModal(id){ document.getElementById(id).style.display='none'; }
+
     function showSection(s){
         document.getElementById('view-shop').style.display = s==='shop'?'block':'none';
         document.getElementById('view-reviews').style.display = s==='reviews'?'block':'none';
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         event.target.classList.add('active');
+        AOS.refresh();
     }
 
-    // --- LOGICA ONLINE ---
+    // --- LOGICA DATABASE ---
 
-    // Ouvir Categorias e Produtos
     db.ref('/').on('value', snap => {
         const data = snap.val() || {};
         renderShop(data.categorias, data.produtos);
-        renderAdminLists(data.categorias, data.produtos);
+        renderAdmin(data.categorias, data.produtos, data.avaliacoes, data.pedidos);
         if(data.config) document.getElementById('discord-link').href = data.config.discord || "#";
-    });
-
-    // Ouvir Avaliações
-    db.ref('avaliacoes').on('value', snap => {
-        const data = snap.val();
-        const cont = document.getElementById('reviews-list');
-        cont.innerHTML = "";
-        for(let id in data) {
-            cont.innerHTML += `<div class="review-item"><b>${data[id].nick}:</b> ${data[id].msg}</div>`;
-        }
     });
 
     function renderShop(cats, prods) {
         const cont = document.getElementById('shop-content');
         cont.innerHTML = "";
-        for(let cId in cats) {
-            let catHtml = `<h2 class="cat-title">${cats[cId].name}</h2><div class="grid">`;
-            let hasProds = false;
+        for(let id in cats) {
+            let catHtml = `<h2 class="cat-title" data-aos="fade-right">${cats[id].name}</h2><div class="grid">`;
+            let items = 0;
             for(let pId in prods) {
-                if(prods[pId].cat === cats[cId].name) {
-                    hasProds = true;
+                if(prods[pId].cat === cats[id].name) {
+                    items++;
                     catHtml += `
-                        <div class="card">
-                            <img src="${prods[pId].img || 'https://via.placeholder.com/150'}">
-                            <h4>${prods[pId].name}</h4>
-                            <p style="color:var(--primary); font-weight:bold">R$ ${prods[pId].price}</p>
-                            <button class="btn btn-buy" onclick="addToCart('${prods[pId].name}', ${prods[pId].price})">ADICIONAR</button>
-                        </div>`;
+                    <div class="card" data-aos="fade-up">
+                        <img src="${prods[pId].img || 'https://via.placeholder.com/150'}">
+                        <h4>${prods[pId].name}</h4>
+                        <div style="color:var(--primary); font-weight:bold; margin-bottom:15px">R$ ${prods[pId].price}</div>
+                        <button class="btn btn-buy" onclick="addToCart('${prods[pId].name}', ${prods[pId].price})">ADICIONAR</button>
+                    </div>`;
                 }
             }
             catHtml += `</div>`;
-            if(hasProds) cont.innerHTML += catHtml;
+            if(items > 0) cont.innerHTML += catHtml;
         }
     }
+
+    db.ref('avaliacoes').on('value', snap => {
+        const data = snap.val();
+        const cont = document.getElementById('reviews-list');
+        cont.innerHTML = "";
+        for(let id in data) {
+            cont.innerHTML += `<div class="review-card" data-aos="zoom-in"><b>${data[id].nick}:</b> ${data[id].msg}</div>`;
+        }
+    });
+
+    // --- FUNÇÕES CLIENTE ---
 
     function addToCart(n, p) {
         cart.push({name:n, price:p});
         document.getElementById('cart-count').innerText = cart.length;
-        pushNotif(n + " adicionado!");
+        pushNotif(n + " adicionado ao seu carrinho!");
     }
 
     function openCart() {
-        if(cart.length === 0) return pushNotif("Carrinho vazio!");
-        const list = document.getElementById('cart-items-list');
-        list.innerHTML = cart.map(i => `<div>• ${i.name} (R$ ${i.price})</div>`).join('');
+        if(cart.length === 0) return pushNotif("Adicione produtos primeiro!");
+        document.getElementById('cart-items-list').innerHTML = cart.map(i => `<div>⚡ ${i.name} - R$ ${i.price}</div>`).join('');
         openModal('cart-modal');
     }
 
@@ -243,7 +335,7 @@
             total: cart.reduce((a,b)=>a+b.price, 0),
             data: new Date().toLocaleString()
         });
-        pushNotif("Pedido enviado à Staff!");
+        pushNotif("Sucesso! Aguarde contato da Staff.");
         cart = []; document.getElementById('cart-count').innerText = "0";
         closeModal('cart-modal');
     }
@@ -258,106 +350,82 @@
         }
     }
 
-    // --- ADMIN ACTIONS ---
-    function openLogin() {
-        const p = prompt("Senha Administrativa:");
-        if(p === "270712") {
-            document.getElementById('shop-view')?.remove(); // Segurança extra
+    // --- FUNÇÕES ADMIN ---
+
+    function openAdmin() {
+        if(prompt("Senha:") === "270712") {
+            document.getElementById('shop-view')?.remove();
+            document.querySelector('header').style.display='none';
             document.getElementById('view-shop').style.display='none';
             document.getElementById('view-reviews').style.display='none';
-            document.querySelector('header').style.display='none';
             document.getElementById('admin-view').style.display='block';
-            loadAdminOrders();
+        }
+    }
+
+    function renderAdmin(cats, prods, revs, orders) {
+        // Cats
+        const catList = document.getElementById('admin-cats-list');
+        const catSel = document.getElementById('p-cat-select');
+        catList.innerHTML = ""; catSel.innerHTML = "";
+        for(let id in cats) {
+            catList.innerHTML += `<div class="admin-item">${cats[id].name} <button onclick="db.ref('categorias/${id}').remove()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px">X</button></div>`;
+            catSel.innerHTML += `<option value="${cats[id].name}">${cats[id].name}</option>`;
+        }
+
+        // Prods
+        const prodList = document.getElementById('admin-prods-list');
+        prodList.innerHTML = "";
+        for(let id in prods) {
+            prodList.innerHTML += `<div class="admin-item">${prods[id].name} (${prods[id].cat}) <button onclick="db.ref('produtos/${id}').remove()" style="color:red; background:none; border:none; cursor:pointer"><i class="fas fa-trash"></i></button></div>`;
+        }
+
+        // Moderação de Avaliações (NOVO)
+        const admRevList = document.getElementById('admin-reviews-list');
+        admRevList.innerHTML = "";
+        for(let id in revs) {
+            admRevList.innerHTML += `
+            <div class="admin-item" style="font-size:0.8rem">
+                <span><b>${revs[id].nick}:</b> ${revs[id].msg.substring(0,30)}...</span>
+                <button onclick="db.ref('avaliacoes/${id}').remove()" style="background:#ff4444; color:white; border:none; padding:5px; border-radius:4px">EXCLUIR</button>
+            </div>`;
+        }
+
+        // Pedidos
+        const ordList = document.getElementById('admin-orders-list');
+        ordList.innerHTML = "";
+        for(let id in orders) {
+            ordList.innerHTML += `
+            <div class="admin-item" style="flex-direction:column; align-items:flex-start">
+                <div style="width:100%; display:flex; justify-content:space-between">
+                    <b>${orders[id].nick}</b>
+                    <button onclick="db.ref('pedidos/${id}').remove()" style="background:#444; border:none; color:white; padding:2px 8px">ARQUIVAR</button>
+                </div>
+                <small>${orders[id].itens}</small>
+            </div>`;
         }
     }
 
     function addCategory() {
-        const name = document.getElementById('new-cat-name').value;
-        if(name) {
-            db.ref('categorias').push({name});
-            document.getElementById('new-cat-name').value = "";
-        }
+        const n = document.getElementById('new-cat-name').value;
+        if(n) { db.ref('categorias').push({name: n}); document.getElementById('new-cat-name').value=""; }
     }
 
     function saveProduct() {
-        const id = document.getElementById('edit-p-id').value;
-        const pData = {
-            name: document.getElementById('p-name').value,
-            price: document.getElementById('p-price').value,
-            img: document.getElementById('p-img').value,
-            cat: document.getElementById('p-cat-select').value
-        };
-        if(id) db.ref('produtos/'+id).update(pData);
-        else db.ref('produtos').push(pData);
-        clearProdForm();
-    }
-
-    function editProd(id, n, p, i, c) {
-        document.getElementById('edit-p-id').value = id;
-        document.getElementById('p-name').value = n;
-        document.getElementById('p-price').value = p;
-        document.getElementById('p-img').value = i;
-        document.getElementById('p-cat-select').value = c;
-        document.getElementById('btn-save-p').innerText = "ATUALIZAR PRODUTO";
-        document.getElementById('btn-cancel-edit').style.display = "block";
-    }
-
-    function clearProdForm() {
-        document.getElementById('edit-p-id').value = "";
-        document.getElementById('p-name').value = "";
-        document.getElementById('p-price').value = "";
-        document.getElementById('p-img').value = "";
-        document.getElementById('btn-save-p').innerText = "SALVAR PRODUTO";
-        document.getElementById('btn-cancel-edit').style.display = "none";
-    }
-
-    function renderAdminLists(cats, prods) {
-        // Dropdown categorias
-        const sel = document.getElementById('p-cat-select');
-        sel.innerHTML = "";
-        for(let id in cats) sel.innerHTML += `<option value="${cats[id].name}">${cats[id].name}</option>`;
-
-        // Lista de Cats no ADM
-        const catCont = document.getElementById('admin-cats');
-        catCont.innerHTML = "";
-        for(let id in cats) catCont.innerHTML += `<div style="display:inline-block; background:#333; padding:5px 10px; margin:5px; border-radius:5px">${cats[id].name} <i class="fas fa-times" style="color:red; cursor:pointer" onclick="db.ref('categorias/${id}').remove()"></i></div>`;
-
-        // Lista de Prods no ADM
-        const prodCont = document.getElementById('admin-prods-list');
-        prodCont.innerHTML = "";
-        for(let id in prods) {
-            const p = prods[id];
-            prodCont.innerHTML += `
-                <div style="background:#000; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between">
-                    <span>${p.name} (${p.cat}) - R$ ${p.price}</span>
-                    <div>
-                        <button onclick="editProd('${id}','${p.name}','${p.price}','${p.img}','${p.cat}')">✏️</button>
-                        <button onclick="db.ref('produtos/${id}').remove()">🗑️</button>
-                    </div>
-                </div>`;
+        const name = document.getElementById('p-name').value;
+        const price = document.getElementById('p-price').value;
+        const img = document.getElementById('p-img').value;
+        const cat = document.getElementById('p-cat-select').value;
+        if(name && price) {
+            db.ref('produtos').push({name, price, img, cat});
+            document.getElementById('p-name').value=""; document.getElementById('p-price').value=""; document.getElementById('p-img').value="";
+            pushNotif("Produto cadastrado!");
         }
     }
 
-    function updateDiscordLink() {
+    function updateConfig() {
         const url = document.getElementById('adm-discord-url').value;
         db.ref('config').update({discord: url});
-        pushNotif("Link atualizado!");
-    }
-
-    function loadAdminOrders() {
-        db.ref('pedidos').on('value', snap => {
-            const cont = document.getElementById('admin-orders');
-            cont.innerHTML = "";
-            const data = snap.val();
-            for(let id in data) {
-                cont.innerHTML += `<div class="review-item" style="border-left-color:var(--secondary)">
-                    <b>Nick: ${data[id].nick}</b><br>
-                    <span>Itens: ${data[id].itens}</span><br>
-                    <span>Total: R$ ${data[id].total}</span>
-                    <button class="btn" style="background:#444; font-size:0.6rem" onclick="db.ref('pedidos/${id}').remove()">ARQUIVAR</button>
-                </div>`;
-            }
-        });
+        pushNotif("Link do Discord atualizado!");
     }
 </script>
 </body>
