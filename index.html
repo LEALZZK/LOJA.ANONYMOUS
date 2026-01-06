@@ -3,145 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUEBREI O SISTEMA - Ultra Animated</title>
+    <title>QUEBREI O SISTEMA - Hub Oficial</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <style>
-        :root { 
-            --primary: #00ff88; 
-            --secondary: #007bff; 
-            --bg: #0a0a0a; 
-            --card-bg: #151515; 
-            --text: #ffffff; 
-            --discord: #5865F2; 
-        }
+        :root { --primary: #00ff88; --secondary: #007bff; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; --discord: #5865F2; }
+        * { transition: all 0.2s ease; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
 
-        * { transition: all 0.3s ease; }
+        /* HEADER ESTILO FIVE EM STORE */
+        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: #888; text-decoration: none; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .nav-links a.active { color: var(--text); border-bottom: 2px solid var(--secondary); padding-bottom: 5px; }
 
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            overflow-x: hidden;
-        }
+        /* CHAT / FORUM STYLE */
+        .chat-container { background: #111; border-radius: 12px; border: 1px solid #222; height: 500px; display: flex; flex-direction: column; overflow: hidden; margin-top: 20px; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; font-size: 0.9rem; }
+        .msg-others { background: #222; align-self: flex-start; }
+        .msg-me { background: var(--secondary); align-self: flex-end; }
+        .chat-input-area { padding: 15px; background: #000; display: flex; gap: 10px; border-top: 1px solid #222; }
 
-        /* HEADER ANIMADO */
-        header { 
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 2px solid var(--secondary); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000;
-            animation: slideDown 0.8s ease-out;
-        }
+        /* PRODUTOS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #222; }
+        .card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; }
+        .card.no-img { padding: 50px 20px; border: 2px dashed #333; }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 20px; }
-        .logo-text { font-weight: 900; text-transform: uppercase; margin: 0; font-size: 1.4rem; letter-spacing: 2px; }
-        .logo-text span { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
-        
-        .discord-btn { 
-            background: var(--discord); 
-            color: white; 
-            padding: 8px 18px; 
-            border-radius: 50px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
-            font-size: 0.8rem;
-        }
-        .discord-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--discord); }
-
-        nav a { color: #888; text-decoration: none; margin-left: 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: bold; position: relative; }
-        nav a:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background: var(--primary); transition: 0.4s; }
-        nav a:hover:after { width: 100%; }
-        nav a.active { color: var(--text); }
-
-        /* NOTIFICAÇÕES */
+        /* NOTIFICAÇÃO */
         #notif-box { position: fixed; top: 20px; left: 20px; z-index: 10000; }
-        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; animation: slideInLeft 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; animation: slideInLeft 0.5s forwards; }
         @keyframes slideInLeft { from { transform: translateX(-120%); } to { transform: translateX(0); } }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        /* CARDS DE PRODUTOS */
-        .cat-title { border-left: 5px solid var(--secondary); padding-left: 15px; margin: 50px 0 30px; text-transform: uppercase; letter-spacing: 1px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+        .btn { padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; color: white; }
+        .btn-buy { background: var(--secondary); }
+        input, textarea { background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
         
-        .card { 
-            background: var(--card-bg); 
-            border-radius: 15px; 
-            padding: 20px; 
-            text-align: center; 
-            border: 1px solid #222; 
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover { 
-            border-color: var(--primary); 
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
-        }
-        .card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; }
-        
-        .btn { padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; width: 100%; }
-        .btn-buy { background: var(--secondary); color: white; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
-        .btn-buy:hover { background: #0056b3; transform: scale(1.05); }
-
-        /* MODAIS ANIMADOS */
-        .modal { 
-            display: none; 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 2000; 
-            justify-content: center; align-items: center;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content { 
-            background: #111; width: 95%; max-width: 500px; 
-            border-radius: 20px; border: 1px solid var(--secondary); 
-            animation: zoomIn 0.4s ease;
-        }
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
-        /* AVALIAÇÕES ESTILO CARDS */
-        .review-card { 
-            background: #1a1a1a; padding: 20px; border-radius: 12px; 
-            margin-bottom: 15px; border-left: 4px solid var(--primary);
-            position: relative;
-        }
-
-        /* ADMIN */
-        #admin-view { display: none; background: #0c0c0c; min-height: 100vh; padding: 20px; }
-        .admin-item { 
-            background: #151515; padding: 15px; border-radius: 10px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; 
-            border: 1px solid #333;
-        }
-
-        input, select, textarea { 
-            background: #000; border: 1px solid #333; color: white; 
-            padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; 
-            margin: 8px 0; outline: none;
-        }
-        input:focus { border-color: var(--secondary); box-shadow: 0 0 10px rgba(0, 123, 255, 0.2); }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 2000; justify-content:center; align-items:center; }
+        .modal-content { background: #111; width: 90%; max-width: 450px; border-radius: 15px; padding: 25px; border: 1px solid var(--secondary); }
     </style>
 </head>
 <body>
@@ -149,99 +56,79 @@
 <div id="notif-box"></div>
 
 <header>
-    <div class="logo-area">
-        <h1 class="logo-text">QUEBREI O <span>SISTEMA</span></h1>
-        <a id="discord-link" href="#" target="_blank" class="discord-btn">
-            <i class="fab fa-discord"></i> DISCORD
-        </a>
+    <div style="font-weight: 900; letter-spacing: 1px;">QUEBREI O <span style="color:var(--secondary)">SISTEMA</span></div>
+    <div class="nav-links">
+        <a id="nav-shop" class="active" onclick="switchTab('shop')">Recepção</a>
+        <a id="nav-forum" onclick="switchTab('forum')">Comunidade</a>
+        <a id="nav-support" onclick="switchTab('support')">Suporte</a>
+        <a id="nav-reviews" onclick="switchTab('reviews')">Avaliações</a>
     </div>
-    <nav>
-        <a href="#" class="active" onclick="showSection('shop')">Recepção</a>
-        <a href="#" onclick="showSection('reviews')">Avaliações</a>
-        <button class="btn" style="width:auto; margin-left:20px; background:var(--secondary)" onclick="openCart()">
-            🛒 CARRINHO (<span id="cart-count">0</span>)
-        </button>
-    </nav>
+    <div style="display:flex; gap:10px; align-items:center;">
+        <div id="auth-status" onclick="loginDiscord()" style="cursor:pointer; font-size:0.8rem; background:#1a1a1a; padding:5px 12px; border-radius:20px;">
+            <i class="fab fa-discord"></i> LOGIN
+        </div>
+        <button class="btn" style="background:var(--secondary); padding:5px 10px; font-size:0.7rem;" onclick="openCart()">🛒 (<span id="cart-count">0</span>)</button>
+    </div>
 </header>
 
-<div id="view-shop" class="container" data-aos="fade-up">
-    <div id="shop-content"></div>
-</div>
-
-<div id="view-reviews" class="container" style="display:none">
-    <h2 class="cat-title" data-aos="fade-right">FEEDBACK DA COMUNIDADE</h2>
-    <div id="reviews-list"></div>
+<div class="container" style="padding: 20px 5%;">
     
-    <div class="card" style="margin-top:50px; text-align: left;" data-aos="zoom-in">
-        <h3>Deixe sua Avaliação</h3>
-        <input type="text" id="rev-nick" placeholder="Seu Nick">
-        <textarea id="rev-msg" placeholder="Sua experiência na loja..."></textarea>
-        <button class="btn btn-buy" onclick="sendReview()">PUBLICAR AGORA</button>
+    <div id="tab-shop">
+        <div id="shop-content"></div>
     </div>
-</div>
 
-<div id="cart-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-body">
-            <h3>Seu Carrinho</h3>
-            <div id="cart-items-list" style="margin-bottom:20px;"></div>
-            <div style="background:rgba(0,255,136,0.05); padding:20px; border-radius:12px; border:1px solid var(--primary)">
-                <h4 style="margin:0 0 10px 0; color:var(--primary)"><i class="fas fa-headset"></i> Atendimento via Staff</h4>
-                <input type="text" id="cust-discord" placeholder="Seu Discord para contato">
-                <button class="btn btn-buy" style="background:var(--primary); color:#000" onclick="checkout()">CHAMAR VENDEDOR</button>
+    <div id="tab-forum" style="display:none">
+        <h2 style="color:var(--primary)">Comunidade</h2>
+        <div class="chat-container">
+            <div id="forum-msgs" class="chat-messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="forum-input" placeholder="Diga algo para a galera...">
+                <button class="btn btn-buy" onclick="sendForumMsg()">ENVIAR</button>
             </div>
-            <button class="btn" style="margin-top:10px; background:transparent" onclick="closeModal('cart-modal')">Voltar ao site</button>
         </div>
+    </div>
+
+    <div id="tab-support" style="display:none">
+        <h2 style="color:var(--secondary)">Suporte ao Vivo</h2>
+        <div id="no-ticket" style="text-align:center; padding:50px;">
+            <p>Precisa de ajuda com um produto ou denúncia?</p>
+            <button class="btn btn-buy" onclick="openTicket()">ABRIR NOVO TICKET</button>
+        </div>
+        <div id="active-ticket" style="display:none" class="chat-container">
+            <div id="ticket-msgs" class="chat-messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="ticket-input" placeholder="Descreva seu problema...">
+                <button class="btn btn-buy" onclick="sendTicketMsg()">ENVIAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-reviews" style="display:none">
+        <div id="reviews-list" style="display:grid; gap:10px;"></div>
     </div>
 </div>
 
-<div id="admin-view">
-    <div class="container">
-        <div style="display:flex; justify-content:space-between; margin-bottom:30px">
-            <h2>⚙️ GESTÃO ONLINE</h2>
-            <button class="btn" style="width:auto; background:#ff4444" onclick="location.reload()">SAIR DO PAINEL</button>
-        </div>
-
-        <div class="card" style="text-align:left; margin-bottom:20px">
-            <h3>Categorias & Discord</h3>
-            <input type="text" id="adm-discord-url" placeholder="Link do Discord">
-            <button class="btn btn-buy" style="margin-bottom:20px" onclick="updateConfig()">Salvar Discord</button>
-            
-            <input type="text" id="new-cat-name" placeholder="Nova Categoria">
-            <button class="btn btn-buy" onclick="addCategory()">Criar Categoria</button>
-            <div id="admin-cats-list" style="margin-top:15px"></div>
-        </div>
-
+<div id="admin-view" style="display:none; padding:20px;">
+    <button class="btn" onclick="location.reload()" style="background:red">SAIR ADM</button>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
         <div class="card" style="text-align:left">
-            <h3>Gerenciar Produtos</h3>
+            <h3>Gerenciar Loja</h3>
             <input type="text" id="p-name" placeholder="Nome">
             <input type="number" id="p-price" placeholder="Preço">
-            <input type="text" id="p-img" placeholder="URL da Imagem">
-            <select id="p-cat-select"></select>
-            <button class="btn btn-buy" onclick="saveProduct()">CADASTRAR PRODUTO</button>
-            <div id="admin-prods-list" style="margin-top:20px"></div>
+            <input type="text" id="p-img" placeholder="URL da Imagem (Opcional)">
+            <select id="p-cat-select" style="margin:10px 0; background:#000; color:#fff; width:100%; padding:10px; border:1px solid #333"></select>
+            <button class="btn btn-buy" onclick="saveProduct()">POSTAR PRODUTO</button>
         </div>
-
-        <div class="card" style="text-align:left; margin-top:20px">
-            <h3>Moderar Avaliações</h3>
-            <div id="admin-reviews-list"></div>
-        </div>
-        
-        <div class="card" style="text-align:left; margin-top:20px">
-            <h3>Chamados Staff (Pedidos)</h3>
-            <div id="admin-orders-list"></div>
+        <div class="card" style="text-align:left">
+            <h3>Tickets de Suporte</h3>
+            <div id="admin-tickets-list" style="max-height:300px; overflow-y:auto"></div>
         </div>
     </div>
 </div>
 
-<footer style="padding:100px 0; text-align:center; opacity:0.1; cursor:pointer" onclick="openAdmin()">
-    Acesso Restrito
-</footer>
+<footer style="padding:100px; text-align:center; opacity:0.1; cursor:pointer" onclick="checkAdmin()">ADMIN</footer>
 
 <script>
-    // INICIALIZAÇÃO AOS
-    AOS.init({ duration: 1000, once: true });
-
     const firebaseConfig = {
         apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
         authDomain: "quebrei-o-sistema.firebaseapp.com",
@@ -251,181 +138,178 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let cart = [];
+    const auth = firebase.auth();
+    let currentUser = null;
+    let myTicketId = null;
 
-    // NOTIFICAÇÕES
     function pushNotif(m) {
         const b = document.getElementById('notif-box');
         const t = document.createElement('div'); t.className='toast'; t.innerText=m;
-        b.appendChild(t); setTimeout(()=>t.remove(), 4000);
+        b.appendChild(t); setTimeout(()=>t.remove(), 3000);
     }
 
-    function openModal(id){ document.getElementById(id).style.display='flex'; }
-    function closeModal(id){ document.getElementById(id).style.display='none'; }
-
-    function showSection(s){
-        document.getElementById('view-shop').style.display = s==='shop'?'block':'none';
-        document.getElementById('view-reviews').style.display = s==='reviews'?'block':'none';
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        event.target.classList.add('active');
-        AOS.refresh();
+    function switchTab(t) {
+        ['shop','forum','support','reviews'].forEach(tab => {
+            document.getElementById('tab-'+tab).style.display = tab === t ? 'block' : 'none';
+            document.getElementById('nav-'+tab).className = tab === t ? 'active' : '';
+        });
     }
 
-    // --- LOGICA DATABASE ---
+    // AUTH DISCORD
+    function loginDiscord() {
+        const provider = new firebase.auth.OAuthProvider('discord.com');
+        auth.signInWithPopup(provider).then(res => {
+            currentUser = res.user;
+            document.getElementById('auth-status').innerHTML = `<img src="${res.user.photoURL}" style="width:18px; border-radius:50%"> ${res.user.displayName}`;
+            pushNotif("Conectado!");
+            checkUserTicket();
+        });
+    }
 
-    db.ref('/').on('value', snap => {
-        const data = snap.val() || {};
-        renderShop(data.categorias, data.produtos);
-        renderAdmin(data.categorias, data.produtos, data.avaliacoes, data.pedidos);
-        if(data.config) document.getElementById('discord-link').href = data.config.discord || "#";
+    // FORUM LÓGICA
+    db.ref('forum').limitToLast(20).on('value', snap => {
+        const cont = document.getElementById('forum-msgs');
+        cont.innerHTML = "";
+        snap.forEach(child => {
+            const m = child.val();
+            const isMe = currentUser && m.uid === currentUser.uid;
+            cont.innerHTML += `<div class="msg ${isMe ? 'msg-me' : 'msg-others'}">
+                <small style="font-size:0.6rem; opacity:0.7">${m.user}</small><br>${m.text}
+            </div>`;
+        });
+        cont.scrollTop = cont.scrollHeight;
     });
 
-    function renderShop(cats, prods) {
-        const cont = document.getElementById('shop-content');
-        cont.innerHTML = "";
-        for(let id in cats) {
-            let catHtml = `<h2 class="cat-title" data-aos="fade-right">${cats[id].name}</h2><div class="grid">`;
-            let items = 0;
-            for(let pId in prods) {
-                if(prods[pId].cat === cats[id].name) {
-                    items++;
-                    catHtml += `
-                    <div class="card" data-aos="fade-up">
-                        <img src="${prods[pId].img || 'https://via.placeholder.com/150'}">
-                        <h4>${prods[pId].name}</h4>
-                        <div style="color:var(--primary); font-weight:bold; margin-bottom:15px">R$ ${prods[pId].price}</div>
-                        <button class="btn btn-buy" onclick="addToCart('${prods[pId].name}', ${prods[pId].price})">ADICIONAR</button>
+    function sendForumMsg() {
+        if(!currentUser) return pushNotif("Faça login primeiro!");
+        const txt = document.getElementById('forum-input').value;
+        if(!txt) return;
+        db.ref('forum').push({ uid: currentUser.uid, user: currentUser.displayName, text: txt });
+        document.getElementById('forum-input').value = "";
+    }
+
+    // SUPORTE / TICKETS
+    function checkUserTicket() {
+        if(!currentUser) return;
+        db.ref('tickets').orderByChild('uid').equalTo(currentUser.uid).on('value', snap => {
+            if(snap.exists()) {
+                myTicketId = Object.keys(snap.val())[0];
+                document.getElementById('no-ticket').style.display = 'none';
+                document.getElementById('active-ticket').style.display = 'flex';
+                loadTicketMsgs(myTicketId);
+            }
+        });
+    }
+
+    function openTicket() {
+        if(!currentUser) return pushNotif("Login necessário!");
+        const newTicket = db.ref('tickets').push({
+            uid: currentUser.uid,
+            user: currentUser.displayName,
+            status: 'aberto',
+            created: Date.now()
+        });
+        myTicketId = newTicket.key;
+    }
+
+    function loadTicketMsgs(id) {
+        db.ref('tickets/'+id+'/msgs').on('value', snap => {
+            const cont = document.getElementById('ticket-msgs');
+            cont.innerHTML = "";
+            snap.forEach(child => {
+                const m = child.val();
+                const isMe = m.sender === 'user';
+                cont.innerHTML += `<div class="msg ${isMe ? 'msg-me' : 'msg-others'}"><b>${m.name}:</b> ${m.text}</div>`;
+            });
+            cont.scrollTop = cont.scrollHeight;
+        });
+    }
+
+    function sendTicketMsg() {
+        const txt = document.getElementById('ticket-input').value;
+        if(!txt || !myTicketId) return;
+        db.ref('tickets/'+myTicketId+'/msgs').push({
+            sender: 'user',
+            name: currentUser.displayName,
+            text: txt
+        });
+        document.getElementById('ticket-input').value = "";
+    }
+
+    // RENDERIZAÇÃO LOJA
+    db.ref('/').on('value', snap => {
+        const data = snap.val() || {};
+        const shop = document.getElementById('shop-content');
+        shop.innerHTML = "";
+        
+        // Categorias ADM Select
+        const sel = document.getElementById('p-cat-select');
+        sel.innerHTML = "";
+        
+        for(let cId in data.categorias) {
+            const c = data.categorias[cId];
+            sel.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+            let html = `<h3>${c.name}</h3><div class="grid">`;
+            for(let pId in data.produtos) {
+                const p = data.produtos[pId];
+                if(p.cat === c.name) {
+                    const hasImg = p.img && p.img.length > 5;
+                    html += `
+                    <div class="card ${!hasImg ? 'no-img' : ''}">
+                        ${hasImg ? `<img src="${p.img}">` : '<i class="fas fa-box-open fa-3x" style="opacity:0.2; margin-bottom:15px"></i>'}
+                        <div style="font-weight:bold">${p.name}</div>
+                        <div style="color:var(--primary); margin:10px 0">R$ ${p.price}</div>
+                        <button class="btn btn-buy" style="width:100%" onclick="pushNotif('Adicionado!')">ADICIONAR</button>
                     </div>`;
                 }
             }
-            catHtml += `</div>`;
-            if(items > 0) cont.innerHTML += catHtml;
-        }
-    }
-
-    db.ref('avaliacoes').on('value', snap => {
-        const data = snap.val();
-        const cont = document.getElementById('reviews-list');
-        cont.innerHTML = "";
-        for(let id in data) {
-            cont.innerHTML += `<div class="review-card" data-aos="zoom-in"><b>${data[id].nick}:</b> ${data[id].msg}</div>`;
+            shop.innerHTML += html + "</div>";
         }
     });
 
-    // --- FUNÇÕES CLIENTE ---
-
-    function addToCart(n, p) {
-        cart.push({name:n, price:p});
-        document.getElementById('cart-count').innerText = cart.length;
-        pushNotif(n + " adicionado ao seu carrinho!");
-    }
-
-    function openCart() {
-        if(cart.length === 0) return pushNotif("Adicione produtos primeiro!");
-        document.getElementById('cart-items-list').innerHTML = cart.map(i => `<div>⚡ ${i.name} - R$ ${i.price}</div>`).join('');
-        openModal('cart-modal');
-    }
-
-    function checkout() {
-        const nick = document.getElementById('cust-discord').value;
-        if(!nick) return pushNotif("Insira seu Discord!");
-        db.ref('pedidos').push({
-            nick, 
-            itens: cart.map(i=>i.name).join(', '),
-            total: cart.reduce((a,b)=>a+b.price, 0),
-            data: new Date().toLocaleString()
-        });
-        pushNotif("Sucesso! Aguarde contato da Staff.");
-        cart = []; document.getElementById('cart-count').innerText = "0";
-        closeModal('cart-modal');
-    }
-
-    function sendReview() {
-        const nick = document.getElementById('rev-nick').value;
-        const msg = document.getElementById('rev-msg').value;
-        if(nick && msg) {
-            db.ref('avaliacoes').push({nick, msg});
-            document.getElementById('rev-nick').value=""; document.getElementById('rev-msg').value="";
-            pushNotif("Avaliação enviada!");
-        }
-    }
-
-    // --- FUNÇÕES ADMIN ---
-
-    function openAdmin() {
-        if(prompt("Senha:") === "270712") {
-            document.getElementById('shop-view')?.remove();
+    // ADM
+    function checkAdmin() {
+        if(prompt("Chave ADM:") === "270712") {
             document.querySelector('header').style.display='none';
-            document.getElementById('view-shop').style.display='none';
-            document.getElementById('view-reviews').style.display='none';
+            document.querySelector('.container').style.display='none';
             document.getElementById('admin-view').style.display='block';
+            loadAdminTickets();
         }
-    }
-
-    function renderAdmin(cats, prods, revs, orders) {
-        // Cats
-        const catList = document.getElementById('admin-cats-list');
-        const catSel = document.getElementById('p-cat-select');
-        catList.innerHTML = ""; catSel.innerHTML = "";
-        for(let id in cats) {
-            catList.innerHTML += `<div class="admin-item">${cats[id].name} <button onclick="db.ref('categorias/${id}').remove()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px">X</button></div>`;
-            catSel.innerHTML += `<option value="${cats[id].name}">${cats[id].name}</option>`;
-        }
-
-        // Prods
-        const prodList = document.getElementById('admin-prods-list');
-        prodList.innerHTML = "";
-        for(let id in prods) {
-            prodList.innerHTML += `<div class="admin-item">${prods[id].name} (${prods[id].cat}) <button onclick="db.ref('produtos/${id}').remove()" style="color:red; background:none; border:none; cursor:pointer"><i class="fas fa-trash"></i></button></div>`;
-        }
-
-        // Moderação de Avaliações (NOVO)
-        const admRevList = document.getElementById('admin-reviews-list');
-        admRevList.innerHTML = "";
-        for(let id in revs) {
-            admRevList.innerHTML += `
-            <div class="admin-item" style="font-size:0.8rem">
-                <span><b>${revs[id].nick}:</b> ${revs[id].msg.substring(0,30)}...</span>
-                <button onclick="db.ref('avaliacoes/${id}').remove()" style="background:#ff4444; color:white; border:none; padding:5px; border-radius:4px">EXCLUIR</button>
-            </div>`;
-        }
-
-        // Pedidos
-        const ordList = document.getElementById('admin-orders-list');
-        ordList.innerHTML = "";
-        for(let id in orders) {
-            ordList.innerHTML += `
-            <div class="admin-item" style="flex-direction:column; align-items:flex-start">
-                <div style="width:100%; display:flex; justify-content:space-between">
-                    <b>${orders[id].nick}</b>
-                    <button onclick="db.ref('pedidos/${id}').remove()" style="background:#444; border:none; color:white; padding:2px 8px">ARQUIVAR</button>
-                </div>
-                <small>${orders[id].itens}</small>
-            </div>`;
-        }
-    }
-
-    function addCategory() {
-        const n = document.getElementById('new-cat-name').value;
-        if(n) { db.ref('categorias').push({name: n}); document.getElementById('new-cat-name').value=""; }
     }
 
     function saveProduct() {
-        const name = document.getElementById('p-name').value;
-        const price = document.getElementById('p-price').value;
-        const img = document.getElementById('p-img').value;
-        const cat = document.getElementById('p-cat-select').value;
-        if(name && price) {
-            db.ref('produtos').push({name, price, img, cat});
-            document.getElementById('p-name').value=""; document.getElementById('p-price').value=""; document.getElementById('p-img').value="";
-            pushNotif("Produto cadastrado!");
-        }
+        const p = {
+            name: document.getElementById('p-name').value,
+            price: document.getElementById('p-price').value,
+            img: document.getElementById('p-img').value,
+            cat: document.getElementById('p-cat-select').value
+        };
+        db.ref('produtos').push(p);
+        pushNotif("Postado!");
     }
 
-    function updateConfig() {
-        const url = document.getElementById('adm-discord-url').value;
-        db.ref('config').update({discord: url});
-        pushNotif("Link do Discord atualizado!");
+    function loadAdminTickets() {
+        db.ref('tickets').on('value', snap => {
+            const cont = document.getElementById('admin-tickets-list');
+            cont.innerHTML = "";
+            snap.forEach(child => {
+                const t = child.val();
+                cont.innerHTML += `<div style="background:#000; padding:10px; margin-bottom:5px; border:1px solid #333">
+                    <b>${t.user}</b> <button onclick="replyTicket('${child.key}')">RESPONDER</button>
+                </div>`;
+            });
+        });
+    }
+
+    function replyTicket(id) {
+        const msg = prompt("Sua resposta:");
+        if(msg) {
+            db.ref('tickets/'+id+'/msgs').push({
+                sender: 'admin',
+                name: 'Suporte Quebrei o Sistema',
+                text: msg
+            });
+        }
     }
 </script>
 </body>
