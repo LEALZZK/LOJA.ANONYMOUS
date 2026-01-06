@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUEBREI O SISTEMA - Hub Oficial</title>
+    <title>QUEBREI O SISTEMA - Galactic Hub</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -14,303 +14,117 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <style>
-        :root { --primary: #00ff88; --secondary: #007bff; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; --discord: #5865F2; }
+        :root { 
+            --primary: #00ff88; 
+            --secondary: #007bff; 
+            --bg: #02010a; /* Fundo Espacial Profundo */
+            --card-bg: rgba(21, 21, 21, 0.8); 
+            --text: #ffffff; 
+            --google: #db4437; 
+        }
+
         * { transition: all 0.2s ease; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
 
-        /* HEADER ESTILO FIVE EM STORE */
-        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .nav-links { display: flex; gap: 25px; }
-        .nav-links a { color: #888; text-decoration: none; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; cursor: pointer; }
-        .nav-links a.active { color: var(--text); border-bottom: 2px solid var(--secondary); padding-bottom: 5px; }
+        /* FUNDO GALÁCTICO ANIMADO */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0b2e 0%, #02010a 100%);
+            color: var(--text); 
+            margin: 0; 
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-        /* CHAT / FORUM STYLE */
-        .chat-container { background: #111; border-radius: 12px; border: 1px solid #222; height: 500px; display: flex; flex-direction: column; overflow: hidden; margin-top: 20px; }
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; font-size: 0.9rem; }
-        .msg-others { background: #222; align-self: flex-start; }
-        .msg-me { background: var(--secondary); align-self: flex-end; }
-        .chat-input-area { padding: 15px; background: #000; display: flex; gap: 10px; border-top: 1px solid #222; }
+        /* Efeito de Estrelas */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.4;
+            z-index: -1;
+            animation: starsShift 100s linear infinite;
+        }
 
-        /* PRODUTOS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #222; }
-        .card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; }
-        .card.no-img { padding: 50px 20px; border: 2px dashed #333; }
+        @keyframes starsShift {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
 
-        /* NOTIFICAÇÃO */
-        #notif-box { position: fixed; top: 20px; left: 20px; z-index: 10000; }
-        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; animation: slideInLeft 0.5s forwards; }
-        @keyframes slideInLeft { from { transform: translateX(-120%); } to { transform: translateX(0); } }
+        /* HEADER GLASSMORPHISM */
+        header { 
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(15px);
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            position: sticky; top: 0; z-index: 1000; 
+        }
 
-        .btn { padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; color: white; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .nav-links a.active { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* CARDS GALÁCTICOS */
+        .card { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(5px);
+            border-radius: 15px; 
+            padding: 20px; 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .card:hover { 
+            border-color: var(--secondary); 
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.2);
+        }
+
+        .chat-container { 
+            background: rgba(10, 10, 10, 0.9); 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            height: 500px; 
+            display: flex; flex-direction: column; overflow: hidden; margin-top: 20px; 
+        }
+
+        .btn { padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; border: none; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-buy { background: var(--secondary); }
-        input, textarea { background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
+        .btn-google { background: var(--google); font-size: 0.75rem; padding: 8px 15px; border-radius: 20px; }
         
+        input { background: rgba(0,0,0,0.5); border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 2000; justify-content:center; align-items:center; }
-        .modal-content { background: #111; width: 90%; max-width: 450px; border-radius: 15px; padding: 25px; border: 1px solid var(--secondary); }
     </style>
 </head>
 <body>
+    <div id="notif-box"></div>
 
-<div id="notif-box"></div>
-
-<header>
-    <div style="font-weight: 900; letter-spacing: 1px;">QUEBREI O <span style="color:var(--secondary)">SISTEMA</span></div>
-    <div class="nav-links">
-        <a id="nav-shop" class="active" onclick="switchTab('shop')">Recepção</a>
-        <a id="nav-forum" onclick="switchTab('forum')">Comunidade</a>
-        <a id="nav-support" onclick="switchTab('support')">Suporte</a>
-        <a id="nav-reviews" onclick="switchTab('reviews')">Avaliações</a>
-    </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-        <div id="auth-status" onclick="loginDiscord()" style="cursor:pointer; font-size:0.8rem; background:#1a1a1a; padding:5px 12px; border-radius:20px;">
-            <i class="fab fa-discord"></i> LOGIN
+    <header>
+        <div style="font-weight: 900; letter-spacing: 2px;">QUEBREI O <span style="color:var(--secondary)">SISTEMA</span></div>
+        <div class="nav-links">
+            <a id="nav-shop" class="active" onclick="switchTab('shop')">Loja</a>
+            <a id="nav-forum" onclick="switchTab('forum')">Comunidade</a>
+            <a id="nav-support" onclick="switchTab('support')">Suporte</a>
         </div>
-        <button class="btn" style="background:var(--secondary); padding:5px 10px; font-size:0.7rem;" onclick="openCart()">🛒 (<span id="cart-count">0</span>)</button>
-    </div>
-</header>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <div id="user-display">
+                <button class="btn btn-google" onclick="loginGoogle()">
+                    <i class="fab fa-google"></i> ENTRAR
+                </button>
+            </div>
+            <button class="btn" style="background:rgba(255,255,255,0.1); padding:8px 12px;" onclick="openCart()">
+                🛒 <span id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
 
-<div class="container" style="padding: 20px 5%;">
+    <div class="container" style="padding: 20px 5%; position: relative; z-index: 1;">
+        <div id="tab-shop">
+            <div id="shop-content"></div>
+        </div>
+        </div>
     
-    <div id="tab-shop">
-        <div id="shop-content"></div>
-    </div>
-
-    <div id="tab-forum" style="display:none">
-        <h2 style="color:var(--primary)">Comunidade</h2>
-        <div class="chat-container">
-            <div id="forum-msgs" class="chat-messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="forum-input" placeholder="Diga algo para a galera...">
-                <button class="btn btn-buy" onclick="sendForumMsg()">ENVIAR</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-support" style="display:none">
-        <h2 style="color:var(--secondary)">Suporte ao Vivo</h2>
-        <div id="no-ticket" style="text-align:center; padding:50px;">
-            <p>Precisa de ajuda com um produto ou denúncia?</p>
-            <button class="btn btn-buy" onclick="openTicket()">ABRIR NOVO TICKET</button>
-        </div>
-        <div id="active-ticket" style="display:none" class="chat-container">
-            <div id="ticket-msgs" class="chat-messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="ticket-input" placeholder="Descreva seu problema...">
-                <button class="btn btn-buy" onclick="sendTicketMsg()">ENVIAR</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-reviews" style="display:none">
-        <div id="reviews-list" style="display:grid; gap:10px;"></div>
-    </div>
-</div>
-
-<div id="admin-view" style="display:none; padding:20px;">
-    <button class="btn" onclick="location.reload()" style="background:red">SAIR ADM</button>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
-        <div class="card" style="text-align:left">
-            <h3>Gerenciar Loja</h3>
-            <input type="text" id="p-name" placeholder="Nome">
-            <input type="number" id="p-price" placeholder="Preço">
-            <input type="text" id="p-img" placeholder="URL da Imagem (Opcional)">
-            <select id="p-cat-select" style="margin:10px 0; background:#000; color:#fff; width:100%; padding:10px; border:1px solid #333"></select>
-            <button class="btn btn-buy" onclick="saveProduct()">POSTAR PRODUTO</button>
-        </div>
-        <div class="card" style="text-align:left">
-            <h3>Tickets de Suporte</h3>
-            <div id="admin-tickets-list" style="max-height:300px; overflow-y:auto"></div>
-        </div>
-    </div>
-</div>
-
-<footer style="padding:100px; text-align:center; opacity:0.1; cursor:pointer" onclick="checkAdmin()">ADMIN</footer>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
-        authDomain: "quebrei-o-sistema.firebaseapp.com",
-        databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com",
-        projectId: "quebrei-o-sistema",
-        appId: "1:133672006102:web:e62c681ced44b3650f7477"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const auth = firebase.auth();
-    let currentUser = null;
-    let myTicketId = null;
-
-    function pushNotif(m) {
-        const b = document.getElementById('notif-box');
-        const t = document.createElement('div'); t.className='toast'; t.innerText=m;
-        b.appendChild(t); setTimeout(()=>t.remove(), 3000);
-    }
-
-    function switchTab(t) {
-        ['shop','forum','support','reviews'].forEach(tab => {
-            document.getElementById('tab-'+tab).style.display = tab === t ? 'block' : 'none';
-            document.getElementById('nav-'+tab).className = tab === t ? 'active' : '';
-        });
-    }
-
-    // AUTH DISCORD
-    function loginDiscord() {
-        const provider = new firebase.auth.OAuthProvider('discord.com');
-        auth.signInWithPopup(provider).then(res => {
-            currentUser = res.user;
-            document.getElementById('auth-status').innerHTML = `<img src="${res.user.photoURL}" style="width:18px; border-radius:50%"> ${res.user.displayName}`;
-            pushNotif("Conectado!");
-            checkUserTicket();
-        });
-    }
-
-    // FORUM LÓGICA
-    db.ref('forum').limitToLast(20).on('value', snap => {
-        const cont = document.getElementById('forum-msgs');
-        cont.innerHTML = "";
-        snap.forEach(child => {
-            const m = child.val();
-            const isMe = currentUser && m.uid === currentUser.uid;
-            cont.innerHTML += `<div class="msg ${isMe ? 'msg-me' : 'msg-others'}">
-                <small style="font-size:0.6rem; opacity:0.7">${m.user}</small><br>${m.text}
-            </div>`;
-        });
-        cont.scrollTop = cont.scrollHeight;
-    });
-
-    function sendForumMsg() {
-        if(!currentUser) return pushNotif("Faça login primeiro!");
-        const txt = document.getElementById('forum-input').value;
-        if(!txt) return;
-        db.ref('forum').push({ uid: currentUser.uid, user: currentUser.displayName, text: txt });
-        document.getElementById('forum-input').value = "";
-    }
-
-    // SUPORTE / TICKETS
-    function checkUserTicket() {
-        if(!currentUser) return;
-        db.ref('tickets').orderByChild('uid').equalTo(currentUser.uid).on('value', snap => {
-            if(snap.exists()) {
-                myTicketId = Object.keys(snap.val())[0];
-                document.getElementById('no-ticket').style.display = 'none';
-                document.getElementById('active-ticket').style.display = 'flex';
-                loadTicketMsgs(myTicketId);
-            }
-        });
-    }
-
-    function openTicket() {
-        if(!currentUser) return pushNotif("Login necessário!");
-        const newTicket = db.ref('tickets').push({
-            uid: currentUser.uid,
-            user: currentUser.displayName,
-            status: 'aberto',
-            created: Date.now()
-        });
-        myTicketId = newTicket.key;
-    }
-
-    function loadTicketMsgs(id) {
-        db.ref('tickets/'+id+'/msgs').on('value', snap => {
-            const cont = document.getElementById('ticket-msgs');
-            cont.innerHTML = "";
-            snap.forEach(child => {
-                const m = child.val();
-                const isMe = m.sender === 'user';
-                cont.innerHTML += `<div class="msg ${isMe ? 'msg-me' : 'msg-others'}"><b>${m.name}:</b> ${m.text}</div>`;
-            });
-            cont.scrollTop = cont.scrollHeight;
-        });
-    }
-
-    function sendTicketMsg() {
-        const txt = document.getElementById('ticket-input').value;
-        if(!txt || !myTicketId) return;
-        db.ref('tickets/'+myTicketId+'/msgs').push({
-            sender: 'user',
-            name: currentUser.displayName,
-            text: txt
-        });
-        document.getElementById('ticket-input').value = "";
-    }
-
-    // RENDERIZAÇÃO LOJA
-    db.ref('/').on('value', snap => {
-        const data = snap.val() || {};
-        const shop = document.getElementById('shop-content');
-        shop.innerHTML = "";
-        
-        // Categorias ADM Select
-        const sel = document.getElementById('p-cat-select');
-        sel.innerHTML = "";
-        
-        for(let cId in data.categorias) {
-            const c = data.categorias[cId];
-            sel.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-            let html = `<h3>${c.name}</h3><div class="grid">`;
-            for(let pId in data.produtos) {
-                const p = data.produtos[pId];
-                if(p.cat === c.name) {
-                    const hasImg = p.img && p.img.length > 5;
-                    html += `
-                    <div class="card ${!hasImg ? 'no-img' : ''}">
-                        ${hasImg ? `<img src="${p.img}">` : '<i class="fas fa-box-open fa-3x" style="opacity:0.2; margin-bottom:15px"></i>'}
-                        <div style="font-weight:bold">${p.name}</div>
-                        <div style="color:var(--primary); margin:10px 0">R$ ${p.price}</div>
-                        <button class="btn btn-buy" style="width:100%" onclick="pushNotif('Adicionado!')">ADICIONAR</button>
-                    </div>`;
-                }
-            }
-            shop.innerHTML += html + "</div>";
-        }
-    });
-
-    // ADM
-    function checkAdmin() {
-        if(prompt("Chave ADM:") === "270712") {
-            document.querySelector('header').style.display='none';
-            document.querySelector('.container').style.display='none';
-            document.getElementById('admin-view').style.display='block';
-            loadAdminTickets();
-        }
-    }
-
-    function saveProduct() {
-        const p = {
-            name: document.getElementById('p-name').value,
-            price: document.getElementById('p-price').value,
-            img: document.getElementById('p-img').value,
-            cat: document.getElementById('p-cat-select').value
-        };
-        db.ref('produtos').push(p);
-        pushNotif("Postado!");
-    }
-
-    function loadAdminTickets() {
-        db.ref('tickets').on('value', snap => {
-            const cont = document.getElementById('admin-tickets-list');
-            cont.innerHTML = "";
-            snap.forEach(child => {
-                const t = child.val();
-                cont.innerHTML += `<div style="background:#000; padding:10px; margin-bottom:5px; border:1px solid #333">
-                    <b>${t.user}</b> <button onclick="replyTicket('${child.key}')">RESPONDER</button>
-                </div>`;
-            });
-        });
-    }
-
-    function replyTicket(id) {
-        const msg = prompt("Sua resposta:");
-        if(msg) {
-            db.ref('tickets/'+id+'/msgs').push({
-                sender: 'admin',
-                name: 'Suporte Quebrei o Sistema',
-                text: msg
-            });
-        }
-    }
-</script>
-</body>
+    </body>
 </html>
