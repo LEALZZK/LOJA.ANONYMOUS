@@ -27,16 +27,16 @@
 
         /* Admin Panel */
         #admin-panel { display: none; background: #1a1a1a; padding: 25px; border-radius: 10px; border: 2px dashed var(--secondary); margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
-        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.8em; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
         th { background: #000; color: var(--primary); }
-        .admin-input { background: #000; border: 1px solid #444; color: white; padding: 5px; width: 80px; }
+        .admin-input { background: #000; border: 1px solid #444; color: white; padding: 5px; width: 100%; box-sizing: border-box; }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #111; padding: 25px; width: 350px; border-radius: 15px; border: 1px solid var(--secondary); text-align: center; }
         
-        .pix-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.8em; }
+        .pix-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.8em; word-break: break-all; }
         footer { text-align: center; margin-top: 50px; opacity: 0.3; }
     </style>
 </head>
@@ -50,34 +50,33 @@
 <div class="container">
 
     <div id="admin-panel">
-        <h2 style="color:var(--secondary)">🛠 Painel de Controle (srleal018@gmail.com)</h2>
+        <h2 style="color:var(--secondary)">🛠 Painel Admin (srleal018@gmail.com)</h2>
         
         <h3>Novo Produto</h3>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
             <input type="text" id="new-name" placeholder="Nome" class="admin-input" style="width: 150px;">
-            <input type="number" id="new-price" placeholder="Preço" class="admin-input">
-            <input type="number" id="new-stock" placeholder="Estoque" class="admin-input">
-            <input type="text" id="new-img" placeholder="Link da Imagem" class="admin-input" style="width: 150px;">
+            <input type="number" id="new-price" placeholder="Preço" class="admin-input" style="width: 80px;">
+            <input type="number" id="new-stock" placeholder="Estoque" class="admin-input" style="width: 80px;">
+            <input type="text" id="new-img" placeholder="Link da Imagem" class="admin-input" style="width: 200px;">
             <button class="btn btn-save" onclick="addProduct()">Adicionar</button>
         </div>
 
-        <h3>Gerenciar Produtos</h3>
+        <h3>Gerenciar Itens (Edite Imagens, Preços e Estoque)</h3>
         <table id="admin-table">
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Preço (R$)</th>
-                    <th>Estoque</th>
+                    <th>Link da Imagem</th>
+                    <th>R$</th>
+                    <th>Est.</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="admin-product-list"></tbody>
         </table>
 
-        <h3 style="margin-top: 30px;">Pedidos Pendentes (Monitor de Vendas)</h3>
-        <div id="admin-orders" style="background:#000; padding:10px; border-radius:5px; max-height: 200px; overflow-y: auto;">
-            <p style="color:#666">Nenhum pedido no momento...</p>
-        </div>
+        <h3 style="margin-top: 30px;">Monitor de Pedidos</h3>
+        <div id="admin-orders" style="background:#000; padding:10px; border-radius:5px; max-height: 200px; overflow-y: auto;"></div>
     </div>
 
     <h2 class="category-title">🔫 ARSENAL</h2>
@@ -96,7 +95,7 @@
         <div id="pix-area" style="display:none">
             <div class="pix-box">
                 <b>CHAVE PIX:</b><br>
-                <span id="pix-key">9c176ab9-a6d6-4311-a0ea-21dd7481227f</span>
+                <span>9c176ab9-a6d6-4311-a0ea-21dd7481227f</span>
             </div>
             <button class="btn btn-save" onclick="finishOrder()" style="width:100%">JÁ PAGUEI</button>
         </div>
@@ -106,17 +105,24 @@
     </div>
 </div>
 
-<footer><span onclick="adminLogin()">Acesso Admin</span></footer>
+<footer><span onclick="adminLogin()" style="cursor:pointer">Acesso Admin</span></footer>
 
 <script>
+    // PRODUTOS ORIGINAIS RECUPERADOS
     const initialProducts = [
         { id: 1, type: 'weapon', name: "Glock G18", price: 2.50, stock: 50, image: "https://cdn-icons-png.flaticon.com/512/3400/3400282.png" },
         { id: 2, type: 'weapon', name: "AK-47 Tática", price: 4.50, stock: 15, image: "https://cdn-icons-png.flaticon.com/512/4119/4119853.png" },
-        { id: 7, type: 'money', name: "Maleta 100k", price: 3.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" }
+        { id: 3, type: 'weapon', name: "Fuzil Parafal", price: 4.00, stock: 10, image: "https://cdn-icons-png.flaticon.com/512/4119/4119827.png" },
+        { id: 4, type: 'weapon', name: "Rifle M4A1", price: 5.00, stock: 8, image: "https://cdn-icons-png.flaticon.com/512/8221/8221805.png" },
+        { id: 5, type: 'weapon', name: "Explosivo C4", price: 3.50, stock: 5, image: "https://cdn-icons-png.flaticon.com/512/2301/2301131.png" },
+        { id: 6, type: 'weapon', name: "Furadeira", price: 2.00, stock: 20, image: "https://cdn-icons-png.flaticon.com/512/2954/2954832.png" },
+        { id: 7, type: 'weapon', name: "Munição x100", price: 1.00, stock: 100, image: "https://cdn-icons-png.flaticon.com/512/4241/4241838.png" },
+        { id: 8, type: 'money', name: "Maleta 100k", price: 3.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" },
+        { id: 9, type: 'money', name: "Maleta 500k", price: 10.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/3135/3135706.png" }
     ];
 
-    let products = JSON.parse(localStorage.getItem('rp_v3_items')) || initialProducts;
-    let orders = JSON.parse(localStorage.getItem('rp_v3_orders')) || [];
+    let products = JSON.parse(localStorage.getItem('rp_v4_items')) || initialProducts;
+    let orders = JSON.parse(localStorage.getItem('rp_v4_orders')) || [];
     let cart = [];
 
     function renderStore() {
@@ -128,7 +134,7 @@
             const html = `
                 <div class="product-card">
                     <img src="${p.image}" class="product-img">
-                    <h3 style="margin:5px 0;">${p.name}</h3>
+                    <h3 style="margin:5px 0; font-size:1em;">${p.name}</h3>
                     <p class="price">R$ ${p.price.toFixed(2)}</p>
                     <button class="btn btn-buy" onclick="addToCart(${p.id})">ADICIONAR</button>
                 </div>`;
@@ -142,11 +148,12 @@
         const list = document.getElementById('admin-product-list');
         list.innerHTML = products.map(p => `
             <tr>
-                <td>${p.name}</td>
+                <td><small>${p.name}</small></td>
+                <td><input type="text" class="admin-input" id="edit-i-${p.id}" value="${p.image}"></td>
                 <td><input type="number" class="admin-input" id="edit-p-${p.id}" value="${p.price.toFixed(2)}"></td>
                 <td><input type="number" class="admin-input" id="edit-s-${p.id}" value="${p.stock}"></td>
                 <td>
-                    <button class="btn btn-save" onclick="editProduct(${p.id})">Salvar</button>
+                    <button class="btn btn-save" onclick="editProduct(${p.id})">OK</button>
                     <button class="btn btn-del" onclick="deleteProduct(${p.id})">X</button>
                 </td>
             </tr>`).join('');
@@ -157,12 +164,11 @@
         if(orders.length === 0) { div.innerHTML = '<p style="color:#666">Sem pedidos...</p>'; return; }
         div.innerHTML = orders.map((o, i) => `
             <div style="border-bottom:1px solid #333; padding:5px; font-size:0.8em;">
-                <b>Pedido #${i+1}</b>: ${o.items} - <span style="color:var(--primary)">R$ ${o.total}</span>
-                <button onclick="clearOrder(${i})" style="float:right; background:none; color:red; border:none; cursor:pointer;">Limpar</button>
+                <b>[${o.time}]</b>: ${o.items} - <span style="color:var(--primary)">R$ ${o.total}</span>
+                <button onclick="clearOrder(${i})" style="float:right; background:none; color:red; border:none; cursor:pointer;">Remover</button>
             </div>`).join('');
     }
 
-    // ADMIN ACTIONS
     function adminLogin() {
         if(prompt("Email:") === "srleal018@gmail.com") document.getElementById('admin-panel').style.display = 'block';
     }
@@ -173,35 +179,36 @@
         const stock = parseInt(document.getElementById('new-stock').value);
         const img = document.getElementById('new-img').value;
         if(name && price) {
-            products.push({id: Date.now(), type: name.toLowerCase().includes('maleta') ? 'money':'weapon', name, price, stock, image: img || "https://cdn-icons-png.flaticon.com/512/1043/1043424.png"});
+            products.push({
+                id: Date.now(), 
+                type: name.toLowerCase().includes('maleta') ? 'money':'weapon', 
+                name, price, stock, image: img || "https://cdn-icons-png.flaticon.com/512/1043/1043424.png"
+            });
             saveAndRefresh();
         }
     }
 
     function editProduct(id) {
         const p = products.find(x => x.id === id);
+        p.image = document.getElementById(`edit-i-${id}`).value;
         p.price = parseFloat(document.getElementById(`edit-p-${id}`).value);
         p.stock = parseInt(document.getElementById(`edit-s-${id}`).value);
         saveAndRefresh();
-        alert("Alterado!");
+        alert("Item Atualizado!");
     }
 
     function deleteProduct(id) {
-        if(confirm("Excluir item?")) {
-            products = products.filter(x => x.id !== id);
-            saveAndRefresh();
-        }
+        if(confirm("Excluir item?")) { products = products.filter(x => x.id !== id); saveAndRefresh(); }
     }
 
     function clearOrder(i) { orders.splice(i, 1); saveAndRefresh(); }
 
     function saveAndRefresh() {
-        localStorage.setItem('rp_v3_items', JSON.stringify(products));
-        localStorage.setItem('rp_v3_orders', JSON.stringify(orders));
+        localStorage.setItem('rp_v4_items', JSON.stringify(products));
+        localStorage.setItem('rp_v4_orders', JSON.stringify(orders));
         renderStore();
     }
 
-    // CLIENT ACTIONS
     function addToCart(id) {
         const p = products.find(x => x.id === id);
         if(p.stock > 0) { cart.push(p); updateCart(); }
@@ -228,21 +235,16 @@
         if(cart.length > 0) {
             document.getElementById('pix-area').style.display = 'block';
             document.getElementById('btn-checkout').style.display = 'none';
-            
-            // Registra o pedido no Admin automaticamente
-            const orderData = {
+            orders.push({
+                time: new Date().toLocaleTimeString(),
                 items: cart.map(i => i.name).join(', '),
                 total: document.getElementById('cart-total').innerText
-            };
-            orders.push(orderData);
+            });
             saveAndRefresh();
         }
     }
 
-    function finishOrder() {
-        alert("Comprovante necessário no Discord!");
-        cart = []; updateCart(); toggleCart();
-    }
+    function finishOrder() { alert("Envie o comprovante no Discord!"); cart = []; updateCart(); toggleCart(); }
 
     renderStore();
 </script>
