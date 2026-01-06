@@ -3,259 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackMarket RP - Premium</title>
+    <title>BlackMarket RP - Cloud Management</title>
     <style>
         :root { --primary: #00ff88; --secondary: #bd00ff; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; overflow-x: hidden; }
-        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        
+        /* Notificações */
+        #notif-box { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+        .toast { background: #1a1a1a; color: var(--primary); border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideIn 0.3s forwards; font-weight: bold; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        header { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); sticky: top; }
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
         
-        /* Notificação (Toast) */
-        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .toast { background: #1a1a1a; color: white; border-left: 5px solid var(--primary); padding: 15px 25px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideIn 0.3s ease-out; font-weight: bold; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* Alternância de Telas */
+        #shop-view, #admin-view { display: block; }
+        #admin-view { display: none; background: #0f0f0f; min-height: 100vh; }
 
+        /* Admin UI */
+        .admin-sidebar { background: #151515; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--secondary); }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .admin-grid { grid-template-columns: 1fr; } }
+        
+        .admin-card { background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 10px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        
         /* Botões */
         .btn { padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; transition: 0.3s; }
         .btn-buy { background: transparent; border: 1px solid var(--primary); color: var(--primary); width: 100%; }
-        .btn-buy:hover { background: var(--primary); color: #000; }
-        .btn-admin { background: var(--secondary); color: white; }
-        .btn-save { background: #28a745; color: white; padding: 5px 10px; font-size: 0.8em; }
+        .btn-add { background: var(--primary); color: #000; margin-bottom: 10px; }
+        .btn-del { background: #ff4444; color: white; padding: 5px; font-size: 0.7em; }
+        .btn-exit { background: #ff4444; color: white; }
 
-        /* Grid e Card */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        /* Inputs */
+        input, select, textarea { background: #000; border: 1px solid #333; color: white; padding: 8px; border-radius: 5px; width: 100%; box-sizing: border-box; margin: 5px 0; }
+
+        /* Shop UI */
+        .category-block { margin-bottom: 40px; }
+        .category-title { border-left: 4px solid var(--secondary); padding-left: 15px; color: var(--primary); text-transform: uppercase; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .product-card { background: var(--card-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #222; }
-        .product-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
-
-        /* Admin Panel */
-        #admin-panel { display: none; background: #1a1a1a; padding: 25px; border-radius: 10px; border: 2px dashed var(--secondary); margin-bottom: 30px; }
-        .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .tab-btn { background: #333; color: #fff; padding: 10px; cursor: pointer; border-radius: 5px; white-space: nowrap; }
-        .tab-btn.active { background: var(--secondary); }
-        .admin-content { display: none; }
-        .admin-content.active { display: block; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        input, textarea, select { background: #000; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px; }
-
-        /* Reviews */
-        .review-card { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--primary); position: relative; }
-        .stars { color: #ffcc00; }
-        .del-review { position: absolute; top: 10px; right: 10px; color: red; cursor: pointer; display: none; }
+        .product-img { width: 100%; height: 120px; object-fit: contain; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #111; padding: 25px; width: 350px; border-radius: 15px; border: 1px solid var(--secondary); text-align: center; }
-        .pix-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.8em; word-break: break-all; font-family: monospace; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #111; padding: 25px; width: 320px; border-radius: 15px; border: 1px solid var(--secondary); text-align: center; }
     </style>
 </head>
 <body>
 
-<div id="notification-container"></div>
+<div id="notif-box"></div>
 
-<header>
-    <h1>⚔️ BLACKMARKET RP</h1>
-    <button class="btn btn-admin" onclick="toggleCart()">🛒 Carrinho: <span id="cart-count">0</span></button>
-</header>
+<div id="shop-view">
+    <header>
+        <h1>⚔️ BLACKMARKET RP</h1>
+        <button class="btn" style="background:var(--secondary); color:#fff" onclick="openCart()">🛒 Carrinho (<span id="cart-count">0</span>)</button>
+    </header>
+    
+    <div class="container">
+        <div id="categories-container"></div>
 
-<div class="container">
-
-    <div id="admin-panel">
-        <h2 style="color:var(--secondary)">🛠 PAINEL DE CONTROLE</h2>
-        <div class="admin-tabs">
-            <div class="tab-btn active" onclick="openTab('tab-logs')">Logs de Vendas</div>
-            <div class="tab-btn" onclick="openTab('tab-edit')">Editar Produtos</div>
-            <div class="tab-btn" onclick="openTab('tab-rev')">Moderar Avaliações</div>
-        </div>
-
-        <div id="tab-logs" class="admin-content active"><div id="logs-list"></div></div>
-
-        <div id="tab-edit" class="admin-content">
-            <table>
-                <thead><tr><th>Nome</th><th>R$</th><th>Est.</th><th>URL Imagem</th><th>Ação</th></tr></thead>
-                <tbody id="admin-edit-list"></tbody>
-            </table>
-        </div>
-
-        <div id="tab-rev" class="admin-content">
-            <p>Os botões de excluir (X) aparecerão nas avaliações abaixo.</p>
+        <div style="background: #111; padding: 20px; border-radius: 10px; margin-top: 50px;">
+            <h2 style="color:var(--secondary)">💬 AVALIAÇÕES</h2>
+            <div id="shop-reviews"></div>
+            <div style="margin-top:20px;">
+                <input type="text" id="rev-user" placeholder="Seu Nick">
+                <textarea id="rev-msg" placeholder="Sua mensagem..."></textarea>
+                <button class="btn btn-buy" onclick="sendReview()">POSTAR AVALIAÇÃO</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <h2 style="border-left: 4px solid var(--primary); padding-left: 15px;">🔫 ARSENAL & DINHEIRO</h2>
-    <div class="products-grid" id="store-grid"></div>
+<div id="admin-view">
+    <header style="border-bottom: 2px solid var(--secondary);">
+        <h1 style="color:var(--secondary)">🛠 PAINEL ADMINISTRATIVO</h1>
+        <button class="btn btn-exit" onclick="exitAdmin()">SAIR DO MODO ADM</button>
+    </header>
 
-    <div class="reviews-section" style="background: #111; padding: 20px; border-radius: 10px;">
-        <h2 style="color: var(--secondary)">💬 AVALIAÇÕES</h2>
-        <div id="reviews-list"></div>
-        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-        <h3>Avaliar Loja</h3>
-        <input type="text" id="rev-name" placeholder="Nick do Roblox" style="width:100%; margin-bottom:10px">
-        <select id="rev-stars" style="width:100%; margin-bottom:10px; background:#000; color:#fff; padding:8px;">
-            <option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option>
-        </select>
-        <textarea id="rev-text" placeholder="Comente aqui..." style="width:100%; height:60px"></textarea>
-        <button class="btn" style="background:var(--primary); width:100%; margin-top:10px" onclick="addReview()">ENVIAR AVALIAÇÃO</button>
+    <div class="container">
+        <div class="admin-sidebar">
+            <h3>Novo Produto / Categoria</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="new-cat-name" placeholder="Nome da Categoria (ex: Arsenal)" style="width: 250px;">
+                <button class="btn btn-add" onclick="addCategory()">+ Criar Categoria</button>
+            </div>
+            <hr style="border:0.5px solid #333; margin:15px 0;">
+            <div class="admin-grid">
+                <div>
+                    <input type="text" id="p-name" placeholder="Nome do Produto">
+                    <input type="number" id="p-price" placeholder="Preço (R$)">
+                    <input type="text" id="p-img" placeholder="URL da Imagem">
+                    <select id="p-cat"></select>
+                    <button class="btn btn-add" style="width:100%" onclick="addProduct()">SALVAR PRODUTO</button>
+                </div>
+                <div style="background:#000; padding:10px; border-radius:5px; height: 180px; overflow-y: auto;">
+                    <small>Logs de Vendas:</small>
+                    <div id="admin-logs" style="font-size:0.7em"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>📦 Gerenciar Estoque</h3>
+                <div id="admin-product-manage"></div>
+            </div>
+            <div class="admin-card">
+                <h3>⭐ Gerenciar Avaliações</h3>
+                <div id="admin-reviews-manage"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div id="cart-modal" class="modal">
     <div class="modal-content">
-        <div id="checkout-step-1">
-            <h2>Identificação</h2>
-            <input type="text" id="nick-roblox" placeholder="Seu Nick no Roblox" style="width:100%; margin-bottom:10px">
-            <input type="text" id="nick-discord" placeholder="Seu Usuário Discord" style="width:100%; margin-bottom:10px">
-            <button class="btn" style="background:var(--secondary); width:100%" onclick="goToPix()">PROSSEGUIR</button>
+        <div id="cart-step-1">
+            <h2>Finalizar</h2>
+            <input type="text" id="buy-roblox" placeholder="Nick do Roblox">
+            <input type="text" id="buy-discord" placeholder="Seu Discord">
+            <button class="btn" style="background:var(--primary); width:100%; color:#000" onclick="processOrder()">VER PIX</button>
         </div>
-        <div id="checkout-step-2" style="display:none">
-            <h2>Pagamento PIX</h2>
-            <div class="pix-box">9c176ab9-a6d6-4311-a0ea-21dd7481227f</div>
-            <p style="font-size:0.8em; color:var(--primary)">O ADM já registrou seu Nick para entrega!</p>
-            <button class="btn" style="background:green; width:100%" onclick="finish()">CONCLUIR COMPRA</button>
+        <div id="cart-step-2" style="display:none">
+            <div style="background:#fff; color:#000; padding:10px; border-radius:5px; font-size:0.8em; margin-bottom:10px">
+                <b>CHAVE PIX:</b><br>9c176ab9-a6d6-4311-a0ea-21dd7481227f
+            </div>
+            <button class="btn" style="background:green; width:100%; color:#fff" onclick="closeCart()">CONCLUÍDO</button>
         </div>
-        <button class="btn" style="background:none; color:#777; margin-top:10px" onclick="toggleCart()">Cancelar</button>
+        <button class="btn" style="background:none; color:#666" onclick="closeCart()">Fechar</button>
     </div>
 </div>
 
-<footer><center><p onclick="adminLogin()" style="cursor:pointer; opacity:0.2; margin-top:50px">Painel Admin</p></center></footer>
+<footer><center><p onclick="tryAdmin()" style="cursor:pointer; opacity:0.1; margin: 40px 0;">Acesso Interno</p></center></footer>
 
 <script>
-    const defaultProducts = [
-        { id: 1, name: "Glock G18", price: 2.50, stock: 100, img: "https://cdn-icons-png.flaticon.com/512/3400/3400282.png" },
-        { id: 2, name: "AK-47 Tática", price: 4.50, stock: 50, img: "https://cdn-icons-png.flaticon.com/512/4119/4119853.png" },
-        { id: 3, name: "Maleta 100k", price: 3.00, stock: 99, img: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" }
-    ];
+    // Banco de Dados Local
+    let data = JSON.parse(localStorage.getItem('bm_v7_db')) || {
+        categories: ["Arsenal", "Dinheiro"],
+        products: [
+            {id:1, cat:"Arsenal", name:"Glock G18", price:2.5, img:"https://cdn-icons-png.flaticon.com/512/3400/3400282.png"},
+            {id:2, cat:"Dinheiro", name:"Maleta 100k", price:3.0, img:"https://cdn-icons-png.flaticon.com/512/2489/2489756.png"}
+        ],
+        logs: [],
+        reviews: [{user: "ADM", msg: "Loja pronta!"}]
+    };
 
-    let products = JSON.parse(localStorage.getItem('bm_v6_prods')) || defaultProducts;
-    let logs = JSON.parse(localStorage.getItem('bm_v6_logs')) || [];
-    let reviews = JSON.parse(localStorage.getItem('bm_v6_revs')) || [{name:"Sistema", stars:5, text:"Loja inaugurada!"}];
     let cart = [];
-    let isAdmin = false;
 
-    function notify(msg) {
-        const container = document.getElementById('notification-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerText = msg;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function pushNotif(msg) {
+        const box = document.getElementById('notif-box');
+        const t = document.createElement('div');
+        t.className = 'toast'; t.innerText = msg;
+        box.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
     }
 
     function save() {
-        localStorage.setItem('bm_v6_prods', JSON.stringify(products));
-        localStorage.setItem('bm_v6_logs', JSON.stringify(logs));
-        localStorage.setItem('bm_v6_revs', JSON.stringify(reviews));
+        localStorage.setItem('bm_v7_db', JSON.stringify(data));
         render();
     }
 
     function render() {
-        // Loja
-        document.getElementById('store-grid').innerHTML = products.map(p => `
-            <div class="product-card">
-                <img src="${p.img}" class="product-img">
-                <h3 style="font-size:1em">${p.name}</h3>
-                <p style="color:var(--primary); font-weight:bold">R$ ${p.price.toFixed(2)}</p>
-                <button class="btn btn-buy" onclick="addToCart(${p.id})">COMPRAR</button>
-            </div>`).join('');
+        // --- RENDER LOJA ---
+        const shopCat = document.getElementById('categories-container');
+        shopCat.innerHTML = data.categories.map(cat => `
+            <div class="category-block">
+                <h2 class="category-title">${cat}</h2>
+                <div class="products-grid">
+                    ${data.products.filter(p => p.cat === cat).map(p => `
+                        <div class="product-card">
+                            <img src="${p.img}" class="product-img">
+                            <h4>${p.name}</h4>
+                            <p style="color:var(--primary)">R$ ${p.price.toFixed(2)}</p>
+                            <button class="btn btn-buy" onclick="addToCart(${p.id})">COMPRAR</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
 
-        // Admin Edição
-        document.getElementById('admin-edit-list').innerHTML = products.map(p => `
-            <tr>
-                <td><input type="text" id="ed-n-${p.id}" value="${p.name}" style="width:70px"></td>
-                <td><input type="number" id="ed-p-${p.id}" value="${p.price}" style="width:40px"></td>
-                <td><input type="number" id="ed-s-${p.id}" value="${p.stock}" style="width:30px"></td>
-                <td><input type="text" id="ed-i-${p.id}" value="${p.img}" style="width:80px"></td>
-                <td><button class="btn-save" onclick="updateProd(${p.id})">OK</button></td>
-            </tr>`).join('');
+        document.getElementById('shop-reviews').innerHTML = data.reviews.map(r => `
+            <div style="background:#1a1a1a; padding:10px; margin-top:5px; border-radius:5px; border-left:2px solid var(--primary)">
+                <b>${r.user}</b>: ${r.msg}
+            </div>
+        `).join('');
 
-        // Logs
-        document.getElementById('logs-list').innerHTML = logs.map(l => `
-            <div style="background:#000; padding:10px; margin-bottom:5px; border-radius:5px; font-size:0.75em; border-left:2px solid var(--secondary)">
-                <b>${l.user}</b>: ${l.item} (R$ ${l.total})<br><small>${l.date} | Discord: ${l.discord}</small>
-            </div>`).join('');
+        // --- RENDER ADMIN ---
+        const catSelect = document.getElementById('p-cat');
+        catSelect.innerHTML = data.categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
-        // Avaliações
-        document.getElementById('reviews-list').innerHTML = reviews.map((r, i) => `
-            <div class="review-card">
-                <div class="del-review" style="display:${isAdmin?'block':'none'}" onclick="delReview(${i})">✖</div>
-                <div class="stars">${"⭐".repeat(r.stars)}</div>
-                <b>${r.name}</b>: ${r.text}
-            </div>`).join('');
+        document.getElementById('admin-product-manage').innerHTML = `<table>
+            ${data.products.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>R$ ${p.price}</td>
+                    <td><button class="btn-del" onclick="delProduct(${p.id})">Deletar</button></td>
+                </tr>
+            `).join('')}
+        </table>`;
+
+        document.getElementById('admin-reviews-manage').innerHTML = data.reviews.map((r, i) => `
+            <div style="font-size:0.8em; margin-bottom:5px; background:#000; padding:5px;">
+                <button class="btn-del" onclick="delReview(${i})">X</button> <b>${r.user}</b>: ${r.msg}
+            </div>
+        `).join('');
+
+        document.getElementById('admin-logs').innerHTML = data.logs.map(l => `
+            <div style="border-bottom:1px solid #222; margin-bottom:5px;">
+                [${l.date}] <b>${l.user}</b> comprou ${l.items} (R$ ${l.total})
+            </div>
+        `).join('');
     }
 
+    // Ações Loja
     function addToCart(id) {
-        cart.push(products.find(x => x.id === id));
+        cart.push(data.products.find(x => x.id === id));
         document.getElementById('cart-count').innerText = cart.length;
-        notify("Item adicionado ao carrinho!");
+        pushNotif("Item adicionado!");
     }
 
-    function toggleCart() {
-        const m = document.getElementById('cart-modal');
-        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-        document.getElementById('checkout-step-1').style.display = 'block';
-        document.getElementById('checkout-step-2').style.display = 'none';
-    }
+    function openCart() { document.getElementById('cart-modal').style.display='flex'; }
+    function closeCart() { document.getElementById('cart-modal').style.display='none'; }
 
-    function goToPix() {
-        const r = document.getElementById('nick-roblox').value;
-        const d = document.getElementById('nick-discord').value;
-        if(!r || !d || cart.length === 0) return notify("Erro: Preencha os campos ou carrinho vazio!");
+    function processOrder() {
+        const r = document.getElementById('buy-roblox').value;
+        const d = document.getElementById('buy-discord').value;
+        if(!r || !d || cart.length === 0) return pushNotif("Preencha tudo!");
 
-        logs.unshift({
-            date: new Date().toLocaleString(),
-            user: r, discord: d,
-            item: cart.map(i => i.name).join(", "),
+        data.logs.unshift({
+            date: new Date().toLocaleTimeString(),
+            user: r,
+            items: cart.map(i => i.name).join(', '),
             total: cart.reduce((a, b) => a + b.price, 0).toFixed(2)
         });
         save();
-        document.getElementById('checkout-step-1').style.display = 'none';
-        document.getElementById('checkout-step-2').style.display = 'block';
-        notify("Log de venda registrado!");
+        document.getElementById('cart-step-1').style.display='none';
+        document.getElementById('cart-step-2').style.display='block';
+        pushNotif("Pedido enviado para o ADM!");
     }
 
-    function finish() {
-        notify("Pedido finalizado com sucesso!");
-        cart = []; document.getElementById('cart-count').innerText = "0"; toggleCart();
-    }
-
-    function adminLogin() {
-        if(prompt("Acesso Restrito:") === "srleal018@gmail.com") {
-            isAdmin = true;
-            document.getElementById('admin-panel').style.display = 'block';
-            notify("Modo Admin Ativado!");
-            render();
+    function sendReview() {
+        const u = document.getElementById('rev-user').value;
+        const m = document.getElementById('rev-msg').value;
+        if(u && m) {
+            data.reviews.unshift({user:u, msg:m});
+            save();
+            document.getElementById('rev-user').value=''; document.getElementById('rev-msg').value='';
+            pushNotif("Avaliação enviada!");
         }
     }
 
-    function updateProd(id) {
-        const p = products.find(x => x.id === id);
-        p.name = document.getElementById(`ed-n-${id}`).value;
-        p.price = parseFloat(document.getElementById(`ed-p-${id}`).value);
-        p.stock = parseInt(document.getElementById(`ed-s-${id}`).value);
-        p.img = document.getElementById(`ed-i-${id}`).value;
-        save();
-        notify("Produto atualizado!");
+    // Ações Admin
+    function tryAdmin() {
+        if(prompt("Acesso Admin:") === "srleal018@gmail.com") {
+            document.getElementById('shop-view').style.display = 'none';
+            document.getElementById('admin-view').style.display = 'block';
+            pushNotif("Bem-vindo, Chefe!");
+        }
     }
 
-    function addReview() {
-        const n = document.getElementById('rev-name').value;
-        const s = document.getElementById('rev-stars').value;
-        const t = document.getElementById('rev-text').value;
-        if(!n || !t) return notify("Escreva seu nick e o comentário!");
-        reviews.unshift({name: n, stars: parseInt(s), text: t});
-        save();
-        document.getElementById('rev-name').value = ""; document.getElementById('rev-text').value = "";
-        notify("Avaliação enviada!");
+    function exitAdmin() {
+        document.getElementById('shop-view').style.display = 'block';
+        document.getElementById('admin-view').style.display = 'none';
     }
 
-    function delReview(i) { reviews.splice(i, 1); save(); notify("Avaliação removida!"); }
-
-    function openTab(id) {
-        document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
+    function addCategory() {
+        const n = document.getElementById('new-cat-name').value;
+        if(n && !data.categories.includes(n)) {
+            data.categories.push(n);
+            save();
+            document.getElementById('new-cat-name').value = '';
+            pushNotif("Categoria Criada!");
+        }
     }
+
+    function addProduct() {
+        const name = document.getElementById('p-name').value;
+        const price = parseFloat(document.getElementById('p-price').value);
+        const img = document.getElementById('p-img').value;
+        const cat = document.getElementById('p-cat').value;
+        if(name && price) {
+            data.products.push({id: Date.now(), name, price, img, cat});
+            save();
+            pushNotif("Produto Adicionado!");
+        }
+    }
+
+    function delProduct(id) { data.products = data.products.filter(x => x.id !== id); save(); pushNotif("Produto removido!"); }
+    function delReview(i) { data.reviews.splice(i, 1); save(); pushNotif("Avaliação removida!"); }
 
     render();
 </script>
