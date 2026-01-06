@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackMarket RP - Gestão Total</title>
+    <title>BlackMarket RP - Logs System</title>
     <style>
         :root { --primary: #00ff88; --secondary: #bd00ff; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding-bottom: 50px; }
@@ -11,30 +11,29 @@
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
         .category-title { border-left: 4px solid var(--secondary); padding-left: 15px; margin: 40px 0 20px; color: var(--primary); }
         
+        /* Grid */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .product-card { background: var(--card-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #222; }
         .product-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
-        .price { color: var(--primary); font-size: 1.4em; font-weight: bold; }
         
-        .btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; transition: 0.3s; }
+        /* Botões e Inputs */
+        .btn { padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; transition: 0.3s; }
         .btn-buy { background: transparent; border: 1px solid var(--primary); color: var(--primary); width: 100%; }
         .btn-buy:hover { background: var(--primary); color: #000; }
         .btn-admin { background: var(--secondary); color: white; }
-        .btn-save { background: #28a745; color: white; padding: 5px 10px; }
-        .btn-del { background: #dc3545; color: white; padding: 5px 10px; }
+        
+        input { background: #000; border: 1px solid #444; color: white; padding: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; border-radius: 5px; }
 
+        /* Admin Panel */
         #admin-panel { display: none; background: #1a1a1a; padding: 25px; border-radius: 10px; border: 2px dashed var(--secondary); margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.8em; background: #000; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        th { background: #111; color: var(--primary); }
-        .admin-input { background: #000; border: 1px solid #444; color: white; padding: 5px; width: 100%; box-sizing: border-box; }
+        .log-item { background: #000; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 10px; font-size: 0.9em; }
 
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #111; padding: 25px; width: 350px; border-radius: 15px; border: 1px solid var(--secondary); text-align: center; }
         
-        .pix-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.8em; word-break: break-all; }
+        .pix-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.8em; }
         footer { text-align: center; margin-top: 50px; opacity: 0.3; }
-        .order-item { background: #222; margin: 5px 0; padding: 10px; border-radius: 5px; border-left: 3px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -47,27 +46,9 @@
 <div class="container">
 
     <div id="admin-panel">
-        <h2 style="color:var(--secondary)">🛠 Painel Admin</h2>
-        
-        <h3>Novo Produto</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
-            <input type="text" id="new-name" placeholder="Nome" class="admin-input" style="width: 150px;">
-            <input type="number" id="new-price" placeholder="Preço" class="admin-input" style="width: 80px;">
-            <input type="number" id="new-stock" placeholder="Estoque" class="admin-input" style="width: 80px;">
-            <input type="text" id="new-img" placeholder="Link Imagem" class="admin-input" style="width: 200px;">
-            <button class="btn btn-save" onclick="addProduct()">Adicionar</button>
-        </div>
-
-        <h3>Gerenciar Itens</h3>
-        <table>
-            <thead>
-                <tr><th>Nome</th><th>Link Imagem</th><th>R$</th><th>Est.</th><th>Ações</th></tr>
-            </thead>
-            <tbody id="admin-product-list"></tbody>
-        </table>
-
-        <h3 style="margin-top: 30px; color: var(--primary);">📋 Pedidos Recebidos</h3>
-        <div id="admin-orders-list">
+        <h2 style="color:var(--secondary)">🛠 Registro de Logs (Vendas)</h2>
+        <button class="btn" style="background: red; color: white; margin-bottom: 20px;" onclick="clearLogs()">Limpar Todos os Logs</button>
+        <div id="logs-container">
             </div>
     </div>
 
@@ -80,152 +61,161 @@
 
 <div id="cart-modal" class="modal">
     <div class="modal-content">
-        <h2 style="margin-top:0">Seu Pedido</h2>
-        <div id="cart-items" style="text-align:left; margin-bottom:15px;"></div>
-        <div style="font-size: 1.4em; margin-bottom: 20px;">Total: <span style="color:var(--primary)">R$ <span id="cart-total">0.00</span></span></div>
+        <h2 style="margin-top:0">Finalizar Compra</h2>
+        
+        <div id="cart-summary" style="text-align:left; margin-bottom:15px; font-size: 0.9em; color: #aaa;"></div>
 
-        <div id="pix-area" style="display:none">
-            <div class="pix-box"><b>CHAVE PIX:</b><br>9c176ab9-a6d6-4311-a0ea-21dd7481227f</div>
-            <button class="btn btn-save" onclick="finishOrder()" style="width:100%">CONFIRMAR PAGAMENTO</button>
+        <div id="step-identification">
+            <p style="font-size: 0.8em; color: var(--primary);">Identifique-se para entrega:</p>
+            <input type="text" id="client-roblox" placeholder="Seu Nick no Roblox">
+            <input type="text" id="client-discord" placeholder="Seu Discord (ex: nome#0000)">
+            <button class="btn" style="background:var(--secondary); color:white; width:100%;" onclick="proceedToPayment()">PROSSEGUIR</button>
         </div>
 
-        <button id="btn-checkout" class="btn" style="background:var(--secondary); color:white; width:100%; margin-bottom:10px;" onclick="showPix()">PAGAR COM PIX</button>
-        <button class="btn" style="background:none; color:#888; width:100%;" onclick="toggleCart()">VOLTAR</button>
+        <div id="step-payment" style="display:none">
+            <div class="pix-box">
+                <b>CHAVE PIX (Copia e Cola):</b><br>
+                <span id="pix-key">9c176ab9-a6d6-4311-a0ea-21dd7481227f</span>
+            </div>
+            <p style="font-size: 0.7em; color: red;">⚠️ O ADM já recebeu seu pedido com seu Nick!</p>
+            <button class="btn" style="background:green; color:white; width:100%" onclick="finishOrder()">JÁ PAGUEI / CONCLUIR</button>
+        </div>
+
+        <button class="btn" style="background:none; color:#888; width:100%; margin-top:10px;" onclick="toggleCart()">CANCELAR</button>
     </div>
 </div>
 
-<footer><span onclick="adminLogin()" style="cursor:pointer">Acesso Admin</span></footer>
+<footer><span onclick="adminLogin()" style="cursor:pointer">Painel de Logs</span></footer>
 
 <script>
-    const initialProducts = [
-        { id: 1, type: 'weapon', name: "Glock G18", price: 2.50, stock: 50, image: "https://cdn-icons-png.flaticon.com/512/3400/3400282.png" },
-        { id: 2, type: 'weapon', name: "AK-47 Tática", price: 4.50, stock: 15, image: "https://cdn-icons-png.flaticon.com/512/4119/4119853.png" },
-        { id: 7, type: 'weapon', name: "Munição x100", price: 1.00, stock: 100, image: "https://cdn-icons-png.flaticon.com/512/4241/4241838.png" },
-        { id: 8, type: 'money', name: "Maleta 100k", price: 3.00, stock: 99, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" }
+    const products = [
+        { id: 1, type: 'weapon', name: "Glock G18", price: 2.50, image: "https://cdn-icons-png.flaticon.com/512/3400/3400282.png" },
+        { id: 2, type: 'weapon', name: "AK-47 Tática", price: 4.50, image: "https://cdn-icons-png.flaticon.com/512/4119/4119853.png" },
+        { id: 3, type: 'weapon', name: "Fuzil Parafal", price: 4.00, image: "https://cdn-icons-png.flaticon.com/512/4119/4119827.png" },
+        { id: 7, type: 'money', name: "Maleta 100k", price: 3.00, image: "https://cdn-icons-png.flaticon.com/512/2489/2489756.png" }
     ];
 
-    let products = JSON.parse(localStorage.getItem('rp_v5_items')) || initialProducts;
-    let orders = JSON.parse(localStorage.getItem('rp_v5_orders')) || [];
     let cart = [];
+    // Carregar Logs do LocalStorage
+    let logs = JSON.parse(localStorage.getItem('blackmarket_logs')) || [];
 
-    function save() {
-        localStorage.setItem('rp_v5_items', JSON.stringify(products));
-        localStorage.setItem('rp_v5_orders', JSON.stringify(orders));
-        render();
-    }
-
-    function render() {
-        // Render Loja
+    function renderStore() {
         const wCont = document.getElementById('products-weapons');
         const mCont = document.getElementById('products-money');
         wCont.innerHTML = ''; mCont.innerHTML = '';
+        
         products.forEach(p => {
-            const html = `<div class="product-card">
-                <img src="${p.image}" class="product-img">
-                <h3>${p.name}</h3>
-                <p class="price">R$ ${p.price.toFixed(2)}</p>
-                <button class="btn btn-buy" onclick="addToCart(${p.id})">ADICIONAR</button>
-            </div>`;
+            const html = `
+                <div class="product-card">
+                    <img src="${p.image}" class="product-img">
+                    <h3 style="font-size:1em;">${p.name}</h3>
+                    <p style="color:var(--primary); font-weight:bold;">R$ ${p.price.toFixed(2)}</p>
+                    <button class="btn btn-buy" onclick="addToCart(${p.id})">COMPRAR</button>
+                </div>`;
             p.type === 'money' ? mCont.innerHTML += html : wCont.innerHTML += html;
         });
-
-        // Render Admin Tabela
-        document.getElementById('admin-product-list').innerHTML = products.map(p => `
-            <tr>
-                <td>${p.name}</td>
-                <td><input type="text" class="admin-input" id="ed-img-${p.id}" value="${p.image}"></td>
-                <td><input type="number" class="admin-input" id="ed-pri-${p.id}" value="${p.price}"></td>
-                <td><input type="number" class="admin-input" id="ed-sto-${p.id}" value="${p.stock}"></td>
-                <td><button class="btn btn-save" onclick="editProd(${p.id})">OK</button></td>
-            </tr>`).join('');
-
-        // Render Pedidos
-        const ordDiv = document.getElementById('admin-orders-list');
-        if(orders.length === 0) {
-            ordDiv.innerHTML = '<p style="color:#666">Nenhum pedido recebido.</p>';
-        } else {
-            ordDiv.innerHTML = orders.map((o, i) => `
-                <div class="order-item">
-                    <button onclick="delOrder(${i})" style="float:right; color:red; background:none; border:none; cursor:pointer">Remover</button>
-                    <b>Pedido #${i+1} - ${o.time}</b><br>
-                    <span style="color:var(--primary)">Itens:</span> ${o.items}<br>
-                    <span style="color:var(--primary)">Total:</span> R$ ${o.total}
-                </div>`).join('');
-        }
+        renderLogs();
     }
-
-    function adminLogin() {
-        if(prompt("Email:") === "srleal018@gmail.com") document.getElementById('admin-panel').style.display = 'block';
-    }
-
-    function addProduct() {
-        const name = document.getElementById('new-name').value;
-        const price = parseFloat(document.getElementById('new-price').value);
-        const stock = parseInt(document.getElementById('new-stock').value);
-        const image = document.getElementById('new-img').value;
-        if(name && price) {
-            products.push({ id: Date.now(), type: name.toLowerCase().includes('maleta')?'money':'weapon', name, price, stock, image });
-            save();
-        }
-    }
-
-    function editProd(id) {
-        const p = products.find(x => x.id === id);
-        p.image = document.getElementById(`ed-img-${id}`).value;
-        p.price = parseFloat(document.getElementById(`ed-pri-${id}`).value);
-        p.stock = parseInt(document.getElementById(`ed-sto-${id}`).value);
-        save();
-        alert("Salvo!");
-    }
-
-    function delOrder(i) { orders.splice(i, 1); save(); }
 
     function addToCart(id) {
         const p = products.find(x => x.id === id);
-        if(p.stock > 0) { cart.push(p); updateCart(); }
+        cart.push(p);
+        updateCartCount();
+        alert(p.name + " adicionado!");
     }
 
-    function updateCart() {
+    function updateCartCount() {
         document.getElementById('cart-count').innerText = cart.length;
-        let total = 0;
-        document.getElementById('cart-items').innerHTML = cart.map((item, i) => {
-            total += item.price;
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span>${item.name}</span><span onclick="cart.splice(${i},1);updateCart()" style="color:red; cursor:pointer;">X</span>
-            </div>`;
-        }).join('');
-        document.getElementById('cart-total').innerText = total.toFixed(2);
     }
 
     function toggleCart() {
         const m = document.getElementById('cart-modal');
         m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-        document.getElementById('pix-area').style.display = 'none';
-        document.getElementById('btn-checkout').style.display = 'block';
+        
+        // Resetar passos do modal
+        document.getElementById('step-identification').style.display = 'block';
+        document.getElementById('step-payment').style.display = 'none';
+        
+        // Sumário
+        let total = cart.reduce((acc, item) => acc + item.price, 0);
+        document.getElementById('cart-summary').innerHTML = `Itens: ${cart.length} | Total: <b>R$ ${total.toFixed(2)}</b>`;
     }
 
-    function showPix() {
-        if(cart.length > 0) {
-            // CRIAR PEDIDO
-            const newOrder = {
-                time: new Date().toLocaleString(),
-                items: cart.map(i => i.name).join(', '),
-                total: document.getElementById('cart-total').innerText
-            };
-            orders.push(newOrder); // Adiciona na lista
-            save(); // Salva no LocalStorage
-            
-            document.getElementById('pix-area').style.display = 'block';
-            document.getElementById('btn-checkout').style.display = 'none';
+    function proceedToPayment() {
+        const roblox = document.getElementById('client-roblox').value;
+        const discord = document.getElementById('client-discord').value;
+
+        if(!roblox || !discord) {
+            alert("Por favor, preencha seu Nick do Roblox e Discord para entrega!");
+            return;
         }
+
+        if(cart.length === 0) {
+            alert("Seu carrinho está vazio!");
+            return;
+        }
+
+        // SALVAR LOG
+        const total = cart.reduce((acc, item) => acc + item.price, 0);
+        const newLog = {
+            id: Date.now(),
+            data: new Date().toLocaleString(),
+            roblox: roblox,
+            discord: discord,
+            itens: cart.map(i => i.name).join(', '),
+            total: total.toFixed(2)
+        };
+
+        logs.unshift(newLog); // Adiciona no topo
+        localStorage.setItem('blackmarket_logs', JSON.stringify(logs));
+        renderLogs();
+
+        // Trocar de tela no modal
+        document.getElementById('step-identification').style.display = 'none';
+        document.getElementById('step-payment').style.display = 'block';
+    }
+
+    function renderLogs() {
+        const container = document.getElementById('logs-container');
+        if(logs.length === 0) {
+            container.innerHTML = "<p style='color:#666'>Nenhum registro de compra ainda.</p>";
+            return;
+        }
+
+        container.innerHTML = logs.map(log => `
+            <div class="log-item">
+                <span style="color:var(--secondary)">[${log.data}]</span><br>
+                <b>🙎‍♂️ Roblox:</b> ${log.roblox} | <b>🎮 Discord:</b> ${log.discord}<br>
+                <b>📦 Itens:</b> ${log.itens}<br>
+                <b>💰 Valor:</b> R$ ${log.total}
+            </div>
+        `).join('');
     }
 
     function finishOrder() {
-        alert("Pedido registrado! Envie o comprovante.");
-        cart = []; updateCart(); toggleCart();
+        alert("LOG ENVIADO! O ADM já sabe do seu pedido. Envie o comprovante no Discord agora.");
+        cart = [];
+        updateCartCount();
+        toggleCart();
     }
 
-    render();
+    function adminLogin() {
+        if(prompt("E-mail do Admin:") === "srleal018@gmail.com") {
+            document.getElementById('admin-panel').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+    }
+
+    function clearLogs() {
+        if(confirm("Deseja apagar todos os registros de logs?")) {
+            logs = [];
+            localStorage.setItem('blackmarket_logs', JSON.stringify(logs));
+            renderLogs();
+        }
+    }
+
+    renderStore();
 </script>
+
 </body>
 </html>
