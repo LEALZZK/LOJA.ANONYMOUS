@@ -11,8 +11,7 @@
 
     <style>
         :root { 
-            --primary: #00ff88; 
-            --secondary: #5dade2; 
+            --primary: #00ff88; --secondary: #5dade2; 
             --bg: #050505; --card-bg: #111; --text: #ffffff;
             --header-h: 70px; --news-h: 35px;
         }
@@ -20,163 +19,139 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
 
-        /* HEADER E LOGO ROUBADO */
+        /* HEADER E LOGO */
         #top-fixed { position: fixed; top: 0; width: 100%; z-index: 1000; }
         #news-bar { background: var(--primary); color: #000; height: var(--news-h); display: flex; align-items: center; overflow: hidden; font-weight: bold; font-size: 0.85rem; }
+        header { background: rgba(10, 10, 10, 0.98); height: var(--header-h); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; border-bottom: 2px solid var(--primary); backdrop-filter: blur(15px); }
         
-        header { 
-            background: rgba(10, 10, 10, 0.98); 
-            height: var(--header-h); 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 15px; border-bottom: 2px solid var(--primary);
-            backdrop-filter: blur(15px);
-        }
+        .logo-hash { font-size: 2rem; color: var(--primary); font-weight: 900; text-shadow: 0 0 10px var(--primary); animation: glitch 2s infinite; }
+        @keyframes glitch { 0%, 100% { transform: skew(0deg); } 10% { transform: skew(10deg); color: #ff00ea; } 11% { transform: skew(-10deg); color: var(--primary); } }
 
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-hash { 
-            font-size: 2rem; color: var(--primary); font-weight: 900; 
-            text-shadow: 0 0 10px var(--primary);
-            animation: glitch 2s infinite;
-        }
-        @keyframes glitch {
-            0% { transform: skew(0deg); opacity: 1; }
-            10% { transform: skew(10deg); color: #ff00ea; }
-            11% { transform: skew(-10deg); color: var(--primary); }
-            50% { opacity: 0.8; }
-            100% { transform: skew(0deg); }
-        }
-
-        .marquee { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; padding-left: 100%; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-150%); } }
-
-        /* CONTAINER */
-        .container { margin-top: calc(var(--header-h) + var(--news-h) + 20px); padding: 15px; max-width: 1200px; margin-left: auto; margin-right: auto; min-height: 70vh; }
-        
+        .container { margin-top: calc(var(--header-h) + var(--news-h) + 20px); padding: 15px; max-width: 1200px; margin: 0 auto; min-height: 70vh; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; } }
 
-        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #222; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #222; position: relative; }
         .prod-img { width: 100%; height: 140px; object-fit: contain; margin-bottom: 10px; border-radius: 8px; }
 
-        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        /* BOTÕES */
+        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-buy { background: var(--primary); color: #000; width: 100%; }
 
-        /* ALERT ESTILO AZUL BEBÊ */
-        #custom-alert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
-        .alert-box { background: white; width: 85%; max-width: 330px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(93, 173, 226, 0.4); }
-        .alert-body { padding: 35px 20px; color: #2c3e50; font-size: 1.1rem; border-top: 6px solid var(--secondary); font-weight: 500; }
-        .alert-btn { background: var(--secondary); color: white; padding: 15px; cursor: pointer; font-weight: bold; border: none; width: 100%; font-size: 1rem; }
+        /* MODAIS ESTILO AZUL BEBÊ (SUBSTITUTOS DO ALERT) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
+        .alert-box { background: white; width: 85%; max-width: 350px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(93, 173, 226, 0.4); animation: pop 0.3s ease; }
+        .alert-body { padding: 30px 20px; color: #2c3e50; text-align: center; border-top: 6px solid var(--secondary); }
+        .alert-footer { background: #f8f9fa; padding: 10px; display: flex; gap: 10px; }
+        .btn-alert { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* CHAT */
-        .chat-container { display: flex; flex-direction: column; height: 480px; background: #000; border: 1px solid #333; border-radius: 12px; }
+        .chat-container { height: 400px; background: #000; border: 1px solid #333; border-radius: 12px; display: flex; flex-direction: column; }
         .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px; border-radius: 12px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
-        .msg.admin { align-self: flex-start; background: #1a1a1a; color: #00ff88; border-bottom-left-radius: 2px; }
-        .msg.user { align-self: flex-end; background: var(--primary); color: #000; border-bottom-right-radius: 2px; font-weight: bold; }
-        .chat-input-area { padding: 12px; display: flex; gap: 8px; background: #0a0a0a; border-top: 1px solid #222; }
+        .msg { padding: 10px; border-radius: 10px; max-width: 85%; font-size: 0.9rem; }
+        .msg.admin { align-self: flex-start; background: #222; color: var(--primary); }
+        .msg.user { align-self: flex-end; background: var(--primary); color: #000; font-weight: bold; }
 
         /* FOOTER */
-        footer { background: #080808; padding: 50px 20px; border-top: 1px solid #1a1a1a; text-align: center; }
-        .pix-area { background: #111; padding: 20px; border-radius: 10px; display: inline-block; margin-bottom: 30px; border: 1px dashed var(--primary); }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1100px; margin: 0 auto; text-align: left; }
-        
-        .col-title { color: var(--primary); font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-        .footer-col p, .footer-col li { font-size: 0.85rem; opacity: 0.6; line-height: 1.8; list-style: none; padding: 0; }
-
-        .by-leal { filter: blur(1px); opacity: 0.3; margin-top: 40px; cursor: pointer; font-size: 0.7rem; transition: 0.4s; }
+        footer { background: #080808; padding: 40px 20px; border-top: 1px solid #1a1a1a; text-align: center; margin-top: 50px; }
+        .by-leal { filter: blur(1px); opacity: 0.3; cursor: pointer; transition: 0.4s; font-size: 0.8rem; }
         .by-leal:hover { filter: blur(0); opacity: 1; color: var(--primary); }
-
-        #admin-page { display: none; padding: 120px 20px; }
     </style>
 </head>
 <body>
 
-<div id="custom-alert">
+<div id="modal-msg" class="modal-overlay">
     <div class="alert-box">
-        <div id="alert-msg" class="alert-body">Aguardando...</div>
-        <button class="alert-btn" onclick="closeAlert()">OK</button>
+        <div id="msg-text" class="alert-body"></div>
+        <div class="alert-footer"><button class="btn-alert" style="background:var(--secondary); color:white" onclick="closeModal('modal-msg')">ENTENDI</button></div>
+    </div>
+</div>
+
+<div id="modal-login" class="modal-overlay">
+    <div class="alert-box">
+        <div class="alert-body">
+            <h3 style="margin:0">ACESSO STAFF</h3>
+            <input type="password" id="admin-pass" placeholder="Digite a senha..." style="width:100%; padding:12px; margin-top:15px; border:1px solid #ddd; border-radius:8px">
+        </div>
+        <div class="alert-footer">
+            <button class="btn-alert" onclick="closeModal('modal-login')">CANCELAR</button>
+            <button class="btn-alert" style="background:var(--primary); color:black" onclick="checkAdminPass()">ENTRAR</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-nick" class="modal-overlay">
+    <div class="alert-box">
+        <div class="alert-body">
+            <h3 style="margin:0">QUASE LÁ!</h3>
+            <p style="font-size:0.9rem; color:#666">Informe seu Nick para identificarmos seu pagamento.</p>
+            <input type="text" id="user-nick-input" placeholder="Seu Nick ou Nome..." style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px">
+        </div>
+        <div class="alert-footer">
+            <button class="btn-alert" onclick="closeModal('modal-nick')">CANCELAR</button>
+            <button class="btn-alert" style="background:var(--primary); color:black" onclick="confirmCheckout()">ABRIR TICKET</button>
+        </div>
     </div>
 </div>
 
 <div id="top-fixed">
-    <div id="news-bar"><div class="marquee" id="marquee-text">SISTEMA HACKEADO... PROMOÇÕES ATIVAS! ⚡</div></div>
+    <div id="news-bar"><div class="marquee" id="marquee-text">QUEBREI O SISTEMA # - AS MELHORES CONTAS ESTÃO AQUI!</div></div>
     <header>
-        <div class="logo-box">
+        <div style="display:flex; align-items:center; gap:10px">
             <span class="logo-hash">#</span>
-            <div style="line-height: 1">
-                <span style="font-weight: 900; font-size: 1.2rem; letter-spacing: -1px;">QUEBREI O</span><br>
-                <span style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">SISTEMA</span>
-            </div>
+            <span style="font-weight:900; font-size:1.1rem">QUEBREI O SISTEMA</span>
         </div>
-        <div style="display:flex; gap:10px">
-            <button class="btn" style="background:var(--primary); color:#000; padding:10px" onclick="openCart()">
-                <i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span>
-            </button>
-            <button class="btn" style="background:#fff; color:#000" onclick="openMyTickets()">
-                <i class="fas fa-headset"></i>
-            </button>
+        <div style="display:flex; gap:8px">
+            <button class="btn" style="background:var(--primary); color:#000; padding:8px 15px" onclick="openCart()"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></button>
+            <button class="btn" style="background:#fff; color:#000; padding:8px 12px" onclick="openMyTickets()"><i class="fas fa-comment-alt"></i></button>
         </div>
     </header>
 </div>
 
-<div id="site-wrapper" class="container">
+<div id="main-content" class="container">
     <div id="shop-content"></div>
 </div>
 
-<footer>
-    <div class="pix-area">
-        <div style="color:var(--primary); font-weight:bold; margin-bottom:5px"><i class="fab fa-pix"></i> PAGAMENTO APENAS VIA PIX</div>
-        <div style="font-size:0.8rem; opacity:0.8">Entrega imediata após envio do comprovante no chat.</div>
-    </div>
-
-    <div class="footer-grid">
-        <div class="footer-col">
-            <div class="col-title"><i class="fas fa-user-secret"></i> SOBRE A HUB</div>
-            <p>Especialistas em derrubar preços. O QUEBREI O SISTEMA oferece as melhores contas e serviços digitais com segurança criptografada.</p>
-        </div>
-        <div class="footer-col">
-            <div class="col-title"><i class="fas fa-file-contract"></i> TERMOS E REGRAS</div>
-            <li>• Pagamentos via PIX são processados na hora.</li>
-            <li>• Garantia de 7 dias para contas inativas.</li>
-            <li>• Suporte humano via Ticket das 08h às 22h.</li>
-            <li>• Respeite os prazos de entrega do sistema.</li>
-        </div>
-        <div class="footer-col">
-            <div class="col-title"><i class="fas fa-shield-virus"></i> SEGURANÇA</div>
-            <p><i class="fas fa-check-circle" style="color:var(--primary)"></i> Conexão SSL 256-bits</p>
-            <p><i class="fas fa-check-circle" style="color:var(--primary)"></i> Proteção Anti-Fraude</p>
-            <p><i class="fas fa-check-circle" style="color:var(--primary)"></i> Transação PIX Segura</p>
-        </div>
-    </div>
-
-    <div class="by-leal" onclick="askAdmin()">BY LE4L</div>
-    <p style="font-size: 0.7rem; opacity: 0.4; margin-top: 10px;">QUEBREI O SISTEMA # VIP HUB © 2026</p>
-</footer>
-
-<div id="admin-page">
-    <div class="card" style="max-width:700px; margin: 0 auto; text-align: left;">
-        <h2 style="color:var(--primary)">ADMIN PANEL #</h2>
+<div id="admin-page" style="display:none; padding-top:120px" class="container">
+    <div class="card" style="text-align:left; max-width:800px; margin:0 auto">
+        <h2 style="color:var(--primary)">STAFF PANEL #</h2>
         <button class="btn" style="background:red; color:white; margin-bottom:20px" onclick="location.reload()">SAIR</button>
         
-        <h4>POSTAR NOVO ITEM</h4>
-        <input type="text" id="p-name" placeholder="Nome do Produto" style="width:100%; padding:12px; margin-bottom:8px; background:#000; border:1px solid #333; color:#fff">
-        <input type="number" id="p-price" placeholder="Preço (R$)" style="width:100%; padding:12px; margin-bottom:8px; background:#000; border:1px solid #333; color:#fff">
-        <input type="text" id="p-img" placeholder="Link da Imagem (Vazio = Sem Foto)" style="width:100%; padding:12px; margin-bottom:8px; background:#000; border:1px solid #333; color:#fff">
-        <select id="p-cat-select" style="width:100%; padding:12px; margin-bottom:15px; background:#000; color:#fff"></select>
-        <button class="btn btn-buy" onclick="saveProduct()">LANÇAR PRODUTO</button>
-
-        <h4 style="margin-top:30px">TICKETS EM ABERTO</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
+            <div>
+                <h4>CATEGORIAS</h4>
+                <input type="text" id="new-cat-name" placeholder="Nome da Categoria" style="width:100%; padding:10px; margin-bottom:5px">
+                <button class="btn btn-buy" onclick="addCategory()">CRIAR</button>
+                <div id="admin-cat-list" style="margin-top:15px"></div>
+            </div>
+            <div>
+                <h4>NOVO PRODUTO</h4>
+                <input type="text" id="p-name" placeholder="Nome" style="width:100%; padding:10px; margin-bottom:5px">
+                <input type="number" id="p-price" placeholder="Preço" style="width:100%; padding:10px; margin-bottom:5px">
+                <input type="text" id="p-img" placeholder="Link Imagem (Opcional)" style="width:100%; padding:10px; margin-bottom:5px">
+                <select id="p-cat-select" style="width:100%; padding:10px; margin-bottom:10px"></select>
+                <button class="btn btn-buy" onclick="saveProduct()">POSTAR</button>
+            </div>
+        </div>
+        <hr style="margin:30px 0; opacity:0.1">
+        <h4>TICKETS ATIVOS</h4>
         <div id="admin-tickets-list"></div>
     </div>
 </div>
 
-<div id="ticket-modal" style="display:none" class="modal">
-    <div class="alert-box" style="max-width:450px; width:95%; background:#111; border: 1px solid var(--primary); box-shadow: 0 0 20px var(--primary);">
-        <div class="alert-body" style="border-top:none; color:#fff; padding:15px">
-            <h3 style="color:var(--primary); margin:0 0 10px 0">CHAT DE SUPORTE #</h3>
+<footer>
+    <div style="color:var(--primary); font-weight:bold; margin-bottom:20px"><i class="fab fa-pix"></i> PAGAMENTO EXCLUSIVO VIA PIX</div>
+    <div class="by-leal" onclick="openLogin()">BY LE4L</div>
+    <p style="font-size:0.7rem; opacity:0.4; margin-top:10px">VIP HUB # 2026</p>
+</footer>
+
+<div id="ticket-modal" class="modal-overlay">
+    <div class="alert-box" style="max-width:450px; background:#111; border:1px solid var(--primary)">
+        <div class="alert-body" style="padding:15px; color:#fff">
+            <h3 style="color:var(--primary); margin-top:0">SEU TICKET #</h3>
             <div id="user-chat-area"></div>
-            <button class="btn" style="background:none; color:gray; width:100%; margin-top:15px" onclick="document.getElementById('ticket-modal').style.display='none'">VOLTAR À LOJA</button>
+            <button class="btn" style="background:none; color:gray; width:100%; margin-top:10px" onclick="closeModal('ticket-modal')">FECHAR</button>
         </div>
     </div>
 </div>
@@ -194,58 +169,106 @@
     let myId = localStorage.getItem('qs_id') || 'u' + Date.now();
     localStorage.setItem('qs_id', myId);
 
-    function showAlert(msg) {
-        document.getElementById('alert-msg').innerText = msg;
-        document.getElementById('custom-alert').style.display = 'flex';
+    // FUNÇÕES DE MODAL (SUBSTITUTOS DE ALERT/PROMPT)
+    function showMsg(txt) { document.getElementById('msg-text').innerText = txt; document.getElementById('modal-msg').style.display='flex'; }
+    function closeModal(id) { document.getElementById(id).style.display='none'; }
+    function openLogin() { document.getElementById('modal-login').style.display='flex'; }
+    
+    function checkAdminPass() {
+        if(document.getElementById('admin-pass').value === "270712") {
+            closeModal('modal-login');
+            document.getElementById('main-content').style.display='none';
+            document.querySelector('footer').style.display='none';
+            document.getElementById('admin-page').style.display='block';
+        } else {
+            showMsg("Senha Incorreta!");
+        }
     }
-    function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
-    function askAdmin() { if(prompt("Senha Staff:") === "270712") { document.getElementById('site-wrapper').style.display='none'; document.querySelector('footer').style.display='none'; document.getElementById('admin-page').style.display='block'; } }
 
+    // REALTIME
     db.ref('/').on('value', snap => {
         const data = snap.val() || {};
         renderShop(data.categorias, data.produtos);
-        renderAdminTickets(data.tickets);
+        renderAdminData(data.categorias, data.tickets);
         renderUserChat(data.tickets);
-        document.getElementById('marquee-text').innerText = data.aviso || "SISTEMA HACKEADO... PROMOÇÕES ATIVAS! ⚡";
-        
-        const sel = document.getElementById('p-cat-select'); sel.innerHTML = "";
-        for(let id in data.categorias) sel.innerHTML += `<option value="${data.categorias[id].name}">${data.categorias[id].name}</option>`;
+        document.getElementById('marquee-text').innerText = data.aviso || "BEM-VINDO À QUEBREI O SISTEMA #";
     });
 
     function renderShop(cats, prods) {
         const cont = document.getElementById('shop-content'); cont.innerHTML = "";
         for(let id in cats) {
-            let html = `<h3 style="margin:40px 0 15px; letter-spacing:1px; color:var(--primary)">// ${cats[id].name.toUpperCase()}</h3><div class="grid">`;
+            let html = `<h3 style="margin:30px 0 15px; color:var(--primary)">// ${cats[id].name.toUpperCase()}</h3><div class="grid">`;
             for(let p in prods) {
                 if(prods[p].cat === cats[id].name) {
-                    const img = prods[p].img ? `<img src="${prods[p].img}" class="prod-img">` : ``;
-                    html += `<div class="card">${img}<b>${prods[p].name}</b><div style="color:var(--primary); font-weight:bold; margin:15px 0; font-size:1.1rem">R$ ${prods[p].price}</div><button class="btn btn-buy" onclick="addToCart('${prods[p].name}', ${prods[p].price})">ADICIONAR</button></div>`;
+                    const img = prods[p].img ? `<img src="${prods[p].img}" class="prod-img">` : `<div style="height:10px"></div>`;
+                    html += `<div class="card">${img}<b>${prods[p].name}</b><div style="color:var(--primary); font-weight:bold; margin:10px 0">R$ ${prods[p].price}</div><button class="btn btn-buy" onclick="addToCart('${prods[p].name}', ${prods[p].price})">COMPRAR</button></div>`;
                 }
             }
             cont.innerHTML += html + `</div>`;
         }
     }
 
-    function addToCart(n, p) {
-        cart.push({name:n, price:p});
-        document.getElementById('cart-count').innerText = cart.length;
-        showAlert("✓ " + n + " no carrinho!");
+    function addToCart(n, p) { cart.push({name:n, price:p}); document.getElementById('cart-count').innerText = cart.length; showMsg(n + " adicionado!"); }
+
+    function openCart() { 
+        if(cart.length === 0) return showMsg("Seu carrinho está vazio!");
+        document.getElementById('modal-nick').style.display='flex'; 
     }
 
-    function openCart() {
-        if(cart.length === 0) return showAlert("O carrinho está vazio!");
-        let nick = prompt("Seu Nick para entrega:");
-        if(nick) {
-            db.ref('tickets').push({ 
-                clienteId: myId, nick: nick, 
-                chat: { m1: {sender:'admin', txt:'Olá! Para concluir a compra de: ' + cart.map(i=>i.name).join(', ') + '. Realize o PIX e envie o comprovante aqui!'} } 
-            });
-            cart = []; document.getElementById('cart-count').innerText = "0";
-            openMyTickets();
+    function confirmCheckout() {
+        const nick = document.getElementById('user-nick-input').value;
+        if(!nick) return showMsg("Digite seu nick!");
+        db.ref('tickets').push({
+            clienteId: myId, nick: nick,
+            chat: { m1: {sender:'admin', txt:'Olá! Realize o PIX e mande o comprovante de: ' + cart.map(i=>i.name).join(', ')} }
+        });
+        cart = []; document.getElementById('cart-count').innerText = "0";
+        closeModal('modal-nick');
+        document.getElementById('ticket-modal').style.display='flex';
+    }
+
+    function renderUserChat(tickets) {
+        const cont = document.getElementById('user-chat-area'); cont.innerHTML = "";
+        for(let id in tickets) {
+            if(tickets[id].clienteId === myId) {
+                cont.innerHTML = `<div class="chat-container">
+                    <div class="chat-messages" id="ubox-${id}">${renderMsgs(tickets[id].chat)}</div>
+                    <div style="padding:10px; display:flex; gap:5px; background:#222">
+                        <input type="text" id="in-${id}" placeholder="Mensagem..." style="flex:1; padding:10px; border:none" onkeypress="if(event.key==='Enter') sendChat('${id}','user')">
+                        <button class="btn" style="background:var(--primary); color:#000" onclick="sendChat('${id}','user')"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>`;
+                setTimeout(() => { let b = document.getElementById('ubox-'+id); if(b) b.scrollTop = b.scrollHeight; }, 100);
+            }
         }
     }
 
-    function openMyTickets() { document.getElementById('ticket-modal').style.display='flex'; }
+    function renderAdminData(cats, tickets) {
+        // Lista de Categorias no Admin com botão excluir
+        const cList = document.getElementById('admin-cat-list'); cList.innerHTML = "";
+        const sel = document.getElementById('p-cat-select'); sel.innerHTML = "";
+        for(let id in cats) {
+            cList.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #333">
+                <span>${cats[id].name}</span>
+                <button onclick="db.ref('categorias/${id}').remove()" style="color:red; background:none; border:none; cursor:pointer">EXCLUIR</button>
+            </div>`;
+            sel.innerHTML += `<option value="${cats[id].name}">${cats[id].name}</option>`;
+        }
+
+        // Tickets no Admin
+        const tList = document.getElementById('admin-tickets-list'); tList.innerHTML = "";
+        for(let id in tickets) {
+            tList.innerHTML += `<div class="card" style="margin-bottom:15px; text-align:left">
+                <b>👤 ${tickets[id].nick}</b>
+                <div class="chat-messages" id="abox-${id}" style="height:150px; background:#000; margin:10px 0">${renderMsgs(tickets[id].chat)}</div>
+                <div style="display:flex; gap:5px">
+                    <input type="text" id="in-${id}" placeholder="Responder..." style="flex:1; padding:8px" onkeypress="if(event.key==='Enter') sendChat('${id}','admin')">
+                    <button class="btn btn-buy" style="width:auto" onclick="sendChat('${id}','admin')">OK</button>
+                    <button class="btn" style="background:red; color:white" onclick="db.ref('tickets/${id}').remove()">X</button>
+                </div>
+            </div>`;
+        }
+    }
 
     function sendChat(tId, role) {
         const input = document.getElementById('in-' + tId);
@@ -255,46 +278,15 @@
         }
     }
 
-    function renderUserChat(tickets) {
-        const cont = document.getElementById('user-chat-area'); cont.innerHTML = "";
-        for(let id in tickets) {
-            if(tickets[id].clienteId === myId) {
-                cont.innerHTML = `<div class="chat-container">
-                    <div class="chat-messages" id="ubox-${id}">${renderMsgs(tickets[id].chat)}</div>
-                    <div class="chat-input-area">
-                        <input type="text" id="in-${id}" placeholder="Envie o comprovante ou dúvida..." style="flex:1; padding:12px; border:none; background:#1a1a1a; color:#fff; border-radius:8px" onkeypress="if(event.key==='Enter') sendChat('${id}','user')">
-                        <button class="btn" style="background:var(--primary); color:#000" onclick="sendChat('${id}','user')"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>`;
-                setTimeout(() => { let b = document.getElementById('ubox-'+id); if(b) b.scrollTop = b.scrollHeight; }, 100);
-            }
-        }
-        if(cont.innerHTML === "") cont.innerHTML = "<p style='opacity:0.5; text-align:center'>Nenhum ticket aberto.</p>";
-    }
-
-    function renderAdminTickets(tickets) {
-        const cont = document.getElementById('admin-tickets-list'); cont.innerHTML = "";
-        for(let id in tickets) {
-            cont.innerHTML += `<div class="card" style="margin-bottom:15px; text-align:left; border-color:#444">
-                <b style="color:var(--primary)">👤 ${tickets[id].nick}</b>
-                <div class="chat-messages" id="abox-${id}" style="height:180px; background:#000; margin:10px 0; border:1px solid #222">${renderMsgs(tickets[id].chat)}</div>
-                <input type="text" id="in-${id}" placeholder="Responder..." style="width:100%; padding:10px; margin-bottom:8px; background:#111; border:1px solid #333; color:#fff" onkeypress="if(event.key==='Enter') sendChat('${id}','admin')">
-                <div style="display:flex; gap:10px">
-                    <button class="btn btn-buy" onclick="sendChat('${id}','admin')">ENVIAR</button>
-                    <button class="btn" style="background:red; color:white" onclick="db.ref('tickets/${id}').remove()">FECHAR</button>
-                </div>
-            </div>`;
-        }
-    }
-
     function renderMsgs(chat) { return chat ? Object.values(chat).map(m => `<div class="msg ${m.sender}">${m.txt}</div>`).join('') : ""; }
-    
+    function openMyTickets() { document.getElementById('ticket-modal').style.display='flex'; }
+    function addCategory() { const n = document.getElementById('new-cat-name').value; if(n) db.ref('categorias').push({name: n}); }
     function saveProduct() {
         const n = document.getElementById('p-name').value;
         const p = document.getElementById('p-price').value;
         const i = document.getElementById('p-img').value;
         const c = document.getElementById('p-cat-select').value;
-        if(n && p) { db.ref('produtos').push({name:n, price:parseFloat(p), img:i, cat:c}); showAlert("✓ Produto em estoque!"); }
+        if(n && p) db.ref('produtos').push({name:n, price:parseFloat(p), img:i, cat:c});
     }
 </script>
 </body>
