@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rio RP - Store</title>
+    <title>Bahamas - Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #00d4ff; /* Azul Neon Estilo Rio RP */
+            --primary: #c4ff0e; /* Verde Limão Neon Estilo Bahamas */
             --bg-dark: #0a0a0b;
             --card-bg: rgba(255, 255, 255, 0.03);
             --border-color: rgba(255, 255, 255, 0.1);
@@ -21,6 +21,9 @@
             color: #fff;
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Fundo com gradiente suave */
@@ -28,7 +31,7 @@
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at top right, rgba(0, 212, 255, 0.05), transparent);
+            background: radial-gradient(circle at top right, rgba(196, 255, 14, 0.05), transparent);
             z-index: -1;
         }
 
@@ -79,7 +82,7 @@
         .product-card:hover {
             transform: translateY(-10px);
             border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(196, 255, 14, 0.1);
         }
 
         .btn-buy {
@@ -113,11 +116,22 @@
             box-shadow: none;
         }
 
-        .staff-avatar {
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-            margin-bottom: 10px;
+        /* Footer */
+        footer {
+            margin-top: auto;
+            background: rgba(10, 10, 11, 0.9);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 0;
+            text-align: center;
+        }
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .footer-link:hover {
+            color: var(--primary);
         }
     </style>
 </head>
@@ -125,7 +139,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">RIO<span style="color: var(--primary)">RP</span> STORE</a>
+        <a class="navbar-brand fw-bold" href="#">BAHAMAS <span style="color: var(--primary)">STORE</span></a>
         <div class="d-flex align-items-center">
             <span class="me-3 d-none d-md-block"><i class="fas fa-shopping-cart"></i> Carrinho (0)</span>
             <button class="btn btn-outline-light btn-sm">Login</button>
@@ -157,15 +171,15 @@
 
         <main class="col-lg-9">
             
-            <div class="alert alert-dismissible fade show mb-4" style="background: rgba(0, 212, 255, 0.1); border-left: 5px solid var(--primary); color: #fff;">
-                <i class="fas fa-bullhorn me-2"></i> <strong>PROMOÇÃO:</strong> Use o cupom <strong>RIORP</strong> para 15% OFF em toda a loja!
+            <div class="alert alert-dismissible fade show mb-4" style="background: rgba(196, 255, 14, 0.1); border-left: 5px solid var(--primary); color: #fff;">
+                <i class="fas fa-bullhorn me-2"></i> <strong>PROMOÇÃO:</strong> Use o cupom <strong>BAHAMAS</strong> para 15% OFF em toda a loja!
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
             </div>
 
             <div class="row g-4">
                 <div class="col-md-6 col-xl-4">
                     <div class="product-card">
-                        <img src="https://via.placeholder.com/400x250/111/00d4ff?text=VIP+PLATINA" class="img-fluid" alt="Produto">
+                        <img src="https://via.placeholder.com/400x250/111/c4ff0e?text=VIP+PLATINA" class="img-fluid" alt="Produto">
                         <div class="p-4">
                             <h5 class="fw-bold">VIP PLATINA</h5>
                             <p class="small text-muted">Acesso a carros exclusivos, prioridade na fila e mais.</p>
@@ -179,7 +193,7 @@
 
                 <div class="col-md-6 col-xl-4">
                     <div class="product-card">
-                        <img src="https://via.placeholder.com/400x250/111/00d4ff?text=CARRO+IMPORTADO" class="img-fluid" alt="Produto">
+                        <img src="https://via.placeholder.com/400x250/111/c4ff0e?text=CARRO+IMPORTADO" class="img-fluid" alt="Produto">
                         <div class="p-4">
                             <h5 class="fw-bold">BMW M4 TUNED</h5>
                             <p class="small text-muted">Veículo super rápido com tuning exclusivo.</p>
@@ -188,22 +202,6 @@
                                 <button class="btn btn-buy px-4">Comprar</button>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-5 glass-panel text-center">
-                <h4 class="fw-bold mb-4">NOSSA EQUIPE</h4>
-                <div class="row">
-                    <div class="col-4 col-md-3">
-                        <img src="https://i.pravatar.cc/150?u=1" class="staff-avatar" alt="Staff">
-                        <h6>Don_Corleone</h6>
-                        <span class="badge bg-danger">Dono</span>
-                    </div>
-                    <div class="col-4 col-md-3">
-                        <img src="https://i.pravatar.cc/150?u=2" class="staff-avatar" alt="Staff">
-                        <h6>Sr_Lima</h6>
-                        <span class="badge bg-primary">Admin</span>
                     </div>
                 </div>
             </div>
@@ -239,6 +237,14 @@
         </main>
     </div>
 </div>
+
+<footer>
+    <div class="container">
+        <span class="text-muted small">© 2024 Bahamas Store. Todos os direitos reservados.</span>
+        <br>
+        <span class="footer-link" onclick="window.location.href='/admin-login.html'">By Leal</span>
+    </div>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -277,7 +283,7 @@
     function applyCoupon() {
         const input = document.getElementById('coupon-input').value.toUpperCase();
         const msg = document.getElementById('coupon-msg');
-        if(input === "RIORP") {
+        if(input === "BAHAMAS") {
             msg.innerHTML = "✅ Cupom Ativo! 15% de desconto.";
             msg.style.color = "var(--primary)";
         } else {
