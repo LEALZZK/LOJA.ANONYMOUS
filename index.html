@@ -3,222 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOJA DO RIO | VIP HUB</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <title>Minha Loja Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0a0a0a; --header: #111; --card: #151515; --accent: #00ff88; --text: #fff; --border: #222;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); background-attachment: fixed; background-size: cover; }
-        
-        header { height: 65px; background: var(--header); display: flex; align-items: center; padding: 0 5%; border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000; justify-content: space-between; }
-        .search-bar { flex: 1; max-width: 400px; margin: 0 20px; position: relative; }
-        .search-bar input { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 8px 35px; border-radius: 8px; color: #fff; outline: none; }
-        .search-bar i { position: absolute; left: 10px; top: 10px; color: #555; }
-
-        /* SCROLL HORIZONTAL */
-        .cat-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 20px 5%; margin-top: 70px; scrollbar-width: none; }
-        .cat-item { min-width: 140px; height: 180px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; cursor: pointer; }
-        .cat-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
-        .cat-item span { position: absolute; bottom: 15px; width: 100%; text-align: center; font-weight: 800; font-size: 11px; text-transform: uppercase; }
-
-        .container { padding: 0 5% 50px; }
-        .cat-title { font-size: 12px; color: #666; text-transform: uppercase; margin: 30px 0 15px; font-weight: 800; border-left: 3px solid var(--accent); padding-left: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding-bottom: 12px; transition: 0.3s; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-        .p-img { width: 100%; height: 110px; object-fit: cover; border-radius: 10px 10px 0 0; }
-        
-        .btn-buy { width: 100%; background: #fff; border: none; padding: 10px; border-radius: 5px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 11px; }
-
-        /* ADMIN & CHAT */
-        #admin-view { display: none; padding: 100px 5% 50px; background: #000; min-height: 100vh; position: absolute; top: 0; width: 100%; z-index: 2000; }
-        .admin-card { background: #111; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
-        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; margin-bottom: 10px; }
-        
-        .chat-box { position: fixed; bottom: 85px; right: 20px; width: 320px; background: #111; border: 1px solid var(--accent); border-radius: 10px; display: none; flex-direction: column; z-index: 3000; }
-        .chat-msgs { height: 300px; overflow-y: auto; padding: 15px; }
-        .support-trigger { position: fixed; bottom: 20px; right: 20px; background: var(--accent); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; cursor: pointer; z-index: 3000; font-size: 20px; }
+        body { background-color: #f8f9fa; }
+        .hero-section { background: #343a40; color: white; padding: 60px 0; }
+        .product-card { border: none; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .staff-badge { font-size: 0.8rem; }
+        #support-status { display: none; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight:900; cursor:pointer" onclick="location.reload()">LOJA DO RIO</div>
-    <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="search" placeholder="Pesquisar..."></div>
-    <button onclick="openAdmin()" style="background:#222; color:#fff; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold">ENTRAR</button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Marketplace</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#avisos">Avisos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#staff">Staff</a></li>
+                <li class="nav-item"><a class="nav-link" href="#suporte">Suporte</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id="avisos-container" class="container mt-3">
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Aviso:</strong> Promoção de Verão ativa! Use o cupom <strong>VERAO10</strong>.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<header class="hero-section text-center">
+    <div class="container">
+        <h1>Bem-vindo à Loja</h1>
+        <p>As melhores ofertas em categorias selecionadas</p>
+        <div class="d-flex justify-content-center gap-2 mt-4">
+            <button class="btn btn-outline-light btn-sm">Eletrônicos</button>
+            <button class="btn btn-outline-light btn-sm">Games</button>
+            <button class="btn btn-outline-light btn-sm">Serviços</button>
+        </div>
+    </div>
 </header>
 
-<div id="user-view">
-    <div class="cat-scroll" id="cat-list"></div>
-    <div class="container" id="product-list"></div>
-</div>
+<main class="container my-5">
+    <section class="mb-5 p-4 bg-white rounded shadow-sm">
+        <h4>Possui um cupom?</h4>
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <input type="text" id="coupon-input" class="form-control" placeholder="Digite seu cupom">
+            <button class="btn btn-primary" onclick="applyCoupon()">Aplicar</button>
+        </div>
+        <small id="coupon-msg" class="text-muted"></small>
+    </section>
 
-<div id="admin-view">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px">
-        <h2 style="color:var(--accent)">PAINEL ADMINISTRATIVO</h2>
-        <button onclick="closeAdmin()" style="background:red; color:#fff; border:none; padding:10px; border-radius:5px; cursor:pointer">SAIR</button>
+    <h2 id="produtos" class="mb-4">Produtos</h2>
+    <div class="row g-4" id="product-list">
+        <div class="col-md-4">
+            <div class="card product-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Produto Exemplo</h5>
+                    <p class="card-text text-muted">Descrição breve do item à venda.</p>
+                    <h4 class="text-primary">R$ 50,00</h4>
+                    <button class="btn btn-success w-100 mt-3">Comprar Agora</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="admin-card">
-        <h3>PRODUTOS E CATEGORIAS</h3>
-        <input type="text" id="adm-name" placeholder="Nome do Item">
-        <input type="number" id="adm-price" placeholder="Preço (Ex: 46.90)">
-        <input type="text" id="adm-img" placeholder="URL da Imagem">
-        <input type="text" id="adm-cat" placeholder="Categoria (Ex: Dinheiro)">
-        <button onclick="saveProduct()" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:5px; font-weight:bold; cursor:pointer">CADASTRAR</button>
+    <hr class="my-5">
+
+    <h2 id="staff" class="mb-4">Nossa Equipe</h2>
+    <div class="row text-center" id="staff-list">
+        <div class="col-md-3">
+            <div class="p-3 bg-white rounded shadow-sm">
+                <h6>Dono Admin</h6>
+                <span class="badge bg-danger">Fundador</span>
+            </div>
+        </div>
     </div>
 
-    <div class="admin-card">
-        <h3>TICKETS (CHAT COM CLIENTES)</h3>
-        <div id="admin-chat-list"></div>
-    </div>
-</div>
+    <hr class="my-5">
 
-<div class="chat-box" id="user-chat">
-    <div style="padding:15px; background:var(--accent); color:#000; font-weight:bold; display:flex; justify-content:space-between">
-        <span>SUPORTE</span>
-        <i class="fas fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
-    </div>
-    <div class="chat-msgs" id="chat-msgs"></div>
-    <div style="display:flex; padding:10px; border-top:1px solid #222">
-        <input type="text" id="chat-input" placeholder="Mensagem..." style="margin:0">
-        <button onclick="sendChat('user')" style="background:var(--accent); border:none; padding:10px; border-radius:5px; margin-left:5px"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
+    <section id="suporte" class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Suporte ao Cliente</h2>
+                    <form id="support-form">
+                        <div class="mb-3">
+                            <label class="form-label">Seu Nome</label>
+                            <input type="text" id="sup-name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mensagem / Dúvida</label>
+                            <textarea id="sup-message" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Enviar Ticket</button>
+                    </form>
+                    <div id="support-status" class="alert alert-success mt-3">Ticket enviado com sucesso! Aguarde contato.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
-<div class="support-trigger" onclick="toggleChat()"><i class="fas fa-comments"></i></div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    // 1. Configuração do Firebase
+    // Sua Configuração
     const firebaseConfig = { 
         apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
         databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
         projectId: "quebrei-o-sistema" 
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ID do usuário para o Chat
-    const myId = localStorage.getItem('my_chat_id') || 'user_' + Math.floor(Math.random() * 9999);
-    localStorage.setItem('my_chat_id', myId);
+    // Função de Suporte (Enviando para o Firebase)
+    document.getElementById('support-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('sup-name').value;
+        const message = document.getElementById('sup-message').value;
 
-    // 2. Funções de Interface
-    function openAdmin() {
-        const pass = prompt("Chave Mestra:");
-        if(pass === "270712") {
-            document.getElementById('admin-view').style.display = 'block';
-            loadAdminChats();
-        } else { alert("Senha incorreta!"); }
-    }
-
-    function closeAdmin() { document.getElementById('admin-view').style.display = 'none'; }
-
-    function toggleChat() {
-        const chat = document.getElementById('user-chat');
-        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    // 3. Lógica do Firebase (Sincronização)
-    db.ref('loja').on('value', snap => {
-        const data = snap.val() || { produtos: {} };
-        renderProducts(data.produtos);
+        db.ref('tickets').push({
+            usuario: name,
+            mensagem: message,
+            timestamp: Date.now(),
+            status: 'aberto'
+        }).then(() => {
+            document.getElementById('support-form').reset();
+            document.getElementById('support-status').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('support-status').style.display = 'none';
+            }, 5000);
+        });
     });
 
-    function renderProducts(prods) {
-        const list = document.getElementById('product-list');
-        const cats = document.getElementById('cat-list');
-        list.innerHTML = ""; cats.innerHTML = "";
-
-        let categories = [...new Set(Object.values(prods).map(p => p.cat))];
+    // Função Lógica de Cupom (Exemplo Simples)
+    function applyCoupon() {
+        const coupon = document.getElementById('coupon-input').value.toUpperCase();
+        const msg = document.getElementById('coupon-msg');
         
-        // Renderizar Scroll Horizontal
-        categories.forEach(c => {
-            cats.innerHTML += `<div class="cat-item"><img src="https://via.placeholder.com/140x180/111/fff?text=${c}"><span>${c}</span></div>`;
-            
-            // Renderizar Grid
-            let html = `<div class="cat-title">${c}</div><div class="grid">`;
-            for(let id in prods) {
-                if(prods[id].cat === c) {
-                    html += `
-                    <div class="card">
-                        <img src="${prods[id].img}" class="p-img">
-                        <div style="padding:12px">
-                            <div style="font-size:13px; font-weight:600">${prods[id].name}</div>
-                            <div style="font-size:16px; font-weight:900; margin-top:5px">R$ ${prods[id].price}</div>
-                            <button class="btn-buy" onclick="alert('Sistema de pagamento via PIX em breve!')">Comprar</button>
-                        </div>
-                    </div>`;
-                }
-            }
-            list.innerHTML += html + `</div>`;
-        });
-    }
-
-    // 4. Salvar Produto
-    function saveProduct() {
-        const name = document.getElementById('adm-name').value;
-        const price = document.getElementById('adm-price').value;
-        const img = document.getElementById('adm-img').value;
-        const cat = document.getElementById('adm-cat').value;
-
-        if(name && price && cat) {
-            db.ref('loja/produtos').push({ name, price, img, cat });
-            alert("Produto Salvo!");
+        if(coupon === "VERAO10") {
+            msg.innerText = "Cupom aplicado: 10% de desconto!";
+            msg.className = "text-success";
+        } else {
+            msg.innerText = "Cupom inválido.";
+            msg.className = "text-danger";
         }
     }
-
-    // 5. Chat em Tempo Real
-    function sendChat(role, targetId = myId) {
-        const input = document.getElementById(role === 'user' ? 'chat-input' : 'adm-input-' + targetId);
-        if(!input.value) return;
-
-        db.ref('tickets/' + targetId).push({
-            role: role,
-            text: input.value,
-            time: Date.now()
-        });
-        input.value = "";
-    }
-
-    // Ouvir mensagens do cliente
-    db.ref('tickets/' + myId).on('value', snap => {
-        const box = document.getElementById('chat-msgs');
-        box.innerHTML = "";
-        snap.forEach(m => {
-            const msg = m.val();
-            box.innerHTML += `<div style="margin-bottom:10px; text-align:${msg.role==='user'?'right':'left'}">
-                <span style="background:${msg.role==='user'?'#222':var(--accent)}; color:${msg.role==='user'?'#fff':'#000'}; padding:8px; border-radius:5px; font-size:13px">
-                    ${msg.text}
-                </span>
-            </div>`;
-        });
-        box.scrollTop = box.scrollHeight;
-    });
-
-    function loadAdminChats() {
-        db.ref('tickets').on('value', snap => {
-            const list = document.getElementById('admin-chat-list');
-            list.innerHTML = "";
-            snap.forEach(ticket => {
-                const userId = ticket.key;
-                list.innerHTML += `
-                <div style="background:#1a1a1a; padding:15px; border-radius:8px; margin-bottom:10px; border:1px solid #333">
-                    <p style="font-size:12px; color:var(--accent)">CLIENTE: ${userId}</p>
-                    <div id="adm-msgs-${userId}" style="height:100px; overflow-y:auto; margin:10px 0; font-size:12px"></div>
-                    <div style="display:flex">
-                        <input type="text" id="adm-input-${userId}" placeholder="Responder..." style="margin:0">
-                        <button onclick="sendChat('admin', '${userId}')" style="background:var(--accent); border:none; padding:10px; margin-left:5px; border-radius:5px">OK</button>
-                    </div>
-                </div>`;
-            });
-        });
-    }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
