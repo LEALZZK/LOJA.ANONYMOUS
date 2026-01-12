@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOJA DO RIO - VIP HUB</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -11,144 +11,202 @@
 
     <style>
         :root { 
-            --primary: #00ff88; 
-            --bg-dark: #0a0a0a;
-            --card-bg: #121212;
-            --header-bg: #161616;
-            --input-bg: #1e1e1e;
-            --text-white: #ffffff;
-            --text-gray: #a0a0a0;
+            --bg: #0d0d0d;
+            --card: #141414;
+            --header: #111111;
+            --text: #ffffff;
+            --primary: #ffffff;
+            --accent: #00ff88;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        
-        body { background: var(--bg-dark); color: var(--text-white); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
 
-        /* HEADER ESTILO RIORP */
-        header { 
-            background: var(--header-bg); 
-            padding: 12px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: fixed; top: 0; width: 100%; z-index: 1000;
+        /* HEADER IGUAL AO PRINT */
+        header {
+            background: var(--header);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            justify-content: space-between;
             border-bottom: 1px solid #222;
+            position: fixed; top: 0; width: 100%; z-index: 1000;
         }
 
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .logo-img { width: 32px; height: 32px; border-radius: 6px; }
-        
-        .search-bar { 
-            background: var(--input-bg); 
-            border-radius: 6px; 
-            padding: 8px 15px; 
-            display: flex; 
-            align-items: center; 
-            width: 400px;
+        .logo-section { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 13px; }
+        .logo-img { width: 30px; height: 30px; border-radius: 5px; }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+        .search-container input {
+            width: 100%;
+            background: #1a1a1a;
             border: 1px solid #333;
+            padding: 8px 15px 8px 35px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
         }
-        .search-bar input { background: transparent; border: none; color: #fff; width: 100%; margin-left: 10px; outline: none; }
+        .search-container i { position: absolute; left: 12px; top: 10px; color: #555; font-size: 13px; }
 
-        .header-actions { display: flex; gap: 10px; }
-        .btn-header { background: #fff; color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
-        .btn-header.outline { background: #222; color: #fff; }
+        .header-btns { display: flex; gap: 8px; }
+        .btn-h { padding: 8px 15px; border-radius: 6px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-white { background: #fff; color: #000; }
+        .btn-dark { background: #222; color: #fff; }
 
-        /* LAYOUT DE CARDS */
-        .main-container { margin-top: 80px; padding: 20px 5%; }
-        
-        .category-title { font-size: 14px; text-transform: uppercase; color: var(--text-gray); margin: 30px 0 15px; font-weight: bold; letter-spacing: 1px; }
-        
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-            gap: 15px; 
-        }
+        /* GRID DE PRODUTOS */
+        .container { margin-top: 85px; padding: 20px 5%; }
+        .cat-title { font-size: 11px; text-transform: uppercase; color: #666; font-weight: 800; margin: 25px 0 15px; letter-spacing: 1px; }
 
-        .product-card { 
-            background: var(--card-bg); 
-            border-radius: 10px; 
-            overflow: hidden; 
-            border: 1px solid #222; 
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #222;
             transition: 0.2s;
         }
-        .product-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+        .card:hover { border-color: #444; }
 
-        .product-img { width: 100%; height: 130px; object-fit: cover; background: #000; }
-        
-        .product-info { padding: 12px; }
-        .product-name { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #eee; }
-        .product-price { font-size: 16px; font-weight: bold; color: #fff; }
-        .product-pix { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
+        .p-img { width: 100%; height: 110px; object-fit: cover; background: #000; }
+        .p-info { padding: 12px; }
+        .p-name { font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #ccc; }
+        .p-price { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+        .p-pix { font-size: 10px; color: #666; }
 
-        .card-actions { display: flex; gap: 5px; margin-top: 12px; }
-        .btn-buy { flex: 1; background: #fff; color: #000; border: none; padding: 7px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .btn-cart-add { background: #222; color: #fff; border: none; padding: 7px 10px; border-radius: 4px; cursor: pointer; }
+        .p-actions { display: flex; gap: 5px; margin-top: 12px; }
+        .btn-buy { flex: 1; background: #fff; color: #000; border: none; border-radius: 4px; font-weight: 800; font-size: 11px; padding: 8px; cursor: pointer; text-transform: uppercase; }
+        .btn-cart-icon { background: #222; color: #fff; border: none; border-radius: 4px; padding: 8px 10px; cursor: pointer; }
 
-        /* MODAIS ESTILO RIORP (PRETO E VERDE) */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; 
+        /* CARRINHO VAZIO ESTILO RIORP */
+        .empty-cart-box {
+            text-align: center;
+            padding: 80px 20px;
+            background: #111;
+            border-radius: 12px;
+            border: 1px dashed #333;
+            max-width: 500px;
+            margin: 40px auto;
         }
-        .modal-box { 
-            background: #111; width: 90%; max-width: 400px; border-radius: 12px; 
-            border: 1px solid var(--primary); overflow: hidden;
-        }
-        .modal-body { padding: 30px; text-align: center; }
-        .modal-footer { padding: 15px; display: flex; gap: 10px; background: #000; }
-        
-        /* CHAT SUPORTE */
-        .chat-area { height: 350px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #0a0a0a; }
-        .msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 85%; line-height: 1.4; }
-        .msg.admin { align-self: flex-start; background: #1a1a1a; color: var(--primary); }
-        .msg.user { align-self: flex-end; background: var(--primary); color: #000; font-weight: bold; }
+        .empty-cart-box i { font-size: 50px; color: #222; margin-bottom: 20px; }
+        .empty-cart-box h3 { font-size: 16px; margin-bottom: 10px; }
+        .empty-cart-box button { background: #fff; color: #000; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
-        /* RODAPÉ IGUAL AO PRINT */
-        footer { background: #050505; padding: 60px 5%; border-top: 1px solid #111; margin-top: 50px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-        .footer-title { color: var(--primary); font-weight: bold; margin-bottom: 20px; font-size: 14px; text-transform: uppercase; }
-        .footer-text { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
-        .footer-list { list-style: none; }
-        .footer-list li { margin-bottom: 10px; color: var(--text-gray); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        /* FOOTER */
+        footer { padding: 60px 5%; border-top: 1px solid #222; margin-top: 100px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .footer-left { font-size: 12px; color: #555; }
+        .footer-right { display: flex; gap: 40px; }
+        .f-col h4 { font-size: 12px; margin-bottom: 15px; color: #fff; }
+        .f-col p { font-size: 12px; color: #555; margin-bottom: 8px; cursor: pointer; }
 
         @media (max-width: 768px) {
-            .search-bar { display: none; }
-            .product-grid { grid-template-columns: 1fr 1fr; }
+            .search-container { display: none; }
+            .grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div id="modal-nick" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-body">
-            <h3 style="color:var(--primary); margin-bottom:15px">SUPORTE</h3>
-            <p style="font-size:14px; margin-bottom:20px">Informe seu nick para iniciar o atendimento.</p>
-            <input type="text" id="nick-input" placeholder="Seu Nick" style="width:100%; padding:12px; background:#000; border:1px solid #333; color:#fff; border-radius:6px">
-        </div>
-        <div class="modal-footer">
-            <button class="btn-buy" style="background:#222; color:#fff" onclick="closeModal('modal-nick')">CANCELAR</button>
-            <button class="btn-buy" style="background:var(--primary)" onclick="confirmCheckout()">INICIAR TICKET</button>
-        </div>
-    </div>
-</div>
-
 <header>
-    <div class="header-left">
-        <img src="https://cdn-icons-png.flaticon.com/512/8014/8014787.png" class="logo-img">
-        <span style="font-weight:bold; font-size:14px">LOJA DO RIO</span>
+    <div class="logo-section">
+        <img src="https://via.placeholder.com/30/1a1a1a/fff?text=R" class="logo-img">
+        <span>LOJA DO RIO</span>
     </div>
-    <div class="search-bar">
-        <i class="fas fa-search" style="color:#555"></i>
-        <input type="text" placeholder="Pesquisar produto...">
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Pesquisar produto">
     </div>
-    <div class="header-actions">
-        <button class="btn-header outline" onclick="openMyTickets()"><i class="fas fa-headset"></i></button>
-        <button class="btn-header" onclick="openCart()"><i class="fas fa-shopping-cart"></i> Carrinho (<span id="cart-count">0</span>)</button>
+    <div class="header-btns">
+        <button class="btn-h btn-white" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Carrinho</button>
+        <button class="btn-h btn-dark" onclick="openAdmin()">Entrar</button>
     </div>
 </header>
 
-<div class="main-container">
-    <div id="shop-content">
+<div class="container" id="main-view">
+    <div id="shop-content"></div>
+</div>
+
+<div class="container" id="cart-view" style="display:none">
+    <div class="empty-cart-box">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>Monte um carrinho de compras!</h3>
+        <p style="color:#555; font-size: 13px;">Nesta página, você encontra os produtos adicionados ao seu carrinho.</p>
+        <button onclick="toggleCart()">Descobrir produtos</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-left">
+        <div style="font-weight:bold; color:#fff; margin-bottom:10px">LOJA DO RIO</div>
+        <p>Loja OFICIAL do RIO!</p>
+        <p style="margin-top:20px">© 2026 LOJA DO RIO. Todos os direitos reservados.</p>
+    </div>
+    <div class="footer-right">
+        <div class="f-col">
+            <h4>Políticas</h4>
+            <p>Termos de serviço</p>
+            <p>Políticas de Cookies</p>
+        </div>
+        <div class="f-col">
+            <p style="margin-top:40px; color:#333">Powered by Ereemby</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Configurações do Firebase
+    const firebaseConfig = { apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", projectId: "quebrei-o-sistema" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function toggleCart() {
+        const shop = document.getElementById('main-view');
+        const cart = document.getElementById('cart-view');
+        if(shop.style.display === 'none') {
+            shop.style.display = 'block'; cart.style.display = 'none';
+        } else {
+            shop.style.display = 'none'; cart.style.display = 'block';
+        }
+    }
+
+    db.ref('/').on('value', snap => {
+        const data = snap.val() || {};
+        renderShop(data.categorias, data.produtos);
+    });
+
+    function renderShop(cats, prods) {
+        const cont = document.getElementById('shop-content'); cont.innerHTML = "";
+        for(let id in cats) {
+            let html = `<div class="cat-title">${cats[id].name}</div><div class="grid">`;
+            for(let p in prods) {
+                if(prods[p].cat === cats[id].name) {
+                    html += `
+                    <div class="card">
+                        <img src="${prods[p].img || 'https://via.placeholder.com/200x110/000/333'}" class="p-img">
+                        <div class="p-info">
+                            <div class="p-name">${prods[p].name}</div>
+                            <div class="p-price">R$ ${parseFloat(prods[p].price).toFixed(2)}</div>
+                            <div class="p-pix">À vista no PIX</div>
+                            <div class="p-actions">
+                                <button class="btn-buy">Comprar</button>
+                                <button class="btn-cart-icon"><i class="fas fa-shopping-basket"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            }
+            cont.innerHTML += html + `</div>`;
+        }
+    }
+</script>
+</body>
+</html>    <div id="shop-content">
         </div>
 </div>
 
