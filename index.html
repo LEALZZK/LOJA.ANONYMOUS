@@ -16,98 +16,86 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); background-attachment: fixed; background-size: cover; }
         
-        /* HEADER & SEARCH */
-        header { height: 65px; background: var(--header); display: flex; align-items: center; padding: 0 5%; border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        header { height: 65px; background: var(--header); display: flex; align-items: center; padding: 0 5%; border-bottom: 1px solid var(--border); position: fixed; top: 0; width: 100%; z-index: 1000; justify-content: space-between; }
         .search-bar { flex: 1; max-width: 400px; margin: 0 20px; position: relative; }
-        .search-bar input { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 8px 35px; border-radius: 8px; color: #fff; }
+        .search-bar input { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 8px 35px; border-radius: 8px; color: #fff; outline: none; }
         .search-bar i { position: absolute; left: 10px; top: 10px; color: #555; }
 
-        /* CATEGORIAS HORIZONTAL */
+        /* SCROLL HORIZONTAL */
         .cat-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 20px 5%; margin-top: 70px; scrollbar-width: none; }
-        .cat-item { min-width: 140px; height: 180px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; }
+        .cat-item { min-width: 140px; height: 180px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; cursor: pointer; }
         .cat-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
         .cat-item span { position: absolute; bottom: 15px; width: 100%; text-align: center; font-weight: 800; font-size: 11px; text-transform: uppercase; }
 
-        /* GRID PRODUTOS */
         .container { padding: 0 5% 50px; }
-        .cat-title { font-size: 12px; color: #666; text-transform: uppercase; margin: 30px 0 15px; font-weight: 800; }
+        .cat-title { font-size: 12px; color: #666; text-transform: uppercase; margin: 30px 0 15px; font-weight: 800; border-left: 3px solid var(--accent); padding-left: 10px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding-bottom: 12px; }
-        .p-img { width: 100%; height: 110px; object-fit: cover; }
-        .btn-buy { width: 80%; background: #fff; border: none; padding: 8px; border-radius: 5px; font-weight: 800; cursor: pointer; }
-
-        /* CHAT / TICKET NO SITE */
-        .chat-box { position: fixed; bottom: 80px; right: 20px; width: 320px; background: #111; border: 1px solid var(--accent); border-radius: 10px; display: none; flex-direction: column; z-index: 2000; }
-        .chat-msgs { height: 250px; overflow-y: auto; padding: 10px; font-size: 13px; }
-        .chat-input { display: flex; border-top: 1px solid #222; }
-        .chat-input input { flex: 1; background: transparent; border: none; color: #fff; padding: 10px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding-bottom: 12px; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .p-img { width: 100%; height: 110px; object-fit: cover; border-radius: 10px 10px 0 0; }
         
-        /* ADMIN */
-        #admin-view { display: none; padding: 80px 5%; }
-        .admin-card { background: #111; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
-        .ticket-row { display: flex; justify-content: space-between; padding: 10px; background: #1a1a1a; margin-bottom: 5px; border-radius: 5px; cursor: pointer; }
+        .btn-buy { width: 100%; background: #fff; border: none; padding: 10px; border-radius: 5px; font-weight: 800; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 11px; }
 
-        .support-trigger { position: fixed; bottom: 20px; right: 20px; background: var(--accent); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; cursor: pointer; }
+        /* ADMIN & CHAT */
+        #admin-view { display: none; padding: 100px 5% 50px; background: #000; min-height: 100vh; position: absolute; top: 0; width: 100%; z-index: 2000; }
+        .admin-card { background: #111; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; margin-bottom: 10px; }
+        
+        .chat-box { position: fixed; bottom: 85px; right: 20px; width: 320px; background: #111; border: 1px solid var(--accent); border-radius: 10px; display: none; flex-direction: column; z-index: 3000; }
+        .chat-msgs { height: 300px; overflow-y: auto; padding: 15px; }
+        .support-trigger { position: fixed; bottom: 20px; right: 20px; background: var(--accent); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; cursor: pointer; z-index: 3000; font-size: 20px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight:900">LOJA DO RIO</div>
-    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Buscar..."></div>
-    <button onclick="checkAdmin()" style="background:#222; color:#fff; border:none; padding:8px 15px; border-radius:5px; cursor:pointer">ADMIN</button>
+    <div style="font-weight:900; cursor:pointer" onclick="location.reload()">LOJA DO RIO</div>
+    <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="search" placeholder="Pesquisar..."></div>
+    <button onclick="openAdmin()" style="background:#222; color:#fff; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold">ENTRAR</button>
 </header>
 
 <div id="user-view">
     <div class="cat-scroll" id="cat-list"></div>
     <div class="container" id="product-list"></div>
-    
-    <section class="container" style="text-align:center; margin-top:50px">
-        <div class="cat-title">Avaliações</div>
-        <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #222">
-            <div style="color:#f1c40f"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            <p style="margin-top:10px">"O melhor preço do mercado, entrega automática via PIX!"</p>
-        </div>
-    </section>
 </div>
 
 <div id="admin-view">
-    <h2 style="color:var(--accent); margin-bottom:20px">PAINEL DE CONTROLE</h2>
-    <div class="admin-card">
-        <h3>CADASTROS</h3>
-        <input type="text" id="adm-p-name" placeholder="Nome Produto">
-        <input type="number" id="adm-p-price" placeholder="Preço">
-        <input type="text" id="adm-p-img" placeholder="URL Imagem">
-        <input type="text" id="adm-p-cat" placeholder="Categoria">
-        <button onclick="saveProd()" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:5px; font-weight:bold">SALVAR PRODUTO</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px">
+        <h2 style="color:var(--accent)">PAINEL ADMINISTRATIVO</h2>
+        <button onclick="closeAdmin()" style="background:red; color:#fff; border:none; padding:10px; border-radius:5px; cursor:pointer">SAIR</button>
     </div>
-    
+
     <div class="admin-card">
-        <h3>TICKETS ATIVOS</h3>
-        <div id="admin-tickets"></div>
+        <h3>PRODUTOS E CATEGORIAS</h3>
+        <input type="text" id="adm-name" placeholder="Nome do Item">
+        <input type="number" id="adm-price" placeholder="Preço (Ex: 46.90)">
+        <input type="text" id="adm-img" placeholder="URL da Imagem">
+        <input type="text" id="adm-cat" placeholder="Categoria (Ex: Dinheiro)">
+        <button onclick="saveProduct()" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:5px; font-weight:bold; cursor:pointer">CADASTRAR</button>
     </div>
-    
+
     <div class="admin-card">
-        <h3>CONFIGURAÇÕES</h3>
-        <input type="text" id="adm-bg" placeholder="URL Fundo do Site">
-        <input type="text" id="adm-aviso" placeholder="Aviso da Loja">
-        <button onclick="saveConfig()" style="width:100%; padding:10px; background:#444; color:#fff; border:none; border-radius:5px">ATUALIZAR LOJA</button>
+        <h3>TICKETS (CHAT COM CLIENTES)</h3>
+        <div id="admin-chat-list"></div>
     </div>
-    <button onclick="location.reload()" style="color:#666; background:none; border:none; cursor:pointer">Sair do Painel</button>
 </div>
 
 <div class="chat-box" id="user-chat">
-    <div style="padding:10px; background:var(--accent); color:#000; font-weight:bold; border-radius:10px 10px 0 0">SUPORTE ONLINE</div>
-    <div class="chat-msgs" id="chat-content"></div>
-    <div class="chat-input">
-        <input type="text" id="msg-input" placeholder="Diga algo...">
-        <button onclick="sendMsg('user')" style="padding:10px; background:none; border:none; color:var(--accent)"><i class="fas fa-paper-plane"></i></button>
+    <div style="padding:15px; background:var(--accent); color:#000; font-weight:bold; display:flex; justify-content:space-between">
+        <span>SUPORTE</span>
+        <i class="fas fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div style="display:flex; padding:10px; border-top:1px solid #222">
+        <input type="text" id="chat-input" placeholder="Mensagem..." style="margin:0">
+        <button onclick="sendChat('user')" style="background:var(--accent); border:none; padding:10px; border-radius:5px; margin-left:5px"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
 <div class="support-trigger" onclick="toggleChat()"><i class="fas fa-comments"></i></div>
 
 <script>
+    // 1. Configuração do Firebase
     const firebaseConfig = { 
         apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
         databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
@@ -115,94 +103,119 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const myId = localStorage.getItem('chat_id') || 'cli_' + Math.floor(Math.random()*9999);
-    localStorage.setItem('chat_id', myId);
 
-    function checkAdmin() {
-        if(prompt("Senha Mestra:") === "270712") {
-            document.getElementById('user-view').style.display='none';
-            document.getElementById('admin-view').style.display='block';
-            loadAdminTickets();
-        }
+    // ID do usuário para o Chat
+    const myId = localStorage.getItem('my_chat_id') || 'user_' + Math.floor(Math.random() * 9999);
+    localStorage.setItem('my_chat_id', myId);
+
+    // 2. Funções de Interface
+    function openAdmin() {
+        const pass = prompt("Chave Mestra:");
+        if(pass === "270712") {
+            document.getElementById('admin-view').style.display = 'block';
+            loadAdminChats();
+        } else { alert("Senha incorreta!"); }
     }
 
-    function toggleChat() { 
-        const c = document.getElementById('user-chat');
-        c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
+    function closeAdmin() { document.getElementById('admin-view').style.display = 'none'; }
+
+    function toggleChat() {
+        const chat = document.getElementById('user-chat');
+        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    // CARREGAR DADOS
-    db.ref('/').on('value', snap => {
-        const data = snap.val() || {};
-        renderStore(data.produtos, data.categorias);
-        if(data.config) document.body.style.backgroundImage = `url(${data.config.bg})`;
+    // 3. Lógica do Firebase (Sincronização)
+    db.ref('loja').on('value', snap => {
+        const data = snap.val() || { produtos: {} };
+        renderProducts(data.produtos);
     });
 
-    function renderStore(prods, cats) {
-        const pList = document.getElementById('product-list');
-        const cList = document.getElementById('cat-list');
-        pList.innerHTML = ""; cList.innerHTML = "";
+    function renderProducts(prods) {
+        const list = document.getElementById('product-list');
+        const cats = document.getElementById('cat-list');
+        list.innerHTML = ""; cats.innerHTML = "";
 
-        // Categorias Horizontais
-        for(let id in cats) {
-            cList.innerHTML += `<div class="cat-item"><img src="${cats[id].img}"><span>${cats[id].name}</span></div>`;
-        }
-
-        // Produtos em Grid
-        for(let id in prods) {
-            pList.innerHTML += `
-                <div class="cat-title">${prods[id].cat}</div>
-                <div class="grid">
+        let categories = [...new Set(Object.values(prods).map(p => p.cat))];
+        
+        // Renderizar Scroll Horizontal
+        categories.forEach(c => {
+            cats.innerHTML += `<div class="cat-item"><img src="https://via.placeholder.com/140x180/111/fff?text=${c}"><span>${c}</span></div>`;
+            
+            // Renderizar Grid
+            let html = `<div class="cat-title">${c}</div><div class="grid">`;
+            for(let id in prods) {
+                if(prods[id].cat === c) {
+                    html += `
                     <div class="card">
                         <img src="${prods[id].img}" class="p-img">
-                        <div style="padding:10px">
-                            <div style="font-size:13px">${prods[id].name}</div>
-                            <div style="font-weight:bold; margin:5px 0">R$ ${prods[id].price}</div>
-                            <button class="btn-buy">COMPRAR</button>
+                        <div style="padding:12px">
+                            <div style="font-size:13px; font-weight:600">${prods[id].name}</div>
+                            <div style="font-size:16px; font-weight:900; margin-top:5px">R$ ${prods[id].price}</div>
+                            <button class="btn-buy" onclick="alert('Sistema de pagamento via PIX em breve!')">Comprar</button>
                         </div>
-                    </div>
-                </div>`;
+                    </div>`;
+                }
+            }
+            list.innerHTML += html + `</div>`;
+        });
+    }
+
+    // 4. Salvar Produto
+    function saveProduct() {
+        const name = document.getElementById('adm-name').value;
+        const price = document.getElementById('adm-price').value;
+        const img = document.getElementById('adm-img').value;
+        const cat = document.getElementById('adm-cat').value;
+
+        if(name && price && cat) {
+            db.ref('loja/produtos').push({ name, price, img, cat });
+            alert("Produto Salvo!");
         }
     }
 
-    // SUPORTE / TICKET
-    function sendMsg(role, id = myId) {
-        const input = document.getElementById(role === 'user' ? 'msg-input' : 'adm-msg-'+id);
+    // 5. Chat em Tempo Real
+    function sendChat(role, targetId = myId) {
+        const input = document.getElementById(role === 'user' ? 'chat-input' : 'adm-input-' + targetId);
         if(!input.value) return;
-        db.ref('tickets/' + id + '/chat').push({ role: role, text: input.value, time: Date.now() });
+
+        db.ref('tickets/' + targetId).push({
+            role: role,
+            text: input.value,
+            time: Date.now()
+        });
         input.value = "";
     }
 
-    db.ref('tickets/' + myId + '/chat').on('value', snap => {
-        const cont = document.getElementById('chat-content');
-        cont.innerHTML = "";
+    // Ouvir mensagens do cliente
+    db.ref('tickets/' + myId).on('value', snap => {
+        const box = document.getElementById('chat-msgs');
+        box.innerHTML = "";
         snap.forEach(m => {
             const msg = m.val();
-            cont.innerHTML += `<div style="margin-bottom:8px; color:${msg.role==='user'?'#fff':var(--accent)}"><b>${msg.role.toUpperCase()}:</b> ${msg.text}</div>`;
+            box.innerHTML += `<div style="margin-bottom:10px; text-align:${msg.role==='user'?'right':'left'}">
+                <span style="background:${msg.role==='user'?'#222':var(--accent)}; color:${msg.role==='user'?'#fff':'#000'}; padding:8px; border-radius:5px; font-size:13px">
+                    ${msg.text}
+                </span>
+            </div>`;
         });
-        cont.scrollTop = cont.scrollHeight;
+        box.scrollTop = box.scrollHeight;
     });
 
-    // ADMIN FUNCTIONS
-    function saveProd() {
-        const name = document.getElementById('adm-p-name').value;
-        const price = document.getElementById('adm-p-price').value;
-        const img = document.getElementById('adm-p-img').value;
-        const cat = document.getElementById('adm-p-cat').value;
-        db.ref('produtos').push({name, price, img, cat});
-    }
-
-    function loadAdminTickets() {
+    function loadAdminChats() {
         db.ref('tickets').on('value', snap => {
-            const cont = document.getElementById('admin-tickets');
-            cont.innerHTML = "";
-            snap.forEach(t => {
-                cont.innerHTML += `
-                    <div class="ticket-row">
-                        <span>Ticket: ${t.key}</span>
-                        <input type="text" id="adm-msg-${t.key}" placeholder="Responder..." style="width:50%; margin:0">
-                        <button onclick="sendMsg('admin', '${t.key}')" style="background:var(--accent); border:none; padding:5px 10px; border-radius:3px">Enviar</button>
-                    </div>`;
+            const list = document.getElementById('admin-chat-list');
+            list.innerHTML = "";
+            snap.forEach(ticket => {
+                const userId = ticket.key;
+                list.innerHTML += `
+                <div style="background:#1a1a1a; padding:15px; border-radius:8px; margin-bottom:10px; border:1px solid #333">
+                    <p style="font-size:12px; color:var(--accent)">CLIENTE: ${userId}</p>
+                    <div id="adm-msgs-${userId}" style="height:100px; overflow-y:auto; margin:10px 0; font-size:12px"></div>
+                    <div style="display:flex">
+                        <input type="text" id="adm-input-${userId}" placeholder="Responder..." style="margin:0">
+                        <button onclick="sendChat('admin', '${userId}')" style="background:var(--accent); border:none; padding:10px; margin-left:5px; border-radius:5px">OK</button>
+                    </div>
+                </div>`;
             });
         });
     }
