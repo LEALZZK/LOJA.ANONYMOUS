@@ -3,496 +3,591 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Riorp Style | Quebrei o Sistema</title>
+    <title>Bahamas Store | RP</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         :root {
-            --primary-color: #6a11cb;
-            --secondary-color: #2575fc;
-            --bg-dark: #0f1115;
-            --card-bg: #181b21;
-            --text-color: #e0e0e0;
+            --bahamas-bg: #090b10;
+            --bahamas-card: #13161c;
+            --primary: #00d2ff; /* Ciano Neon */
+            --secondary: #9d00ff; /* Roxo */
+            --text-main: #ffffff;
+            --text-sec: #a0a0a0;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: var(--bahamas-bg);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif; /* Fonte estilo Gamer/Futurista */
+            overflow-x: hidden;
         }
+
+        /* Scrollbar Personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bahamas-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
         /* Navbar */
         .navbar {
-            background: rgba(24, 27, 33, 0.95);
+            background: rgba(9, 11, 16, 0.95);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.2);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid #333;
+            padding: 15px 0;
         }
         .navbar-brand {
-            font-weight: bold;
-            color: #fff !important;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary) !important;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
         }
         .nav-link {
-            color: #bbb !important;
+            color: var(--text-sec) !important;
+            font-weight: 600;
+            text-transform: uppercase;
             transition: 0.3s;
         }
         .nav-link:hover, .nav-link.active {
-            color: var(--secondary-color) !important;
+            color: var(--primary) !important;
+            text-shadow: 0 0 5px var(--primary);
+        }
+        
+        /* Botão Admin */
+        .btn-admin {
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            transition: 0.3s;
+        }
+        .btn-admin:hover {
+            background: var(--secondary);
+            color: #fff;
+            box-shadow: 0 0 15px var(--secondary);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 60px 0;
+            background: linear-gradient(180deg, rgba(0,210,255,0.1) 0%, rgba(9,11,16,1) 100%);
+            padding: 80px 0 40px;
             text-align: center;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .hero h1 { font-weight: 800; color: #fff; }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: -webkit-linear-gradient(0deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-        /* Cards */
+        /* Produtos */
         .product-card {
-            background-color: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--bahamas-card);
+            border: 1px solid #2a2f3a;
+            border-radius: 12px;
             overflow: hidden;
-            height: 100%;
+            transition: 0.3s;
+            position: relative;
         }
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
-            border-color: var(--primary-color);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(0, 210, 255, 0.15);
+        }
+        .card-img-wrapper {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
         }
         .card-img-top {
-            height: 200px;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            transition: 0.5s;
         }
+        .product-card:hover .card-img-top { transform: scale(1.1); }
+        
         .card-body { padding: 20px; }
-        .price-tag {
-            color: #4ade80;
-            font-size: 1.25rem;
+        .price {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Botão Comprar */
+        .btn-buy {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-buy:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        /* Carrinho Flutuante */
+        .cart-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0,210,255,0.6);
+            z-index: 1000;
+            transition: 0.3s;
+        }
+        .cart-float:hover { transform: scale(1.1); }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 12px;
             font-weight: bold;
         }
 
-        /* Botões */
-        .btn-custom {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border: none;
+        /* Áreas de Texto/Forms */
+        .form-control, .form-select {
+            background: #0f1218;
+            border: 1px solid #333;
             color: white;
-            font-weight: 600;
-        }
-        .btn-custom:hover {
-            opacity: 0.9;
-            color: white;
-        }
-
-        /* Seções (SPA) */
-        .section-view { display: none; animation: fadeIn 0.5s; }
-        .section-view.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Admin & Forms */
-        .form-control {
-            background-color: #222;
-            border: 1px solid #444;
-            color: #fff;
         }
         .form-control:focus {
-            background-color: #2a2a2a;
-            border-color: var(--primary-color);
-            color: #fff;
-        }
-        .ticket-item {
-            background: #222;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--secondary-color);
+            background: #151921;
+            border-color: var(--primary);
+            color: white;
+            box-shadow: none;
         }
 
-        footer {
-            margin-top: auto;
-            background: #000;
-            padding: 20px 0;
-            text-align: center;
-            border-top: 1px solid #333;
-        }
+        /* Views (SPA) */
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); }}
+        
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#" onclick="showSection('home')"><i class="fas fa-gamepad me-2"></i>RioRP Store</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="#" onclick="navTo('home')"><i class="fas fa-umbrella-beach me-2"></i>BAHAMAS</a>
+            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('home')">Início</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('terms')">Termos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('about')">Sobre</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('tickets')">Suporte</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-light ms-2 px-3" href="#" onclick="checkAdmin()">Admin</a></li>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" onclick="navTo('home')" href="#">Loja</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="navTo('sobre')" href="#">Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="navTo('termos')" href="#">Termos</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="navTo('suporte')" href="#">Suporte</a></li>
+                    <li class="nav-item ms-3">
+                        <button class="btn btn-sm btn-admin px-3 rounded-pill" onclick="openAdmin()">
+                            <i class="fas fa-lock me-1"></i> ADMIN
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div id="home" class="section-view active">
+    <div id="home" class="view-section active">
         <div class="hero">
             <div class="container">
-                <h1>Bem-vindo à Loja</h1>
-                <p class="lead">Os melhores itens e VIPs para sua gameplay.</p>
-                <button class="btn btn-light rounded-pill px-4 mt-2" onclick="document.getElementById('products-grid').scrollIntoView({behavior: 'smooth'})">Ver Produtos</button>
+                <h1>BAHAMAS STORE</h1>
+                <p class="text-sec">A melhor loja da cidade. Compre VIPs, Carros e Itens.</p>
             </div>
         </div>
 
-        <div class="container mb-5" id="products-grid">
-            <h3 class="mb-4 border-bottom border-secondary pb-2">Destaques</h3>
-            <div class="row g-4" id="products-container">
-                <div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>
+        <div class="container pb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
+                <h3 class="m-0 text-white"><i class="fas fa-fire text-danger me-2"></i>Destaques</h3>
+                <span class="text-muted" id="total-products-count">Carregando...</span>
             </div>
+            
+            <div class="row g-4" id="products-grid">
+                </div>
         </div>
     </div>
 
-    <div id="terms" class="section-view container my-5">
-        <div class="card bg-dark border-secondary p-4">
-            <h2>Termos de Serviço</h2>
-            <hr>
-            <p>1. Todas as compras são finais e não reembolsáveis (produtos digitais).</p>
-            <p>2. A entrega é automática ou realizada pela equipe em até 24h.</p>
-            <p>3. O uso de bugs para duplicar itens resultará em banimento.</p>
-            <p>4. Ao comprar, você concorda com as regras do servidor.</p>
-        </div>
-    </div>
-
-    <div id="about" class="section-view container my-5">
-        <div class="card bg-dark border-secondary p-4">
-            <h2>Sobre Nós</h2>
-            <hr>
-            <p>Somos uma loja focada em oferecer a melhor experiência para os jogadores. Nossa equipe trabalha 24/7 para garantir qualidade e segurança nas transações.</p>
-            <div class="row mt-4">
-                <div class="col-md-4 text-center">
-                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                    <h5>Segurança</h5>
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--bahamas-card); border: 1px solid var(--primary);">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-white"><i class="fas fa-shopping-cart me-2"></i>Seu Carrinho</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="col-md-4 text-center">
-                    <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
-                    <h5>Rapidez</h5>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush" id="cart-items-list">
+                        </ul>
+                    <div class="mt-3 text-end">
+                        <h4 class="text-white">Total: <span class="text-info" id="cart-total">R$ 0,00</span></h4>
+                    </div>
                 </div>
-                <div class="col-md-4 text-center">
-                    <i class="fas fa-headset fa-3x text-success mb-3"></i>
-                    <h5>Suporte</h5>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearCart()">Limpar</button>
+                    <button type="button" class="btn btn-primary fw-bold" onclick="checkout()">
+                        <i class="fab fa-whatsapp me-2"></i>Finalizar Compra
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="tickets" class="section-view container my-5">
+    <div id="suporte" class="view-section container my-5">
+        <div class="card bg-dark border-secondary p-4 mx-auto" style="max-width: 600px;">
+            <h3 class="text-primary mb-3">Abrir Ticket</h3>
+            <form onsubmit="submitTicket(event)">
+                <input type="text" id="ticket-name" class="form-control mb-3" placeholder="Seu Nome / ID" required>
+                <select id="ticket-type" class="form-select mb-3">
+                    <option>Dúvida sobre VIP</option>
+                    <option>Problema na Entrega</option>
+                    <option>Denúncia</option>
+                </select>
+                <textarea id="ticket-msg" class="form-control mb-3" rows="4" placeholder="Descreva seu problema..." required></textarea>
+                <button class="btn btn-buy">Enviar Solicitação</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin" class="view-section container my-5">
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="text-secondary">PAINEL ADMINISTRATIVO</h2>
+            <button class="btn btn-outline-light btn-sm" onclick="navTo('home')">Sair</button>
+        </div>
+
         <div class="row">
-            <div class="col-md-6 mx-auto">
+            <div class="col-md-5 mb-4">
                 <div class="card bg-dark border-secondary">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="m-0"><i class="fas fa-ticket-alt me-2"></i>Abrir Ticket</h4>
-                    </div>
+                    <div class="card-header fw-bold text-white">Novo Produto</div>
                     <div class="card-body">
-                        <form id="ticket-form" onsubmit="createTicket(event)">
-                            <div class="mb-3">
-                                <label class="form-label">Seu Nick/ID</label>
-                                <input type="text" id="ticket-nick" class="form-control" required placeholder="Ex: Player#1234">
+                        <form onsubmit="adminAddProduct(event)">
+                            <div class="mb-2">
+                                <label class="small text-muted">Nome do Produto</label>
+                                <input type="text" id="adm-name" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="small text-muted">Preço (R$)</label>
+                                <input type="number" id="adm-price" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="small text-muted">URL da Imagem</label>
+                                <input type="text" id="adm-img" class="form-control" placeholder="https://..." required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Assunto</label>
-                                <select id="ticket-subject" class="form-control">
-                                    <option>Problema com Compra</option>
-                                    <option>Dúvida</option>
-                                    <option>Denúncia</option>
-                                    <option>Outros</option>
-                                </select>
+                                <label class="small text-muted">Avaliação (1-5)</label>
+                                <input type="number" id="adm-rating" class="form-control" max="5" min="1" value="5">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Mensagem</label>
-                                <textarea id="ticket-msg" class="form-control" rows="4" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-custom w-100">Enviar Ticket</button>
+                            <button class="btn btn-success w-100">Adicionar à Loja</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <ul class="nav nav-tabs border-secondary mb-3">
+                    <li class="nav-item">
+                        <button class="nav-link active bg-transparent text-white" data-bs-toggle="tab" data-bs-target="#tab-prods">Produtos</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link bg-transparent text-white" data-bs-toggle="tab" data-bs-target="#tab-tickets">Tickets</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-prods">
+                        <div class="table-responsive bg-dark rounded p-2">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead><tr><th>Nome</th><th>Preço</th><th>Ação</th></tr></thead>
+                                <tbody id="adm-prod-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-tickets">
+                        <div id="adm-ticket-list"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="admin" class="section-view container my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Painel Administrativo</h2>
-            <button class="btn btn-danger btn-sm" onclick="showSection('home')">Sair</button>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card bg-dark border-secondary h-100">
-                    <div class="card-header">Adicionar Produto</div>
-                    <div class="card-body">
-                        <form onsubmit="addProduct(event)">
-                            <input type="text" id="prod-name" class="form-control mb-2" placeholder="Nome do Produto" required>
-                            <input type="text" id="prod-img" class="form-control mb-2" placeholder="URL da Imagem" required>
-                            <input type="number" id="prod-price" class="form-control mb-2" placeholder="Preço (R$)" required>
-                            <textarea id="prod-desc" class="form-control mb-2" placeholder="Descrição"></textarea>
-                            <input type="number" id="prod-rating" class="form-control mb-2" placeholder="Avaliação (0-5)" max="5" min="0" step="0.1">
-                            <button type="submit" class="btn btn-success w-100">Salvar Produto</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-8">
-                <div class="card bg-dark border-secondary h-100">
-                    <div class="card-header">Tickets Abertos</div>
-                    <div class="card-body" id="admin-tickets-list" style="max-height: 400px; overflow-y: auto;">
-                        <p class="text-muted">Carregando tickets...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            <h4>Gerenciar Produtos Ativos</h4>
-            <div class="table-responsive">
-                <table class="table table-dark table-hover">
-                    <thead><tr><th>Nome</th><th>Preço</th><th>Ação</th></tr></thead>
-                    <tbody id="admin-products-list">
-                        </tbody>
-                </table>
-            </div>
+    <div id="sobre" class="view-section container my-5 text-center">
+        <h1>Sobre a BAHAMAS</h1>
+        <p class="lead text-muted">A cidade onde seus sonhos se tornam realidade.</p>
+        <div class="row mt-5">
+            <div class="col-md-4"><i class="fas fa-server fa-3x text-primary mb-3"></i><h4>Estabilidade</h4></div>
+            <div class="col-md-4"><i class="fas fa-users fa-3x text-secondary mb-3"></i><h4>Comunidade</h4></div>
+            <div class="col-md-4"><i class="fas fa-shield-alt fa-3x text-info mb-3"></i><h4>Segurança</h4></div>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p class="m-0 text-muted">&copy; 2024 RioRP Store - Todos os direitos reservados.</p>
-            <small class="text-muted">Desenvolvido com Firebase</small>
-        </div>
-    </footer>
+    <div id="termos" class="view-section container my-5">
+        <h2>Termos de Uso</h2>
+        <ul class="list-group list-group-flush bg-transparent">
+            <li class="list-group-item bg-transparent text-muted">1. Não há reembolso para itens consumíveis.</li>
+            <li class="list-group-item bg-transparent text-muted">2. Abuso de bugs na loja resulta em banimento.</li>
+            <li class="list-group-item bg-transparent text-muted">3. O prazo de entrega é de até 24h.</li>
+        </ul>
+    </div>
 
+    <div class="cart-float" onclick="openCart()">
+        <i class="fas fa-shopping-bag"></i>
+        <div class="cart-badge" id="cart-count">0</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. CONFIGURAÇÃO DO FIREBASE
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
-            databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
-            projectId: "quebrei-o-sistema" 
+        // --- 1. BANCO DE DADOS LOCAL (SIMULADO) ---
+        const defaultProducts = [
+            { id: 1, name: "VIP Ouro", price: 50, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 5 },
+            { id: 2, name: "VIP Diamante", price: 100, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 5 },
+            { id: 3, name: "Mansão", price: 150, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 4 },
+            { id: 4, name: "Carro Sport", price: 80, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 5 },
+            { id: 5, name: "Kit Armas", price: 30, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 4 },
+            { id: 6, name: "Dinheiro (1M)", price: 20, img: "https://i.imgur.com/3QZ9Q0a.png", rating: 5 },
+        ];
+
+        // Carregar dados ou usar padrão
+        let products = JSON.parse(localStorage.getItem('bahamas_products')) || defaultProducts;
+        let cart = JSON.parse(localStorage.getItem('bahamas_cart')) || [];
+        let tickets = JSON.parse(localStorage.getItem('bahamas_tickets')) || [];
+
+        // Salvar dados
+        const saveDB = () => {
+            localStorage.setItem('bahamas_products', JSON.stringify(products));
+            localStorage.setItem('bahamas_cart', JSON.stringify(cart));
+            localStorage.setItem('bahamas_tickets', JSON.stringify(tickets));
+            updateUI();
         };
 
-        // Inicialização
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
-
-        // 2. NAVEGAÇÃO SPA
-        function showSection(sectionId) {
-            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+        // --- 2. NAVEGAÇÃO ---
+        function navTo(sectionId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(sectionId).classList.add('active');
-            
-            // Highlight navbar logic simples
-            if(sectionId === 'home') document.querySelector('a[onclick="showSection(\'home\')"]').classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        // 3. CARREGAR PRODUTOS (HOME)
-        function loadProducts() {
-            const container = document.getElementById('products-container');
-            
-            db.ref('products').on('value', (snapshot) => {
-                container.innerHTML = '';
-                const data = snapshot.val();
-                
-                if (!data) {
-                    container.innerHTML = '<p class="text-center text-muted">Nenhum produto cadastrado ainda.</p>';
-                    return;
-                }
+        // --- 3. LÓGICA DA LOJA ---
+        function renderStore() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            document.getElementById('total-products-count').innerText = `${products.length} itens disponíveis`;
 
-                Object.keys(data).forEach(key => {
-                    const product = data[key];
-                    const stars = generateStars(product.rating || 5);
-                    
-                    const html = `
-                        <div class="col-md-4 col-sm-6">
-                            <div class="product-card">
-                                <img src="${product.image}" class="card-img-top" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">${product.name}</h5>
-                                    <div class="mb-2 text-warning small">${stars}</div>
-                                    <p class="card-text text-muted small flex-grow-1">${product.description || 'Sem descrição'}</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <span class="price-tag">R$ ${product.price}</span>
-                                        <button class="btn btn-custom btn-sm" onclick="buyProduct('${product.name}')">
-                                            <i class="fas fa-shopping-cart"></i> Comprar
-                                        </button>
-                                    </div>
+            products.forEach(prod => {
+                // Gerar Estrelas
+                let stars = '';
+                for(let i=0; i<5; i++) stars += i < prod.rating ? '<i class="fas fa-star text-warning"></i>' : '<i class="far fa-star text-secondary"></i>';
+
+                const html = `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <div class="card-img-wrapper">
+                                <img src="${prod.img}" class="card-img-top" onerror="this.src='https://via.placeholder.com/300?text=Bahamas'">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="text-white mb-1">${prod.name}</h5>
+                                <div class="small mb-3">${stars}</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">R$ ${prod.price},00</span>
+                                    <button class="btn btn-sm btn-buy w-auto px-3" onclick="addToCart(${prod.id})">
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    container.innerHTML += html;
-                });
-
-                // Atualizar lista de admin também
-                loadAdminProducts(data);
+                    </div>
+                `;
+                grid.innerHTML += html;
             });
         }
 
-        function generateStars(rating) {
-            let starsHtml = '';
-            for(let i=1; i<=5; i++) {
-                if(i <= rating) starsHtml += '<i class="fas fa-star"></i>';
-                else starsHtml += '<i class="far fa-star"></i>';
-            }
-            return starsHtml;
-        }
-
-        function buyProduct(name) {
-            Swal.fire({
-                title: 'Confirmar Compra',
-                text: `Deseja adicionar "${name}" ao carrinho? (Simulação)`,
-                icon: 'question',
-                confirmButtonColor: '#6a11cb',
-                confirmButtonText: 'Sim, comprar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('Sucesso!', 'Você seria redirecionado para o checkout.', 'success');
-                }
-            });
-        }
-
-        // 4. SISTEMA DE TICKETS
-        function createTicket(e) {
-            e.preventDefault();
-            const nick = document.getElementById('ticket-nick').value;
-            const subject = document.getElementById('ticket-subject').value;
-            const msg = document.getElementById('ticket-msg').value;
-
-            const newTicketKey = db.ref().child('tickets').push().key;
+        // --- 4. CARRINHO ---
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            cart.push(prod);
+            saveDB();
             
-            db.ref('tickets/' + newTicketKey).set({
-                nick: nick,
-                subject: subject,
-                message: msg,
-                status: 'aberto',
-                timestamp: Date.now()
-            }).then(() => {
-                Swal.fire('Enviado!', 'Seu ticket foi criado com sucesso.', 'success');
-                document.getElementById('ticket-form').reset();
-            }).catch((error) => {
-                Swal.fire('Erro', error.message, 'error');
-            });
+            const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+            Toast.fire({ icon: 'success', title: `${prod.name} adicionado!` });
         }
 
-        // 5. ADMINISTRAÇÃO
-        function checkAdmin() {
-            // Autenticação simples apenas para o prompt (Não seguro para produção real sem Auth)
-            Swal.fire({
-                title: 'Acesso Admin',
-                input: 'password',
-                inputLabel: 'Senha da loja',
-                inputPlaceholder: 'Digite a senha...',
-                confirmButtonColor: '#2575fc'
-            }).then((result) => {
-                if (result.value === 'admin123') { // SENHA PADRÃO: admin123
-                    showSection('admin');
-                    loadAdminTickets();
-                } else if (result.isConfirmed) {
-                    Swal.fire('Acesso Negado', 'Senha incorreta', 'error');
-                }
-            });
-        }
-
-        function addProduct(e) {
-            e.preventDefault();
-            const name = document.getElementById('prod-name').value;
-            const img = document.getElementById('prod-img').value;
-            const price = document.getElementById('prod-price').value;
-            const desc = document.getElementById('prod-desc').value;
-            const rating = document.getElementById('prod-rating').value;
-
-            db.ref('products').push({
-                name: name,
-                image: img,
-                price: price,
-                description: desc,
-                rating: rating
-            });
-            
-            Swal.fire('Sucesso', 'Produto adicionado!', 'success');
-            e.target.reset();
-        }
-
-        function loadAdminTickets() {
-            const list = document.getElementById('admin-tickets-list');
-            db.ref('tickets').on('value', (snapshot) => {
-                list.innerHTML = '';
-                const data = snapshot.val();
-                if (!data) {
-                    list.innerHTML = '<p>Sem tickets abertos.</p>';
-                    return;
-                }
-                Object.keys(data).forEach(key => {
-                    const t = data[key];
-                    list.innerHTML += `
-                        <div class="ticket-item">
-                            <strong>${t.nick}</strong> <span class="badge bg-info">${t.subject}</span>
-                            <p class="m-0 mt-1 text-muted small">${t.message}</p>
-                            <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteTicket('${key}')">Fechar Ticket</button>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        function loadAdminProducts(data) {
-            const list = document.getElementById('admin-products-list');
+        function openCart() {
+            const list = document.getElementById('cart-items-list');
             list.innerHTML = '';
-            if(!data) return;
+            let total = 0;
+
+            if(cart.length === 0) {
+                list.innerHTML = '<li class="list-group-item bg-transparent text-muted text-center">Carrinho vazio</li>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += parseInt(item.price);
+                    list.innerHTML += `
+                        <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center">
+                            <span>${item.name}</span>
+                            <div>
+                                <span class="text-primary me-2">R$ ${item.price}</span>
+                                <i class="fas fa-trash text-danger" style="cursor:pointer" onclick="removeFromCart(${index})"></i>
+                            </div>
+                        </li>
+                    `;
+                });
+            }
+
+            document.getElementById('cart-total').innerText = `R$ ${total},00`;
+            const modal = new bootstrap.Modal(document.getElementById('cartModal'));
+            modal.show();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveDB();
+            // Reabrir modal para atualizar (gambiarra rápida funcional)
+            document.querySelector('.btn-close').click();
+            setTimeout(openCart, 300);
+        }
+
+        function clearCart() {
+            cart = [];
+            saveDB();
+            document.querySelector('.btn-close').click();
+        }
+
+        function checkout() {
+            if(cart.length === 0) return Swal.fire('Ops', 'Carrinho vazio!', 'warning');
             
-            Object.keys(data).forEach(key => {
-                const p = data[key];
-                list.innerHTML += `
+            // Simulação de Checkout (Redirecionar para Zap ou Discord)
+            let msg = "Olá, gostaria de comprar:%0A";
+            let total = 0;
+            cart.forEach(i => { msg += `- ${i.name} (R$ ${i.price})%0A`; total += parseInt(i.price); });
+            msg += `%0ATotal: R$ ${total}`;
+            
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+            clearCart();
+        }
+
+        // --- 5. ADMINISTRAÇÃO ---
+        function openAdmin() {
+            Swal.fire({
+                title: 'Acesso Restrito',
+                input: 'password',
+                inputPlaceholder: 'Senha do Admin',
+                background: '#13161c',
+                color: '#fff',
+                confirmButtonColor: '#00d2ff'
+            }).then((result) => {
+                if (result.value === "bahamas") { // SENHA AQUI
+                    navTo('admin');
+                    renderAdminPanel();
+                } else if(result.value) {
+                    Swal.fire('Erro', 'Senha incorreta!', 'error');
+                }
+            });
+        }
+
+        function renderAdminPanel() {
+            // Lista Produtos
+            const prodList = document.getElementById('adm-prod-list');
+            prodList.innerHTML = '';
+            products.forEach((p, index) => {
+                prodList.innerHTML += `
                     <tr>
                         <td>${p.name}</td>
-                        <td>R$ ${p.price}</td>
-                        <td><button class="btn btn-sm btn-danger" onclick="deleteProduct('${key}')"><i class="fas fa-trash"></i></button></td>
+                        <td class="text-primary">R$ ${p.price}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="adminDelProd(${index})"><i class="fas fa-trash"></i></button></td>
                     </tr>
+                `;
+            });
+
+            // Lista Tickets
+            const ticketList = document.getElementById('adm-ticket-list');
+            ticketList.innerHTML = '';
+            if(tickets.length === 0) ticketList.innerHTML = '<p class="text-muted text-center mt-3">Nenhum ticket.</p>';
+            
+            tickets.forEach((t, index) => {
+                ticketList.innerHTML += `
+                    <div class="card bg-dark border-start border-4 border-info mb-2 p-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>${t.name} <small class="text-muted">(${t.type})</small></strong>
+                            <button class="btn btn-sm btn-outline-danger" onclick="adminDelTicket(${index})">X</button>
+                        </div>
+                        <p class="mb-0 mt-2 text-white small">${t.msg}</p>
+                    </div>
                 `;
             });
         }
 
-        function deleteProduct(key) {
-            if(confirm('Tem certeza?')) db.ref('products/' + key).remove();
+        function adminAddProduct(e) {
+            e.preventDefault();
+            const newProd = {
+                id: Date.now(),
+                name: document.getElementById('adm-name').value,
+                price: document.getElementById('adm-price').value,
+                img: document.getElementById('adm-img').value,
+                rating: document.getElementById('adm-rating').value
+            };
+            products.push(newProd);
+            saveDB();
+            renderAdminPanel();
+            Swal.fire('Sucesso', 'Produto Adicionado!', 'success');
+            e.target.reset();
         }
 
-        function deleteTicket(key) {
-            db.ref('tickets/' + key).remove();
+        function adminDelProd(index) {
+            products.splice(index, 1);
+            saveDB();
+            renderAdminPanel();
+        }
+
+        function adminDelTicket(index) {
+            tickets.splice(index, 1);
+            saveDB();
+            renderAdminPanel();
+        }
+
+        // --- 6. SUPORTE ---
+        function submitTicket(e) {
+            e.preventDefault();
+            const ticket = {
+                name: document.getElementById('ticket-name').value,
+                type: document.getElementById('ticket-type').value,
+                msg: document.getElementById('ticket-msg').value,
+                date: new Date().toLocaleString()
+            };
+            tickets.push(ticket);
+            saveDB();
+            Swal.fire('Enviado!', 'A administração analisará seu caso.', 'success');
+            e.target.reset();
+        }
+
+        // --- 7. ATUALIZAÇÃO GERAL ---
+        function updateUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            renderStore();
         }
 
         // Inicializar
-        loadProducts();
+        updateUI();
 
     </script>
 </body>
