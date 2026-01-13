@@ -1,182 +1,499 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Loja RP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Riorp Style | Quebrei o Sistema</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --bg-dark: #0f1115;
+            --card-bg: #181b21;
+            --text-color: #e0e0e0;
+        }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Orbitron', sans-serif;
-}
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-body {
-  min-height: 100vh;
-  background: linear-gradient(270deg, #0a0a0a, #1a1a1a, #0a0a0a);
-  background-size: 600% 600%;
-  animation: bgMove 20s ease infinite;
-  color: #fff;
-  overflow-x: hidden;
-}
+        /* Navbar */
+        .navbar {
+            background: rgba(24, 27, 33, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #333;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            color: #bbb !important;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--secondary-color) !important;
+        }
 
-@keyframes bgMove {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-}
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .hero h1 { font-weight: 800; color: #fff; }
 
-/* Camada favela animada */
-.favela {
-  position: fixed;
-  bottom: 0;
-  width: 200%;
-  height: 300px;
-  background: url("https://i.imgur.com/zQZSWrt.png");
-  background-repeat: repeat-x;
-  background-size: contain;
-  animation: favelaMove 40s linear infinite;
-  opacity: 0.25;
-  pointer-events: none;
-}
+        /* Cards */
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+            border-color: var(--primary-color);
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body { padding: 20px; }
+        .price-tag {
+            color: #4ade80;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
 
-@keyframes favelaMove {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+        /* Botões */
+        .btn-custom {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-custom:hover {
+            opacity: 0.9;
+            color: white;
+        }
 
-header {
-  text-align: center;
-  padding: 30px;
-  font-size: 2.5rem;
-  background: rgba(0,0,0,0.6);
-  box-shadow: 0 0 25px #00ffcc;
-}
+        /* Seções (SPA) */
+        .section-view { display: none; animation: fadeIn 0.5s; }
+        .section-view.active { display: block; }
 
-section {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-h2 {
-  margin-bottom: 15px;
-  color: #00ffcc;
-  border-left: 5px solid #00ffcc;
-  padding-left: 10px;
-}
+        /* Admin & Forms */
+        .form-control {
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+        }
+        .form-control:focus {
+            background-color: #2a2a2a;
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+        .ticket-item {
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary-color);
+        }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: rgba(0,0,0,0.7);
-  border: 1px solid #00ffcc33;
-  border-radius: 12px;
-  padding: 20px;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 0 20px #00ffcc;
-}
-
-.card h3 {
-  color: #00ffcc;
-}
-
-.card p {
-  margin: 10px 0;
-}
-
-.card button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: linear-gradient(90deg, #00ffcc, #007a66);
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  opacity: 0.6;
-}
-</style>
+        footer {
+            margin-top: auto;
+            background: #000;
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>🛒 LOJA RP</header>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showSection('home')"><i class="fas fa-gamepad me-2"></i>RioRP Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('home')">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('terms')">Termos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('about')">Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('tickets')">Suporte</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-light ms-2 px-3" href="#" onclick="checkAdmin()">Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<section>
-  <h2>🧰 Itens</h2>
-  <div class="grid" id="Itens"></div>
-</section>
+    <div id="home" class="section-view active">
+        <div class="hero">
+            <div class="container">
+                <h1>Bem-vindo à Loja</h1>
+                <p class="lead">Os melhores itens e VIPs para sua gameplay.</p>
+                <button class="btn btn-light rounded-pill px-4 mt-2" onclick="document.getElementById('products-grid').scrollIntoView({behavior: 'smooth'})">Ver Produtos</button>
+            </div>
+        </div>
 
-<section>
-  <h2>🔫 Armas</h2>
-  <div class="grid" id="Armas"></div>
-</section>
+        <div class="container mb-5" id="products-grid">
+            <h3 class="mb-4 border-bottom border-secondary pb-2">Destaques</h3>
+            <div class="row g-4" id="products-container">
+                <div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>
+            </div>
+        </div>
+    </div>
 
-<section>
-  <h2>💥 Munições</h2>
-  <div class="grid" id="Munições"></div>
-</section>
+    <div id="terms" class="section-view container my-5">
+        <div class="card bg-dark border-secondary p-4">
+            <h2>Termos de Serviço</h2>
+            <hr>
+            <p>1. Todas as compras são finais e não reembolsáveis (produtos digitais).</p>
+            <p>2. A entrega é automática ou realizada pela equipe em até 24h.</p>
+            <p>3. O uso de bugs para duplicar itens resultará em banimento.</p>
+            <p>4. Ao comprar, você concorda com as regras do servidor.</p>
+        </div>
+    </div>
 
-<div class="favela"></div>
+    <div id="about" class="section-view container my-5">
+        <div class="card bg-dark border-secondary p-4">
+            <h2>Sobre Nós</h2>
+            <hr>
+            <p>Somos uma loja focada em oferecer a melhor experiência para os jogadores. Nossa equipe trabalha 24/7 para garantir qualidade e segurança nas transações.</p>
+            <div class="row mt-4">
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5>Segurança</h5>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
+                    <h5>Rapidez</h5>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-headset fa-3x text-success mb-3"></i>
+                    <h5>Suporte</h5>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<footer>
-  © Loja RP • Sistema Firebase
-</footer>
+    <div id="tickets" class="section-view container my-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="m-0"><i class="fas fa-ticket-alt me-2"></i>Abrir Ticket</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="ticket-form" onsubmit="createTicket(event)">
+                            <div class="mb-3">
+                                <label class="form-label">Seu Nick/ID</label>
+                                <input type="text" id="ticket-nick" class="form-control" required placeholder="Ex: Player#1234">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Assunto</label>
+                                <select id="ticket-subject" class="form-control">
+                                    <option>Problema com Compra</option>
+                                    <option>Dúvida</option>
+                                    <option>Denúncia</option>
+                                    <option>Outros</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mensagem</label>
+                                <textarea id="ticket-msg" class="form-control" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Enviar Ticket</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-const firebaseConfig = { 
-  apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
-  databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
-  projectId: "quebrei-o-sistema" 
-};
+    <div id="admin" class="section-view container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Painel Administrativo</h2>
+            <button class="btn btn-danger btn-sm" onclick="showSection('home')">Sair</button>
+        </div>
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-header">Adicionar Produto</div>
+                    <div class="card-body">
+                        <form onsubmit="addProduct(event)">
+                            <input type="text" id="prod-name" class="form-control mb-2" placeholder="Nome do Produto" required>
+                            <input type="text" id="prod-img" class="form-control mb-2" placeholder="URL da Imagem" required>
+                            <input type="number" id="prod-price" class="form-control mb-2" placeholder="Preço (R$)" required>
+                            <textarea id="prod-desc" class="form-control mb-2" placeholder="Descrição"></textarea>
+                            <input type="number" id="prod-rating" class="form-control mb-2" placeholder="Avaliação (0-5)" max="5" min="0" step="0.1">
+                            <button type="submit" class="btn btn-success w-100">Salvar Produto</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-db.ref("produtos").on("value", snapshot => {
-  document.getElementById("Itens").innerHTML = "";
-  document.getElementById("Armas").innerHTML = "";
-  document.getElementById("Munições").innerHTML = "";
+            <div class="col-md-8">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-header">Tickets Abertos</div>
+                    <div class="card-body" id="admin-tickets-list" style="max-height: 400px; overflow-y: auto;">
+                        <p class="text-muted">Carregando tickets...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h4>Gerenciar Produtos Ativos</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead><tr><th>Nome</th><th>Preço</th><th>Ação</th></tr></thead>
+                    <tbody id="admin-products-list">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-  snapshot.forEach(child => {
-    const p = child.val();
+    <footer>
+        <div class="container">
+            <p class="m-0 text-muted">&copy; 2024 RioRP Store - Todos os direitos reservados.</p>
+            <small class="text-muted">Desenvolvido com Firebase</small>
+        </div>
+    </footer>
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <h3>${p.nome}</h3>
-      <p>💰 R$ ${p.preco}</p>
-      <button>Comprar</button>
-    `;
+    <script>
+        // 1. CONFIGURAÇÃO DO FIREBASE
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
+            databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
+            projectId: "quebrei-o-sistema" 
+        };
 
-    if (document.getElementById(p.categoria)) {
-      document.getElementById(p.categoria).appendChild(card);
-    }
-  });
-});
-</script>
+        // Inicialização
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
 
+        // 2. NAVEGAÇÃO SPA
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Highlight navbar logic simples
+            if(sectionId === 'home') document.querySelector('a[onclick="showSection(\'home\')"]').classList.add('active');
+        }
+
+        // 3. CARREGAR PRODUTOS (HOME)
+        function loadProducts() {
+            const container = document.getElementById('products-container');
+            
+            db.ref('products').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                
+                if (!data) {
+                    container.innerHTML = '<p class="text-center text-muted">Nenhum produto cadastrado ainda.</p>';
+                    return;
+                }
+
+                Object.keys(data).forEach(key => {
+                    const product = data[key];
+                    const stars = generateStars(product.rating || 5);
+                    
+                    const html = `
+                        <div class="col-md-4 col-sm-6">
+                            <div class="product-card">
+                                <img src="${product.image}" class="card-img-top" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <div class="mb-2 text-warning small">${stars}</div>
+                                    <p class="card-text text-muted small flex-grow-1">${product.description || 'Sem descrição'}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="price-tag">R$ ${product.price}</span>
+                                        <button class="btn btn-custom btn-sm" onclick="buyProduct('${product.name}')">
+                                            <i class="fas fa-shopping-cart"></i> Comprar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+
+                // Atualizar lista de admin também
+                loadAdminProducts(data);
+            });
+        }
+
+        function generateStars(rating) {
+            let starsHtml = '';
+            for(let i=1; i<=5; i++) {
+                if(i <= rating) starsHtml += '<i class="fas fa-star"></i>';
+                else starsHtml += '<i class="far fa-star"></i>';
+            }
+            return starsHtml;
+        }
+
+        function buyProduct(name) {
+            Swal.fire({
+                title: 'Confirmar Compra',
+                text: `Deseja adicionar "${name}" ao carrinho? (Simulação)`,
+                icon: 'question',
+                confirmButtonColor: '#6a11cb',
+                confirmButtonText: 'Sim, comprar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Sucesso!', 'Você seria redirecionado para o checkout.', 'success');
+                }
+            });
+        }
+
+        // 4. SISTEMA DE TICKETS
+        function createTicket(e) {
+            e.preventDefault();
+            const nick = document.getElementById('ticket-nick').value;
+            const subject = document.getElementById('ticket-subject').value;
+            const msg = document.getElementById('ticket-msg').value;
+
+            const newTicketKey = db.ref().child('tickets').push().key;
+            
+            db.ref('tickets/' + newTicketKey).set({
+                nick: nick,
+                subject: subject,
+                message: msg,
+                status: 'aberto',
+                timestamp: Date.now()
+            }).then(() => {
+                Swal.fire('Enviado!', 'Seu ticket foi criado com sucesso.', 'success');
+                document.getElementById('ticket-form').reset();
+            }).catch((error) => {
+                Swal.fire('Erro', error.message, 'error');
+            });
+        }
+
+        // 5. ADMINISTRAÇÃO
+        function checkAdmin() {
+            // Autenticação simples apenas para o prompt (Não seguro para produção real sem Auth)
+            Swal.fire({
+                title: 'Acesso Admin',
+                input: 'password',
+                inputLabel: 'Senha da loja',
+                inputPlaceholder: 'Digite a senha...',
+                confirmButtonColor: '#2575fc'
+            }).then((result) => {
+                if (result.value === 'admin123') { // SENHA PADRÃO: admin123
+                    showSection('admin');
+                    loadAdminTickets();
+                } else if (result.isConfirmed) {
+                    Swal.fire('Acesso Negado', 'Senha incorreta', 'error');
+                }
+            });
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('prod-name').value;
+            const img = document.getElementById('prod-img').value;
+            const price = document.getElementById('prod-price').value;
+            const desc = document.getElementById('prod-desc').value;
+            const rating = document.getElementById('prod-rating').value;
+
+            db.ref('products').push({
+                name: name,
+                image: img,
+                price: price,
+                description: desc,
+                rating: rating
+            });
+            
+            Swal.fire('Sucesso', 'Produto adicionado!', 'success');
+            e.target.reset();
+        }
+
+        function loadAdminTickets() {
+            const list = document.getElementById('admin-tickets-list');
+            db.ref('tickets').on('value', (snapshot) => {
+                list.innerHTML = '';
+                const data = snapshot.val();
+                if (!data) {
+                    list.innerHTML = '<p>Sem tickets abertos.</p>';
+                    return;
+                }
+                Object.keys(data).forEach(key => {
+                    const t = data[key];
+                    list.innerHTML += `
+                        <div class="ticket-item">
+                            <strong>${t.nick}</strong> <span class="badge bg-info">${t.subject}</span>
+                            <p class="m-0 mt-1 text-muted small">${t.message}</p>
+                            <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteTicket('${key}')">Fechar Ticket</button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function loadAdminProducts(data) {
+            const list = document.getElementById('admin-products-list');
+            list.innerHTML = '';
+            if(!data) return;
+            
+            Object.keys(data).forEach(key => {
+                const p = data[key];
+                list.innerHTML += `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>R$ ${p.price}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteProduct('${key}')"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteProduct(key) {
+            if(confirm('Tem certeza?')) db.ref('products/' + key).remove();
+        }
+
+        function deleteTicket(key) {
+            db.ref('tickets/' + key).remove();
+        }
+
+        // Inicializar
+        loadProducts();
+
+    </script>
 </body>
 </html>
