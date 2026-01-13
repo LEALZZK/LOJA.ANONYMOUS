@@ -2,45 +2,115 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Loja</title>
+<title>Loja Urbana</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap');
+
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-}
-header {
-    background: #000;
+    font-family: 'Montserrat', sans-serif;
     color: #fff;
-    padding: 15px;
-    text-align: center;
+    overflow-x: hidden;
 }
-main {
+
+/* FUNDO ANIMADO */
+.background {
+    position: fixed;
+    inset: 0;
+    background: url("https://i.imgur.com/4NJlYQy.png") repeat-x bottom;
+    background-size: cover;
+    animation: moverFavela 60s linear infinite;
+    z-index: -2;
+}
+
+@keyframes moverFavela {
+    from { background-position-x: 0; }
+    to { background-position-x: -3000px; }
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: -1;
+}
+
+header {
     padding: 20px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
-.produto {
-    background: #fff;
+
+main {
+    padding: 30px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 25px;
+}
+
+/* CARD */
+.card {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 0 25px rgba(0,255,200,0.4);
+}
+
+.card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.card-body {
     padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
 }
+
+.card-body h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.card-body p {
+    margin-top: 8px;
+    font-weight: 600;
+    color: #00ffd5;
+}
+
+/* FOOTER */
 footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: #000;
-    color: #fff;
     text-align: center;
-    padding: 10px;
+    padding: 12px;
+    background: rgba(0,0,0,0.8);
 }
+
 footer span {
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 800;
 }
 
 /* MODAIS */
@@ -48,35 +118,43 @@ footer span {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.7);
     justify-content: center;
     align-items: center;
 }
-.modal-content {
-    background: #fff;
-    padding: 20px;
-    width: 300px;
-    border-radius: 6px;
+
+.modal-box {
+    background: #111;
+    padding: 25px;
+    border-radius: 10px;
+    width: 320px;
 }
-button {
+
+input, button {
+    width: 100%;
     padding: 10px;
     margin-top: 10px;
-    width: 100%;
+    border: none;
+    border-radius: 5px;
 }
-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+
+button {
+    background: #00ffd5;
+    font-weight: 700;
+    cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<header>
-    <h1>Minha Loja</h1>
-</header>
+<div class="background"></div>
+<div class="overlay"></div>
 
-<main id="listaProdutos"></main>
+<header>LOJA URBANA</header>
+
+<main>
+    <div class="grid" id="produtos"></div>
+</main>
 
 <footer>
     <span onclick="abrirSenha()">BY LEAL</span>
@@ -84,93 +162,81 @@ input {
 
 <!-- MODAL SENHA -->
 <div class="modal" id="modalSenha">
-    <div class="modal-content">
-        <h3>Área restrita</h3>
-        <input type="password" id="senhaAdm" placeholder="Senha">
-        <button onclick="verificarSenha()">Entrar</button>
+    <div class="modal-box">
+        <h3>Área Restrita</h3>
+        <input type="password" id="senha">
+        <button onclick="validarSenha()">Entrar</button>
     </div>
 </div>
 
 <!-- MODAL ADMIN -->
 <div class="modal" id="modalAdmin">
-    <div class="modal-content">
-        <h3>Área Admin</h3>
-        <button onclick="loginGoogle()">Login com Google</button>
-        <hr>
-        <input id="nomeProduto" placeholder="Nome do produto">
-        <input id="precoProduto" placeholder="Preço">
-        <button onclick="cadastrarProduto()">Cadastrar Produto</button>
-        <button onclick="fecharAdmin()">Sair</button>
+    <div class="modal-box">
+        <h3>Admin</h3>
+        <button onclick="loginGoogle()">Login Google</button>
+        <input id="nome" placeholder="Produto">
+        <input id="preco" placeholder="Preço">
+        <input id="img" placeholder="URL da imagem">
+        <button onclick="addProduto()">Cadastrar</button>
+        <button onclick="fechar()">Fechar</button>
     </div>
 </div>
 
 <script>
 // FIREBASE
-const firebaseConfig = {
+firebase.initializeApp({
     apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
     databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com",
     projectId: "quebrei-o-sistema"
-};
-firebase.initializeApp(firebaseConfig);
+});
 
 const db = firebase.database();
 const auth = firebase.auth();
 
-// PRODUTOS
-function carregarProdutos() {
-    db.ref("produtos").on("value", snap => {
-        const lista = document.getElementById("listaProdutos");
-        lista.innerHTML = "";
-        snap.forEach(item => {
-            const p = item.val();
-            lista.innerHTML += `
-                <div class="produto">
-                    <h3>${p.nome}</h3>
-                    <p>R$ ${p.preco}</p>
-                </div>
-            `;
-        });
+// CARREGAR PRODUTOS
+db.ref("produtos").on("value", snap => {
+    const div = document.getElementById("produtos");
+    div.innerHTML = "";
+    snap.forEach(p => {
+        const d = p.val();
+        div.innerHTML += `
+        <div class="card">
+            <img src="${d.img || 'https://via.placeholder.com/300'}">
+            <div class="card-body">
+                <h3>${d.nome}</h3>
+                <p>R$ ${d.preco}</p>
+            </div>
+        </div>`;
     });
-}
-carregarProdutos();
+});
 
 // ADMIN
-function abrirSenha() {
-    document.getElementById("modalSenha").style.display = "flex";
+function abrirSenha(){
+    modalSenha.style.display="flex";
+}
+function validarSenha(){
+    if(senha.value==="270712"){
+        modalSenha.style.display="none";
+        modalAdmin.style.display="flex";
+    } else alert("Senha errada");
+}
+function fechar(){
+    modalAdmin.style.display="none";
 }
 
-function verificarSenha() {
-    const senha = document.getElementById("senhaAdm").value;
-    if (senha === "270712") {
-        document.getElementById("modalSenha").style.display = "none";
-        document.getElementById("modalAdmin").style.display = "flex";
-    } else {
-        alert("Senha incorreta");
-    }
+// LOGIN
+function loginGoogle(){
+    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(u=>alert("Logado: "+u.user.displayName));
 }
 
-function fecharAdmin() {
-    document.getElementById("modalAdmin").style.display = "none";
-}
-
-// GOOGLE LOGIN
-function loginGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-        .then(res => alert("Logado: " + res.user.displayName))
-        .catch(err => alert(err.message));
-}
-
-// CADASTRO PRODUTO
-function cadastrarProduto() {
-    const nome = document.getElementById("nomeProduto").value;
-    const preco = document.getElementById("precoProduto").value;
-
+// ADD PRODUTO
+function addProduto(){
     db.ref("produtos").push({
-        nome,
-        preco
+        nome:nome.value,
+        preco:preco.value,
+        img:img.value
     });
-
     alert("Produto cadastrado");
 }
 </script>
