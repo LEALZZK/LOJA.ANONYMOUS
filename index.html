@@ -2,243 +2,180 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Loja Urbana</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loja RP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- FIREBASE -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-* { box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
 
 body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    color: #fff;
-    overflow-x: hidden;
+  min-height: 100vh;
+  background: linear-gradient(270deg, #0a0a0a, #1a1a1a, #0a0a0a);
+  background-size: 600% 600%;
+  animation: bgMove 20s ease infinite;
+  color: #fff;
+  overflow-x: hidden;
 }
 
-/* FUNDO ANIMADO */
-.background {
-    position: fixed;
-    inset: 0;
-    background: url("https://i.imgur.com/4NJlYQy.png") repeat-x bottom;
-    background-size: cover;
-    animation: moverFavela 60s linear infinite;
-    z-index: -2;
+@keyframes bgMove {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
 }
 
-@keyframes moverFavela {
-    from { background-position-x: 0; }
-    to { background-position-x: -3000px; }
+/* Camada favela animada */
+.favela {
+  position: fixed;
+  bottom: 0;
+  width: 200%;
+  height: 300px;
+  background: url("https://i.imgur.com/zQZSWrt.png");
+  background-repeat: repeat-x;
+  background-size: contain;
+  animation: favelaMove 40s linear infinite;
+  opacity: 0.25;
+  pointer-events: none;
 }
 
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: -1;
+@keyframes favelaMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 header {
-    padding: 20px;
-    text-align: center;
-    font-size: 32px;
-    font-weight: 800;
-    letter-spacing: 2px;
+  text-align: center;
+  padding: 30px;
+  font-size: 2.5rem;
+  background: rgba(0,0,0,0.6);
+  box-shadow: 0 0 25px #00ffcc;
 }
 
-main {
-    padding: 30px;
+section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
 }
 
-/* GRID */
+h2 {
+  margin-bottom: 15px;
+  color: #00ffcc;
+  border-left: 5px solid #00ffcc;
+  padding-left: 10px;
+}
+
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-    gap: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
-/* CARD */
 .card {
-    background: #111;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: 0.3s;
-    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #00ffcc33;
+  border-radius: 12px;
+  padding: 20px;
+  transition: 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 0 25px rgba(0,255,200,0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 0 20px #00ffcc;
 }
 
-.card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
+.card h3 {
+  color: #00ffcc;
 }
 
-.card-body {
-    padding: 15px;
+.card p {
+  margin: 10px 0;
 }
 
-.card-body h3 {
-    margin: 0;
-    font-size: 18px;
+.card button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: linear-gradient(90deg, #00ffcc, #007a66);
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
-.card-body p {
-    margin-top: 8px;
-    font-weight: 600;
-    color: #00ffd5;
-}
-
-/* FOOTER */
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    padding: 12px;
-    background: rgba(0,0,0,0.8);
-}
-
-footer span {
-    cursor: pointer;
-    font-weight: 800;
-}
-
-/* MODAIS */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-box {
-    background: #111;
-    padding: 25px;
-    border-radius: 10px;
-    width: 320px;
-}
-
-input, button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 5px;
-}
-
-button {
-    background: #00ffd5;
-    font-weight: 700;
-    cursor: pointer;
+  text-align: center;
+  padding: 20px;
+  opacity: 0.6;
 }
 </style>
 </head>
+
 <body>
 
-<div class="background"></div>
-<div class="overlay"></div>
+<header>🛒 LOJA RP</header>
 
-<header>LOJA URBANA</header>
+<section>
+  <h2>🧰 Itens</h2>
+  <div class="grid" id="Itens"></div>
+</section>
 
-<main>
-    <div class="grid" id="produtos"></div>
-</main>
+<section>
+  <h2>🔫 Armas</h2>
+  <div class="grid" id="Armas"></div>
+</section>
+
+<section>
+  <h2>💥 Munições</h2>
+  <div class="grid" id="Munições"></div>
+</section>
+
+<div class="favela"></div>
 
 <footer>
-    <span onclick="abrirSenha()">BY LEAL</span>
+  © Loja RP • Sistema Firebase
 </footer>
 
-<!-- MODAL SENHA -->
-<div class="modal" id="modalSenha">
-    <div class="modal-box">
-        <h3>Área Restrita</h3>
-        <input type="password" id="senha">
-        <button onclick="validarSenha()">Entrar</button>
-    </div>
-</div>
-
-<!-- MODAL ADMIN -->
-<div class="modal" id="modalAdmin">
-    <div class="modal-box">
-        <h3>Admin</h3>
-        <button onclick="loginGoogle()">Login Google</button>
-        <input id="nome" placeholder="Produto">
-        <input id="preco" placeholder="Preço">
-        <input id="img" placeholder="URL da imagem">
-        <button onclick="addProduto()">Cadastrar</button>
-        <button onclick="fechar()">Fechar</button>
-    </div>
-</div>
-
 <script>
-// FIREBASE
-firebase.initializeApp({
-    apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
-    databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com",
-    projectId: "quebrei-o-sistema"
-});
+const firebaseConfig = { 
+  apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
+  databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com", 
+  projectId: "quebrei-o-sistema" 
+};
 
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const auth = firebase.auth();
 
-// CARREGAR PRODUTOS
-db.ref("produtos").on("value", snap => {
-    const div = document.getElementById("produtos");
-    div.innerHTML = "";
-    snap.forEach(p => {
-        const d = p.val();
-        div.innerHTML += `
-        <div class="card">
-            <img src="${d.img || 'https://via.placeholder.com/300'}">
-            <div class="card-body">
-                <h3>${d.nome}</h3>
-                <p>R$ ${d.preco}</p>
-            </div>
-        </div>`;
-    });
+db.ref("produtos").on("value", snapshot => {
+  document.getElementById("Itens").innerHTML = "";
+  document.getElementById("Armas").innerHTML = "";
+  document.getElementById("Munições").innerHTML = "";
+
+  snapshot.forEach(child => {
+    const p = child.val();
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <h3>${p.nome}</h3>
+      <p>💰 R$ ${p.preco}</p>
+      <button>Comprar</button>
+    `;
+
+    if (document.getElementById(p.categoria)) {
+      document.getElementById(p.categoria).appendChild(card);
+    }
+  });
 });
-
-// ADMIN
-function abrirSenha(){
-    modalSenha.style.display="flex";
-}
-function validarSenha(){
-    if(senha.value==="270712"){
-        modalSenha.style.display="none";
-        modalAdmin.style.display="flex";
-    } else alert("Senha errada");
-}
-function fechar(){
-    modalAdmin.style.display="none";
-}
-
-// LOGIN
-function loginGoogle(){
-    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    .then(u=>alert("Logado: "+u.user.displayName));
-}
-
-// ADD PRODUTO
-function addProduto(){
-    db.ref("produtos").push({
-        nome:nome.value,
-        preco:preco.value,
-        img:img.value
-    });
-    alert("Produto cadastrado");
-}
 </script>
 
 </body>
