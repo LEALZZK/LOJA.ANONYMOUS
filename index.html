@@ -22,15 +22,11 @@
 
         body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Montserrat', sans-serif; }
 
-        /* --- UI ESTÉTICA --- */
+        /* --- UI --- */
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); }
         .navbar-brand { font-weight: 800; color: var(--primary) !important; }
 
-        /* Categorias Scroll */
-        .category-scroll {
-            display: flex; overflow-x: auto; gap: 12px; padding: 15px 0; scrollbar-width: none;
-        }
-        .category-scroll::-webkit-scrollbar { display: none; }
+        .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 0; scrollbar-width: none; }
         .cat-card {
             min-width: 160px; height: 80px; background: var(--bg-card); border: 1px solid #333;
             border-radius: 10px; display: flex; align-items: center; justify-content: center;
@@ -41,29 +37,12 @@
         .cat-card.active { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,215,0,0.3); }
         .cat-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
 
-        /* Produtos */
-        .prod-card {
-            background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139;
-            overflow: hidden; transition: 0.3s; height: 100%;
-        }
+        .prod-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; }
         .prod-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         .price-tag { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
 
-        /* Chat */
-        .chat-box {
-            height: 350px; overflow-y: auto; background: #0d0e12; border-radius: 8px;
-            padding: 15px; display: flex; flex-direction: column; gap: 10px;
-        }
-        .bubble { padding: 8px 15px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; }
-        .bubble.user { background: var(--primary); color: #000; align-self: flex-end; }
-        .bubble.admin { background: #323742; color: #fff; align-self: flex-start; }
-        .bubble.sys { background: rgba(255,255,255,0.05); color: var(--text-dim); align-self: center; font-size: 0.75rem; }
-
-        /* Admin */
         .view { display: none; }
         .view.active { display: block; }
-        .admin-tab { display: none; }
-        .admin-tab.active { display: block; }
 
         .cart-btn {
             position: fixed; bottom: 25px; right: 25px; background: var(--primary);
@@ -72,43 +51,24 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; color: #000;
         }
 
-        /* --- NOVO RODAPÉ ESTILO PYTHON BRASIL --- */
-        footer {
-            background-color: #1a1d24;
-            padding: 60px 0 30px 0;
-            margin-top: 50px;
-            border-top: 3px solid var(--primary);
-        }
-        .footer-title { color: var(--primary); font-weight: 800; margin-bottom: 20px; text-transform: uppercase; font-size: 1.1rem; }
-        .footer-link { color: var(--text-dim); text-decoration: none; display: block; margin-bottom: 10px; transition: 0.3s; }
-        .footer-link:hover { color: var(--primary); padding-left: 5px; }
-        .btn-footer-buy {
-            background-color: #e67e22; color: #fff; font-weight: 700;
-            padding: 15px 40px; border-radius: 50px; text-decoration: none;
-            display: inline-block; margin-bottom: 25px; transition: 0.3s; border: none;
-        }
-        .btn-footer-buy:hover { background-color: #d35400; transform: scale(1.05); color: white; }
-        .social-icons a {
-            color: white; font-size: 1.5rem; margin: 0 10px; transition: 0.3s;
-        }
-        .social-icons a:hover { color: var(--primary); }
-        .newsletter-input {
-            background: white; border: none; padding: 10px 20px; border-radius: 5px 0 0 5px; outline: none; width: 60%;
-        }
-        .newsletter-btn {
-            background: #2a2e38; color: white; border: 1px solid #444; padding: 10px 15px; border-radius: 0 5px 5px 0;
-        }
-        .footer-disclaimer {
-            font-size: 0.75rem; color: var(--text-dim); margin-top: 40px; text-align: center; line-height: 1.6;
-        }
+        /* --- RODAPÉ AJUSTADO --- */
+        footer { background-color: #1a1d24; padding: 50px 0 30px 0; margin-top: 50px; border-top: 3px solid var(--primary); }
+        .footer-title { color: var(--primary); font-weight: 800; margin-bottom: 20px; text-transform: uppercase; }
+        .footer-link { color: var(--text-dim); text-decoration: none; display: block; margin-bottom: 10px; }
         .trust-badge { color: #2ecc71; font-weight: 600; font-size: 0.9rem; }
+
+        /* Estilo Chat/Tickets */
+        .chat-box { height: 300px; overflow-y: auto; background: #0d0e12; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 8px 15px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; }
+        .bubble.user { background: var(--primary); color: #000; align-self: flex-end; }
+        .bubble.admin { background: #323742; color: #fff; align-self: flex-start; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#" onclick="showView('store')">BAHAMAS</a>
+            <a class="navbar-brand" href="#" onclick="showView('store')">BAHAMAS STORE</a>
             <div class="ms-auto">
                 <button class="btn btn-sm text-white" onclick="showView('tickets')">MEUS PEDIDOS</button>
                 <button class="btn btn-sm btn-outline-warning ms-2" onclick="accessAdmin()">ADMIN</button>
@@ -118,82 +78,92 @@
 
     <div id="view-store" class="view active container py-4">
         <div class="category-scroll" id="cat-list"></div>
-        <h4 class="fw-bold mb-3" id="cat-title">Todos os Produtos</h4>
+        <h4 class="fw-bold mb-3">Produtos Disponíveis</h4>
         <div class="row g-3" id="prod-grid"></div>
-        <div class="mt-5">
-            <h5 class="text-primary fw-bold">Avaliações dos Clientes</h5>
-            <div class="row g-3" id="reviews-grid"></div>
+    </div>
+
+    <div id="view-tickets" class="view container py-5">
+        <h4 class="fw-bold mb-4 text-primary">Meus Pedidos</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div id="ticket-list-user" class="list-group"></div>
+            </div>
+            <div class="col-md-8">
+                <div id="chat-panel-user" class="card bg-card border-0 d-none">
+                    <div class="card-header border-bottom border-secondary d-flex justify-content-between">
+                        <span id="chat-header-id" class="fw-bold"></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-box mb-3" id="chat-messages-user"></div>
+                        <p class="small text-dim">Envie o comprovante do PIX abaixo para agilizar sua entrega.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-admin" class="view container py-5">
+        <h4 class="fw-bold mb-4 text-warning">Painel Administrativo</h4>
+        <div class="bg-card p-4 rounded border border-warning">
+            <p>Bem-vindo ao controle total da Bahamas Store.</p>
+            <button class="btn btn-outline-danger btn-sm" onclick="showView('store')">Sair do Painel</button>
+            <hr class="border-secondary">
+            <p class="text-dim italic">Funcionalidades de gestão habilitadas.</p>
         </div>
     </div>
 
     <footer>
         <div class="container">
-            <div class="row text-center text-md-start">
-                <div class="col-md-3 mb-4">
-                    <h5 class="footer-title">Sobre</h5>
-                    <a href="#" class="footer-link">Local</a>
-                    <a href="#" class="footer-link">Termos de Uso</a>
-                    <a href="#" class="footer-link">Segurança</a>
-                    <a href="#" class="footer-link">Código de Conduta</a>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Bahamas Store</h5>
+                    <p class="text-dim small">A melhor e mais confiável loja de produtos para o seu Roleplay. Qualidade e rapidez garantida.</p>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h5 class="footer-title">Suporte</h5>
-                    <a href="#" class="footer-link">Como Comprar</a>
-                    <a href="#" class="footer-link">Prazos de Entrega</a>
-                    <span class="trust-badge"><i class="fas fa-bolt"></i> Entrega em < 24h</span>
+                <div class="col-md-4 mb-4 text-center">
+                    <h5 class="footer-title">Informações</h5>
+                    <a href="#" class="footer-link">Termos de Compra</a>
+                    <a href="#" class="footer-link">Garantia de Entrega</a>
+                    <span class="trust-badge"><i class="fas fa-check-circle"></i> 100% Confiável</span>
                 </div>
-                <div class="col-md-6 text-center">
-                    <button class="btn-footer-buy" onclick="showView('store')">Adquira seu produto</button>
-                    <div class="social-icons mb-4">
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                    <div>
-                        <p class="small mb-2">Quer receber novidades? Cadastre seu e-mail:</p>
-                        <div class="d-flex justify-content-center">
-                            <input type="email" class="newsletter-input" placeholder="seu@email.com">
-                            <button class="newsletter-btn">cadastrar</button>
-                        </div>
-                    </div>
+                <div class="col-md-4 mb-4 text-md-end">
+                    <h5 class="footer-title">Pagamento & Entrega</h5>
+                    <p class="text-white fw-bold mb-1"><i class="fas fa-pix text-success"></i> Pagamento via PIX</p>
+                    <p class="text-info small"><i class="fas fa-clock"></i> Entrega em menos de 24h</p>
                 </div>
             </div>
-            <div class="footer-disclaimer">
-                <p>Tem alguma dúvida sobre a Bahamas Store? fale conosco: <span class="text-primary">contato@bahamasrp.com.br</span></p>
-                <p>Bahamas Store é uma plataforma 100% confiável para a comunidade de Roleplay. <br> Pagamentos via <strong>PIX</strong> com entrega garantida em menos de 24 horas.</p>
+            <div class="text-center pt-4 border-top border-secondary mt-4">
+                <p class="small text-dim">Bahamas Store &copy; 2024 - Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
     <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-card text-white border-0">
+            <div class="modal-content bg-card text-white border-0 shadow-lg">
                 <div class="modal-header border-secondary">
-                    <h5 class="fw-bold"><i class="fas fa-shopping-cart me-2"></i>Seu Carrinho</h5>
+                    <h5 class="fw-bold text-primary"><i class="fas fa-shopping-basket me-2"></i>Seu Carrinho</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="cart-render" class="mb-3"></div>
-                    <div class="p-3 rounded bg-dark mb-3">
-                        <div class="d-flex justify-content-between mb-2">
+                    <div id="cart-render"></div>
+                    <div class="p-3 bg-dark rounded mt-3">
+                        <div class="d-flex justify-content-between mb-1">
                             <span>Método:</span>
-                            <span class="text-success fw-bold"><i class="fas fa-pix"></i> PIX</span>
+                            <span class="text-success fw-bold">PIX</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Entrega:</span>
-                            <span class="text-info small">Digital (< 24h)</span>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Prazo:</span>
+                            <span class="text-info small">Máximo 24 horas</span>
                         </div>
                         <hr class="border-secondary">
-                        <div class="d-flex justify-content-between fw-bold">
+                        <div class="d-flex justify-content-between fw-bold fs-5">
                             <span>Total:</span>
                             <span id="cart-total-val" class="text-primary">R$ 0,00</span>
                         </div>
                     </div>
-                    <p class="text-center text-dim small">Compra 100% confiável & segura</p>
                 </div>
                 <div class="modal-footer border-0">
-                    <button class="btn btn-warning w-100 fw-bold" onclick="checkout()">FINALIZAR VIA PIX</button>
+                    <button class="btn btn-warning w-100 py-2 fw-bold" onclick="checkout()">FINALIZAR COMPRA VIA PIX</button>
                 </div>
             </div>
         </div>
@@ -207,34 +177,39 @@
     <script>
         let data = JSON.parse(localStorage.getItem('bahamas_v3')) || {
             cats: [{id: 1, name: "VIPs", img: "https://i.imgur.com/3QZ9Q0a.png"}],
-            prods: [{id: 101, catId: 1, name: "VIP Ouro", price: 50, img: "https://via.placeholder.com/150"}],
-            tickets: [],
-            reviews: []
+            prods: [{id: 101, catId: 1, name: "VIP Bahamas Gold", price: 150, img: "https://via.placeholder.com/150"}],
+            tickets: []
         };
         let cart = [];
 
         function save() { localStorage.setItem('bahamas_v3', JSON.stringify(data)); }
 
+        // --- FUNÇÃO DE NAVEGAÇÃO CORRIGIDA ---
         function showView(v) {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
+            const targetView = document.getElementById('view-' + v);
+            if(targetView) {
+                targetView.classList.add('active');
+            }
             if(v === 'store') renderStore();
+            if(v === 'tickets') renderUserTickets();
         }
 
-        // --- SENHA ALTERADA PARA 2707 ---
+        // --- ACESSO ADM COM SENHA 2707 ---
         function accessAdmin() {
-            Swal.fire({ 
-                title: 'Acesso Restrito', 
-                input: 'password', 
-                background: '#1f2229', 
+            Swal.fire({
+                title: 'Acesso Administrativo',
+                input: 'password',
+                inputPlaceholder: 'Digite a senha',
+                background: '#1f2229',
                 color: '#fff',
-                confirmButtonColor: '#FFD700'
+                confirmButtonColor: '#FFD700',
+                confirmButtonText: 'Entrar'
             }).then(r => {
                 if(r.value === '2707') {
-                    Swal.fire('Sucesso', 'Acesso concedido', 'success');
-                    // Aqui você abriria a view de admin (exemplo: showView('admin'))
-                } else {
-                    Swal.fire('Erro', 'Senha incorreta', 'error');
+                    showView('admin');
+                } else if(r.isConfirmed) {
+                    Swal.fire('Erro', 'Senha incorreta!', 'error');
                 }
             });
         }
@@ -251,14 +226,14 @@
             const filtered = catId ? data.prods.filter(p => p.catId == catId) : data.prods;
             filtered.forEach(p => {
                 grid.innerHTML += `
-                    <div class="col-md-3">
-                        <div class="prod-card">
-                            <img src="${p.img}" class="w-100" style="height:150px; object-fit:cover">
+                    <div class="col-md-4">
+                        <div class="prod-card shadow-sm">
+                            <img src="${p.img}" class="w-100" style="height:160px; object-fit:cover">
                             <div class="p-3">
-                                <div class="fw-bold text-white mb-2">${p.name}</div>
+                                <div class="fw-bold mb-2">${p.name}</div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="price-tag">R$ ${p.price}</span>
-                                    <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i></button>
+                                    <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})"><i class="fas fa-plus"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -270,12 +245,12 @@
             const p = data.prods.find(x => x.id == id);
             cart.push({...p, cartId: Date.now()});
             document.getElementById('cart-badge').innerText = cart.length;
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Adicionado ao carrinho', showConfirmButton: false, timer: 1500 });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Adicionado!', showConfirmButton: false, timer: 1000 });
         }
 
         function openCart() {
             const container = document.getElementById('cart-render');
-            container.innerHTML = cart.length ? '' : '<p class="text-center text-dim">Carrinho vazio.</p>';
+            container.innerHTML = cart.length ? '' : '<p class="text-center text-dim py-3">Seu carrinho está vazio.</p>';
             let total = 0;
             cart.forEach(item => {
                 total += parseFloat(item.price);
@@ -289,7 +264,8 @@
                     </div>`;
             });
             document.getElementById('cart-total-val').innerText = `R$ ${total.toFixed(2)}`;
-            new bootstrap.Modal(document.getElementById('cartModal')).show();
+            const modal = new bootstrap.Modal(document.getElementById('cartModal'));
+            modal.show();
         }
 
         function removeFromCart(cartId) {
@@ -300,34 +276,42 @@
 
         function checkout() {
             if(!cart.length) return;
-            Swal.fire({
-                title: 'Finalizar via PIX?',
-                text: "Ao confirmar, um ticket de atendimento será aberto para envio do comprovante.",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#FFD700',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar Pedido'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const tId = Math.floor(1000 + Math.random() * 9000);
-                    const total = cart.reduce((a,b) => a + parseFloat(b.price), 0);
-                    const newTicket = {
-                        id: tId,
-                        total: total,
-                        status: 'Aguardando Pagamento (PIX)',
-                        msgs: [{sender: 'sys', text: `Pedido #${tId} criado. Pagamento: PIX. Aguardando comprovante para entrega em até 24h.`}]
-                    };
-                    data.tickets.push(newTicket);
-                    save();
-                    cart = [];
-                    document.getElementById('cart-badge').innerText = 0;
-                    bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
-                    Swal.fire('Pedido Criado!', 'Vá em "Meus Pedidos" para ver os dados do PIX.', 'success');
-                }
+            const tId = Math.floor(1000 + Math.random() * 9000);
+            const total = cart.reduce((a,b) => a + parseFloat(b.price), 0);
+            const newTicket = {
+                id: tId,
+                total: total,
+                status: 'Pendente',
+                msgs: [{sender: 'sys', text: `Pedido #${tId} criado via PIX. Valor: R$ ${total}. Entrega garantida em até 24h.`}]
+            };
+            data.tickets.push(newTicket);
+            save();
+            cart = [];
+            document.getElementById('cart-badge').innerText = 0;
+            bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+            Swal.fire('Pedido Confirmado!', 'Vá em "Meus Pedidos" para enviar o comprovante.', 'success');
+        }
+
+        function renderUserTickets() {
+            const list = document.getElementById('ticket-list-user');
+            list.innerHTML = data.tickets.length ? '' : '<p class="text-dim">Nenhum pedido encontrado.</p>';
+            data.tickets.forEach(t => {
+                list.innerHTML += `<button onclick="openChatUser(${t.id})" class="list-group-item list-group-item-action bg-card text-white border-0 mb-2 rounded shadow">
+                    Ticket #${t.id} <span class="badge bg-warning text-dark float-end">R$ ${t.total}</span>
+                </button>`;
             });
         }
 
+        function openChatUser(id) {
+            const ticket = data.tickets.find(t => t.id == id);
+            document.getElementById('chat-panel-user').classList.remove('d-none');
+            document.getElementById('chat-header-id').innerText = `Pedido #${id}`;
+            const box = document.getElementById('chat-messages-user');
+            box.innerHTML = '';
+            ticket.msgs.forEach(m => { box.innerHTML += `<div class="bubble ${m.sender}">${m.text}</div>`; });
+        }
+
+        // Inicialização
         renderStore();
     </script>
 </body>
