@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahamas Store | Luxury & Delivery</title>
+    <title>Bahamas Store | Cloud Edition</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,36 +13,26 @@
     <style>
         :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --bg-darker: #08090b; }
         body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; }
-        
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); }
         .navbar-brand { font-weight: 800; color: var(--primary) !important; }
-
-        /* Imagens Corrigidas */
-        .img-container { width: 100%; height: 160px; overflow: hidden; background: #222; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .prod-card:hover img { transform: scale(1.1); }
-
-        .category-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: var(--bg-darker); scrollbar-width: none; }
-        .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 10px 22px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 600; transition: 0.3s; }
-        .cat-btn.active { background: var(--primary); color: #000; }
-
-        .prod-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; }
-        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        
-        /* Avaliações */
-        .review-card { background: var(--bg-card); border-radius: 12px; padding: 15px; border-left: 4px solid var(--primary); margin-bottom: 15px; }
-        .star-rating { color: var(--primary); font-size: 0.8rem; }
-
-        /* ADM */
-        .adm-nav-link { color: #ccc; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; margin-bottom: 5px; }
-        .adm-nav-link:hover, .adm-nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
-        
         .view { display: none; }
         .view.active { display: block; }
-        .adm-tab { display: none; }
-        .adm-tab.active { display: block; }
+
+        /* Produtos */
+        .img-container { width: 100%; height: 160px; overflow: hidden; background: #222; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .prod-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; }
+        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+
+        /* Categorias */
+        .category-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: var(--bg-darker); scrollbar-width: none; }
+        .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 8px 20px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+        .cat-btn.active { background: var(--primary); color: #000; font-weight: bold; }
 
         .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        
+        .adm-nav-link { color: #ccc; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .adm-nav-link.active { background: var(--primary); color: #000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -50,97 +40,48 @@
     <nav class="navbar navbar-expand navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#" onclick="showView('store')">BAHAMAS STORE</a>
-            <div class="ms-auto">
-                <button class="btn btn-sm btn-warning fw-bold" onclick="accessAdmin()"><i class="fas fa-tools"></i> PAINEL ADM</button>
-            </div>
+            <button class="btn btn-sm btn-outline-warning" onclick="accessAdmin()"><i class="fas fa-lock"></i> ADM</button>
         </div>
     </nav>
 
     <div id="view-store" class="view active">
         <div class="category-scroll" id="cat-list"></div>
         <div class="container py-4">
-            <h5 class="fw-bold mb-3"><i class="fas fa-shopping-bag text-primary"></i> Nossos Produtos</h5>
             <div class="row g-4" id="prod-grid"></div>
-
-            <h5 class="fw-bold mt-5 mb-3"><i class="fas fa-star text-primary"></i> Avaliações Recentes</h5>
-            <div id="review-list" class="row"></div>
+            <h5 class="fw-bold mt-5 mb-3"><i class="fas fa-star text-primary"></i> Avaliações</h5>
+            <div id="review-list" class="row g-3"></div>
         </div>
     </div>
 
     <div id="view-admin" class="view container py-4">
         <div class="row">
-            <div class="col-md-3">
-                <div class="bg-card p-3 rounded border border-secondary">
+            <div class="col-md-3 mb-4">
+                <div class="bg-card p-3 rounded border border-secondary shadow">
                     <div class="adm-nav-link active" onclick="switchAdmTab('prods', this)"><i class="fas fa-box"></i> Itens</div>
                     <div class="adm-nav-link" onclick="switchAdmTab('cupons', this)"><i class="fas fa-ticket-alt"></i> Cupons</div>
-                    <div class="adm-nav-link" onclick="switchAdmTab('reviews', this)"><i class="fas fa-comment-dots"></i> Depoimentos</div>
-                    <div class="adm-nav-link" onclick="switchAdmTab('config', this)"><i class="fas fa-cog"></i> Configs</div>
-                    <button class="btn btn-outline-danger w-100 mt-3 btn-sm" onclick="showView('store')">Sair</button>
+                    <div class="adm-nav-link" onclick="switchAdmTab('reviews', this)"><i class="fas fa-comment"></i> Avaliações</div>
+                    <hr class="border-secondary">
+                    <button class="btn btn-danger btn-sm w-100" onclick="showView('store')">Sair</button>
                 </div>
             </div>
-
             <div class="col-md-9">
                 <div id="adm-prods" class="adm-tab active">
-                    <button class="btn btn-warning btn-sm fw-bold mb-3" onclick="openAddProdModal()">+ Novo Produto</button>
-                    <div class="table-responsive bg-card rounded p-2"><table class="table table-dark"><tbody id="adm-table-prods"></tbody></table></div>
+                    <button class="btn btn-warning btn-sm mb-3" onclick="openAddProdModal()">+ Novo Produto</button>
+                    <div class="table-responsive bg-card rounded p-2"><table class="table table-dark table-hover"><tbody id="adm-table-prods"></tbody></table></div>
                 </div>
-
-                <div id="adm-cupons" class="adm-tab">
-                    <h4>Cupons</h4>
-                    <div class="bg-card p-3 rounded border border-secondary mb-3">
-                        <div class="row g-2">
-                            <div class="col-6"><input type="text" id="cup-code" class="form-control bg-dark text-white" placeholder="CÓDIGO (Ex: OFF10)"></div>
-                            <div class="col-4"><input type="number" id="cup-perc" class="form-control bg-dark text-white" placeholder="% Desconto"></div>
-                            <div class="col-2"><button class="btn btn-warning w-100" onclick="addCoupon()">+</button></div>
-                        </div>
+                <div id="adm-cupons" class="adm-tab d-none">
+                    <h4>Cupons Cloud</h4>
+                    <div class="input-group mb-3">
+                        <input type="text" id="cup-code" class="form-control bg-dark text-white" placeholder="CÓDIGO">
+                        <input type="number" id="cup-perc" class="form-control bg-dark text-white" placeholder="% OFF">
+                        <button class="btn btn-warning" onclick="addCoupon()">Criar</button>
                     </div>
                     <div id="adm-list-cupons"></div>
                 </div>
-
-                <div id="adm-reviews" class="adm-tab">
-                    <h4>Gerenciar Avaliações</h4>
-                    <div class="bg-card p-3 rounded border border-secondary mb-3">
-                        <input type="text" id="rev-user" class="form-control bg-dark text-white mb-2" placeholder="Nome do Cliente">
-                        <textarea id="rev-text" class="form-control bg-dark text-white mb-2" placeholder="O que ele disse..."></textarea>
-                        <select id="rev-stars" class="form-select bg-dark text-white mb-2">
-                            <option value="5">5 Estrelas</option><option value="4">4 Estrelas</option>
-                        </select>
-                        <button class="btn btn-warning w-100" onclick="addReview()">Adicionar Avaliação</button>
-                    </div>
+                <div id="adm-reviews" class="adm-tab d-none">
+                    <h4>Avaliações Online</h4>
+                    <button class="btn btn-warning btn-sm mb-3" onclick="addReviewModal()">+ Criar Avaliação</button>
                     <div id="adm-list-reviews"></div>
-                </div>
-
-                <div id="adm-config" class="adm-tab">
-                    <h4>Configurações Gerais</h4>
-                    <div class="bg-card p-3 rounded">
-                        <label class="small">Link Discord</label>
-                        <input type="text" id="cfg-discord" class="form-control bg-dark text-white mb-3">
-                        <button class="btn btn-warning" onclick="saveConfigs()">Salvar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="cartModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-card text-white">
-                <div class="modal-header border-secondary"><h5>Seu Carrinho</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <div id="cart-items"></div>
-                    <div class="mt-3 p-2 bg-dark rounded">
-                        <div class="input-group">
-                            <input type="text" id="cart-coupon-input" class="form-control bg-transparent text-white border-secondary" placeholder="Cupom de desconto">
-                            <button class="btn btn-outline-warning" onclick="applyCoupon()">Aplicar</button>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-center">
-                        <small id="discount-msg" class="text-success d-none">Cupom aplicado!</small>
-                        <h3 class="text-primary fw-bold" id="cart-total">R$ 0,00</h3>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-primary w-100 py-3 fw-bold" style="background:#5865F2; border:none;" onclick="finishToDiscord()">FINALIZAR NO DISCORD</button>
                 </div>
             </div>
         </div>
@@ -148,111 +89,207 @@
 
     <div class="cart-btn" onclick="openCart()"><i class="fas fa-shopping-basket"></i><span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span></div>
 
-    <div class="modal fade" id="prodModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content bg-card text-white"><div class="modal-header"><h5>Novo Item</h5></div><div class="modal-body">
-        <input type="text" id="p-name" class="form-control bg-dark text-white mb-2" placeholder="Nome">
-        <input type="number" id="p-price" class="form-control bg-dark text-white mb-2" placeholder="Preço">
-        <select id="p-cat" class="form-select bg-dark text-white mb-2"></select>
-        <input type="text" id="p-img" class="form-control bg-dark text-white mb-2" placeholder="URL da Imagem">
-        <button class="btn btn-warning w-100" onclick="saveProd()">CADASTRAR</button>
-    </div></div></div></div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        let store = JSON.parse(localStorage.getItem('bahamas_pro_v3')) || {
-            discord: "https://discord.gg/uV3XzeWAtb",
-            cats: ["VIPs", "Carros", "Itens"],
-            prods: [],
-            coupons: [],
-            reviews: [{user: "Marcos Souza", text: "Entrega muito rápida, recomendo!", stars: 5}]
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8",
+            authDomain: "quebrei-o-sistema.firebaseapp.com",
+            databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com",
+            projectId: "quebrei-o-sistema",
+            storageBucket: "quebrei-o-sistema.firebasestorage.app",
+            messagingSenderId: "133672006102",
+            appId: "1:133672006102:web:e62c681ced44b3650f7477"
         };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // VARIÁVEIS DE CONTROLE
+        let storeData = { prods: {}, cupons: {}, reviews: {} };
         let cart = [];
         let activeDiscount = 0;
 
-        function sync() { localStorage.setItem('bahamas_pro_v3', JSON.stringify(store)); renderAll(); }
-        function showView(v) { document.querySelectorAll('.view').forEach(el => el.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); }
-        function switchAdmTab(tabId, el) { document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.adm-nav-link').forEach(l => l.classList.remove('active')); document.getElementById('adm-' + tabId).classList.add('active'); el.classList.add('active'); }
-        function accessAdmin() { Swal.fire({ title: 'ADM', input: 'password', background: '#16191f', color: '#fff' }).then(r => { if(r.value === '2707') { showView('admin'); renderAdmin(); } }); }
+        // --- SINCRONIZAÇÃO EM TEMPO REAL ---
+        onValue(ref(db, 'store'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                storeData = data;
+                renderStore();
+                renderAdmin();
+            }
+        });
 
-        function renderStore(filter = 'Todos') {
-            const catScroll = document.getElementById('cat-list');
-            catScroll.innerHTML = `<div class="cat-btn ${filter==='Todos'?'active':''}" onclick="renderStore('Todos')">Todos</div>` + store.cats.map(c => `<div class="cat-btn ${filter===c?'active':''}" onclick="renderStore('${c}')">${c}</div>`).join('');
+        // --- FUNÇÕES DA LOJA ---
+        window.showView = (v) => {
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + v).classList.add('active');
+        };
 
+        window.renderStore = (filter = 'Todos') => {
             const grid = document.getElementById('prod-grid');
-            const list = filter === 'Todos' ? store.prods : store.prods.filter(p => p.cat === filter);
-            grid.innerHTML = list.map(p => `
+            const prods = storeData.prods ? Object.values(storeData.prods) : [];
+            const cats = ['Todos', ...new Set(prods.map(p => p.cat))];
+            
+            document.getElementById('cat-list').innerHTML = cats.map(c => `<div class="cat-btn ${filter===c?'active':''}" onclick="renderStore('${c}')">${c}</div>`).join('');
+
+            const filtered = filter === 'Todos' ? prods : prods.filter(p => p.cat === filter);
+            grid.innerHTML = filtered.map(p => `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="prod-card shadow">
+                    <div class="prod-card shadow-sm">
                         <div class="img-container"><img src="${p.img || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'"></div>
-                        <div class="p-3 text-center">
-                            <h6 class="fw-bold mb-1 small">${p.name}</h6>
-                            <div class="star-rating mb-2"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                            <div class="d-flex justify-content-between align-items-center"><span class="text-primary fw-bold">R$ ${p.price}</span><button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})">+</button></div>
+                        <div class="p-3">
+                            <h6 class="fw-bold mb-1 small text-truncate">${p.name}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">R$ ${p.price}</span>
+                                <button class="btn btn-sm btn-warning" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>`).join('');
 
-            document.getElementById('review-list').innerHTML = store.reviews.map(r => `
-                <div class="col-md-6"><div class="review-card">
-                    <div class="d-flex justify-content-between"><b>${r.user}</b> <div class="star-rating">${'<i class="fas fa-star"></i>'.repeat(r.stars)}</div></div>
-                    <p class="small text-secondary mb-0 mt-1">"${r.text}"</p>
-                </div></div>`).join('');
-        }
+            const revList = document.getElementById('review-list');
+            const revs = storeData.reviews ? Object.values(storeData.reviews) : [];
+            revList.innerHTML = revs.map(r => `
+                <div class="col-md-6">
+                    <div class="bg-card p-3 rounded border-start border-warning">
+                        <div class="d-flex justify-content-between"><b>${r.user}</b> <span>${'⭐'.repeat(r.stars)}</span></div>
+                        <p class="small text-secondary mb-0">"${r.text}"</p>
+                    </div>
+                </div>`).join('');
+        };
 
-        function addToCart(id) { cart.push(store.prods.find(p => p.id === id)); document.getElementById('cart-badge').innerText = cart.length; }
+        window.addToCart = (id) => {
+            cart.push(storeData.prods[id]);
+            document.getElementById('cart-badge').innerText = cart.length;
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'No carrinho!', showConfirmButton: false, timer: 1000 });
+        };
 
-        function openCart() {
-            updateCartTotal();
-            new bootstrap.Modal(document.getElementById('cartModal')).show();
-        }
-
-        function applyCoupon() {
-            const code = document.getElementById('cart-coupon-input').value.toUpperCase();
-            const cp = store.coupons.find(c => c.code === code);
-            if(cp) {
-                activeDiscount = cp.perc;
-                document.getElementById('discount-msg').classList.remove('d-none');
-                updateCartTotal();
-            } else {
-                Swal.fire('Erro', 'Cupom inválido!', 'error');
-            }
-        }
-
-        function updateCartTotal() {
-            let subtotal = cart.reduce((a,b) => a + parseFloat(b.price), 0);
-            let total = subtotal - (subtotal * (activeDiscount / 100));
-            document.getElementById('cart-items').innerHTML = cart.map((i, idx) => `<div class="d-flex justify-content-between small border-bottom border-secondary py-1"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('');
-            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
-        }
-
-        function finishToDiscord() {
-            let subtotal = cart.reduce((a,b) => a + parseFloat(b.price), 0);
-            let total = subtotal - (subtotal * (activeDiscount / 100));
-            const text = `🛒 **PEDIDO BAHAMAS**\n${cart.map(i => `• ${i.name}`).join('\n')}\n💰 **TOTAL:** R$ ${total.toFixed(2)}${activeDiscount ? ` (Cupom: ${activeDiscount}% OFF)` : ''}`;
-            navigator.clipboard.writeText(text).then(() => {
-                window.open(store.discord, '_blank');
+        window.openCart = () => {
+            let total = cart.reduce((a, b) => a + parseFloat(b.price), 0);
+            let final = total - (total * (activeDiscount / 100));
+            
+            Swal.fire({
+                title: 'Seu Carrinho',
+                background: '#16191f',
+                color: '#fff',
+                html: `
+                    <div id="cart-list-swal" class="text-start mb-3" style="max-height: 200px; overflow-y: auto;">
+                        ${cart.map((i, idx) => `<div class="d-flex justify-content-between border-bottom border-secondary py-1"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('')}
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" id="cupom-input" class="form-control bg-dark text-white border-secondary" placeholder="Cupom">
+                        <button class="btn btn-warning" onclick="window.applyCupom()">Aplicar</button>
+                    </div>
+                    <h4 class="text-primary">Total: R$ ${final.toFixed(2)}</h4>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fab fa-discord"></i> Finalizar no Discord',
+                confirmButtonColor: '#5865F2'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const text = `🛒 **PEDIDO BAHAMAS**\n${cart.map(i => `• ${i.name}`).join('\n')}\n💰 **TOTAL:** R$ ${final.toFixed(2)}`;
+                    navigator.clipboard.writeText(text);
+                    window.open('https://discord.gg/uV3XzeWAtb', '_blank');
+                    cart = []; document.getElementById('cart-badge').innerText = 0;
+                }
             });
-        }
+        };
 
-        // --- ADM LOGIC ---
-        function renderAdmin() {
-            document.getElementById('adm-table-prods').innerHTML = store.prods.map(p => `<tr><td><small>${p.name}</small></td><td class="text-end"><button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})">x</button></td></tr>`).join('');
-            document.getElementById('adm-list-cupons').innerHTML = store.coupons.map(c => `<div class="bg-dark p-2 rounded mb-1 d-flex justify-content-between"><span>${c.code} (${c.perc}%)</span><button class="btn btn-sm btn-danger" onclick="deleteCoupon('${c.code}')">x</button></div>`).join('');
-            document.getElementById('adm-list-reviews').innerHTML = store.reviews.map((r, idx) => `<div class="bg-dark p-2 rounded mb-1 d-flex justify-content-between"><span>${r.user}</span><button class="btn btn-sm btn-danger" onclick="deleteReview(${idx})">x</button></div>`).join('');
-            document.getElementById('cfg-discord').value = store.discord;
-        }
+        window.applyCupom = () => {
+            const code = document.getElementById('cupom-input').value.toUpperCase();
+            const cupons = storeData.cupons ? Object.values(storeData.cupons) : [];
+            const found = cupons.find(c => c.code === code);
+            if(found) {
+                activeDiscount = found.perc;
+                Swal.fire('Aplicado!', `Desconto de ${found.perc}% ativado!`, 'success').then(() => window.openCart());
+            } else {
+                Swal.fire('Erro', 'Cupom inválido', 'error');
+            }
+        };
 
-        function openAddProdModal() { document.getElementById('p-cat').innerHTML = store.cats.map(c => `<option value="${c}">${c}</option>`).join(''); new bootstrap.Modal(document.getElementById('prodModal')).show(); }
-        function saveProd() { const n = document.getElementById('p-name').value, p = document.getElementById('p-price').value, c = document.getElementById('p-cat').value, i = document.getElementById('p-img').value; if(n && p) { store.prods.push({id:Date.now(), name:n, price:p, cat:c, img:i}); sync(); bootstrap.Modal.getInstance(document.getElementById('prodModal')).hide(); } }
-        function addCoupon() { const code = document.getElementById('cup-code').value.toUpperCase(), perc = document.getElementById('cup-perc').value; if(code && perc) { store.coupons.push({code, perc: parseInt(perc)}); sync(); } }
-        function deleteCoupon(code) { store.coupons = store.coupons.filter(c => c.code !== code); sync(); }
-        function addReview() { const user = document.getElementById('rev-user').value, text = document.getElementById('rev-text').value, stars = document.getElementById('rev-stars').value; if(user && text) { store.reviews.push({user, text, stars: parseInt(stars)}); sync(); } }
-        function deleteReview(idx) { store.reviews.splice(idx,1); sync(); }
-        function deleteProd(id) { store.prods = store.prods.filter(p => p.id !== id); sync(); }
-        function saveConfigs() { store.discord = document.getElementById('cfg-discord').value; sync(); }
+        // --- FUNÇÕES ADMINISTRATIVAS ---
+        window.accessAdmin = () => {
+            Swal.fire({ title: 'Acesso ADM', input: 'password', background: '#16191f', color: '#fff' }).then(r => {
+                if(r.value === '2707') showView('admin');
+            });
+        };
 
-        function renderAll() { renderStore(); renderAdmin(); }
-        renderAll();
+        window.switchAdmTab = (tab, el) => {
+            document.querySelectorAll('.adm-tab').forEach(t => t.classList.add('d-none'));
+            document.querySelectorAll('.adm-nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('adm-' + tab).classList.remove('d-none');
+            el.classList.add('active');
+        };
+
+        window.openAddProdModal = () => {
+            Swal.fire({
+                title: 'Novo Produto',
+                background: '#16191f', color: '#fff',
+                html: `
+                    <input id="p-name" class="swal2-input" placeholder="Nome">
+                    <input id="p-price" type="number" class="swal2-input" placeholder="Preço">
+                    <input id="p-cat" class="swal2-input" placeholder="Categoria (VIP, Carro...)">
+                    <input id="p-img" class="swal2-input" placeholder="Link da Imagem">
+                `,
+                preConfirm: () => {
+                    const name = document.getElementById('p-name').value;
+                    const price = document.getElementById('p-price').value;
+                    const cat = document.getElementById('p-cat').value || 'Geral';
+                    const img = document.getElementById('p-img').value;
+                    if(!name || !price) return Swal.showValidationMessage('Preencha nome e preço!');
+                    const newKey = push(ref(db, 'store/prods')).key;
+                    set(ref(db, `store/prods/${newKey}`), { id: newKey, name, price, cat, img });
+                }
+            });
+        };
+
+        window.addCoupon = () => {
+            const code = document.getElementById('cup-code').value.toUpperCase();
+            const perc = document.getElementById('cup-perc').value;
+            if(code && perc) {
+                const newKey = push(ref(db, 'store/cupons')).key;
+                set(ref(db, `store/cupons/${newKey}`), { id: newKey, code, perc: parseInt(perc) });
+                document.getElementById('cup-code').value = '';
+                document.getElementById('cup-perc').value = '';
+            }
+        };
+
+        window.addReviewModal = () => {
+            Swal.fire({
+                title: 'Nova Avaliação',
+                background: '#16191f', color: '#fff',
+                html: `<input id="r-user" class="swal2-input" placeholder="Nome"><input id="r-text" class="swal2-input" placeholder="Texto"><input id="r-stars" type="number" class="swal2-input" placeholder="Estrelas (1-5)">`,
+                preConfirm: () => {
+                    const user = document.getElementById('r-user').value;
+                    const text = document.getElementById('r-text').value;
+                    const stars = document.getElementById('r-stars').value;
+                    const newKey = push(ref(db, 'store/reviews')).key;
+                    set(ref(db, `store/reviews/${newKey}`), { id: newKey, user, text, stars: parseInt(stars) });
+                }
+            });
+        };
+
+        window.deleteItem = (path) => {
+            remove(ref(db, 'store/' + path));
+        };
+
+        window.renderAdmin = () => {
+            const table = document.getElementById('adm-table-prods');
+            const prods = storeData.prods ? Object.values(storeData.prods) : [];
+            table.innerHTML = prods.map(p => `<tr><td>${p.name}</td><td>R$ ${p.price}</td><td class="text-end"><button class="btn btn-sm btn-danger" onclick="deleteItem('prods/${p.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+
+            const cupDiv = document.getElementById('adm-list-cupons');
+            const cups = storeData.cupons ? Object.values(storeData.cupons) : [];
+            cupDiv.innerHTML = cups.map(c => `<div class="bg-dark p-2 mb-2 rounded d-flex justify-content-between"><span>${c.code} (${c.perc}%)</span><button class="btn btn-sm btn-danger" onclick="deleteItem('cupons/${c.id}')">x</button></div>`).join('');
+
+            const revDiv = document.getElementById('adm-list-reviews');
+            const revs = storeData.reviews ? Object.values(storeData.reviews) : [];
+            revDiv.innerHTML = revs.map(r => `<div class="bg-dark p-2 mb-2 rounded d-flex justify-content-between"><span>${r.user}</span><button class="btn btn-sm btn-danger" onclick="deleteItem('reviews/${r.id}')">x</button></div>`).join('');
+        };
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
