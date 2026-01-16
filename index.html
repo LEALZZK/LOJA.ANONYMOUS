@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --bg-darker: #08090b; }
+        :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --bg-darker: #08090b; --pix: #32bcad; }
         body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
         
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); z-index: 1050; }
@@ -22,28 +22,26 @@
         .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 8px 24px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        /* Conteúdo Principal */
         main { flex: 1; }
 
-        /* Cards Loja */
-        .img-container { width: 100%; height: 170px; overflow: hidden; background: #222; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .prod-card { background: var(--bg-card); border-radius: 15px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
         .prod-card:hover { border-color: var(--primary); transform: translateY(-8px); }
+        .img-container { width: 100%; height: 170px; overflow: hidden; background: #222; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ADM Helpers */
-        .field-label { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 4px; display: block; }
-        .field-desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; }
-
-        /* Footer */
+        /* Termos e Rodapé */
         footer { background: var(--bg-card); border-top: 1px solid #333; padding: 40px 0 20px 0; margin-top: 50px; }
         .footer-logo { font-weight: 800; color: var(--primary); font-size: 1.5rem; }
         .social-link { color: white; font-size: 1.2rem; margin-right: 15px; transition: 0.3s; }
         .social-link:hover { color: var(--primary); }
+        .pix-badge { background: var(--pix); color: #000; padding: 4px 10px; border-radius: 5px; font-weight: 800; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 5px; }
 
         .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
         .view { display: none; padding-top: 20px; }
         .view.active { display: block; }
+
+        /* Estilo do Modal de Termos */
+        .termos-box { background: #000; border: 1px solid #333; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #ccc; max-height: 400px; overflow-y: auto; text-align: left; }
     </style>
 </head>
 <body>
@@ -64,19 +62,22 @@
         </div>
 
         <div id="view-admin" class="view container">
-            <h3 class="fw-bold text-warning mb-4"><i class="fas fa-database me-2"></i>Gerenciamento de Conteúdo</h3>
+            <h3 class="fw-bold text-warning mb-4"><i class="fas fa-tools me-2"></i>Dashboard Administrativo</h3>
+            
             <div class="row">
                 <div class="col-md-4">
                     <div class="bg-card p-3 rounded border border-secondary mb-3 shadow">
                         <h5 class="fw-bold mb-3">📁 Categorias</h5>
-                        
-                        <label class="field-label">Nome da Categoria</label>
-                        <p class="field-desc">Ex: Carros, VIPs, Mansões. Isso cria os filtros no topo da loja.</p>
-                        <div class="input-group mb-3">
-                            <input type="text" id="new-cat-name" class="form-control bg-dark text-white border-secondary" placeholder="Digite aqui...">
-                            <button class="btn btn-warning" onclick="addCategory()"><i class="fas fa-plus"></i></button>
-                        </div>
+                        <input type="text" id="new-cat-name" class="form-control bg-dark text-white border-secondary mb-2" placeholder="Ex: Armas">
+                        <button class="btn btn-warning btn-sm w-100 mb-3" onclick="addCategory()">+ Criar Categoria</button>
                         <div id="adm-cat-list" class="list-group"></div>
+                    </div>
+
+                    <div class="bg-card p-3 rounded border border-secondary shadow">
+                        <h5 class="fw-bold mb-2">📜 Termos de Uso</h5>
+                        <p class="text-secondary small">Regras da loja que o cliente deve aceitar.</p>
+                        <textarea id="adm-termos-text" class="form-control bg-dark text-white border-secondary mb-2" rows="6"></textarea>
+                        <button class="btn btn-outline-warning btn-sm w-100" onclick="saveTermos()">Atualizar Termos</button>
                     </div>
                 </div>
 
@@ -84,37 +85,17 @@
                     <div class="bg-card p-4 rounded border border-secondary mb-3 shadow">
                         <h5 class="fw-bold mb-3">🎁 Novo Produto</h5>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="field-label">Título do Item</label>
-                                <p class="field-desc">O nome que o cliente verá no card.</p>
-                                <input type="text" id="p-name" class="form-control bg-dark text-white border-secondary" placeholder="Ex: Combo VIP Bahamas">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="field-label">Valor do Produto (R$)</label>
-                                <p class="field-desc">Apenas números. Ex: 150</p>
-                                <input type="number" id="p-price" class="form-control bg-dark text-white border-secondary" placeholder="0.00">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="field-label">Selecionar Categoria</label>
-                                <p class="field-desc">Onde esse item será filtrado.</p>
-                                <select id="p-cat-select" class="form-select bg-dark text-white border-warning"></select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="field-label">Link da Imagem (URL)</label>
-                                <p class="field-desc">Use links do Imgur ou Discord.</p>
-                                <input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="https://i.imgur.com/...">
-                            </div>
+                            <div class="col-md-6 mb-3"><input type="text" id="p-name" class="form-control bg-dark text-white border-secondary" placeholder="Nome"></div>
+                            <div class="col-md-6 mb-3"><input type="number" id="p-price" class="form-control bg-dark text-white border-secondary" placeholder="Preço (Somente números)"></div>
+                            <div class="col-md-6 mb-3"><select id="p-cat-select" class="form-select bg-dark text-white border-warning"></select></div>
+                            <div class="col-md-6 mb-3"><input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="Link da Imagem"></div>
                         </div>
-                        <button class="btn btn-warning w-100 fw-bold py-2 mt-2" onclick="saveProduct()">PUBLICAR ITEM NA LOJA</button>
+                        <button class="btn btn-warning w-100 fw-bold" onclick="saveProduct()">CADASTRAR ITEM</button>
                     </div>
 
                     <div class="bg-card p-3 rounded border border-secondary shadow">
-                        <h5 class="fw-bold mb-3">📋 Itens Publicados</h5>
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover align-middle">
-                                <tbody id="adm-table-prods"></tbody>
-                            </table>
-                        </div>
+                        <h5 class="fw-bold mb-3">📋 Itens Ativos</h5>
+                        <div class="table-responsive"><table class="table table-dark align-middle"><tbody id="adm-table-prods"></tbody></table></div>
                     </div>
                 </div>
             </div>
@@ -122,43 +103,32 @@
     </main>
 
     <footer>
-        <div class="container text-center text-md-start">
+        <div class="container">
             <div class="row">
-                <div class="col-md-6 mb-4">
+                <div class="col-md-5 mb-4 text-center text-md-start">
                     <span class="footer-logo">BAHAMAS STORE</span>
-                    <p class="text-secondary mt-2 small" style="max-width: 400px;">
-                        A melhor experiência em itens e benefícios para o seu jogo. Entrega automática e suporte 24h via Discord.
-                    </p>
-                    <div class="mt-3">
-                        <a href="https://discord.gg/uV3XzeWAtb" class="social-link"><i class="fab fa-discord"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
+                    <p class="text-secondary mt-2 small">A maior loja de benefícios para o seu jogo. Atendimento personalizado e entrega garantida.</p>
+                    <div class="mt-2"><span class="pix-badge"><i class="fas fa-bolt"></i> Pagamentos via PIX</span></div>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold text-white mb-3">Links Úteis</h6>
-                    <ul class="list-unstyled small text-secondary">
-                        <li class="mb-2"><a href="#" onclick="showView('store')" class="text-decoration-none text-secondary">Início</a></li>
-                        <li class="mb-2"><a href="https://discord.gg/uV3XzeWAtb" target="_blank" class="text-decoration-none text-secondary">Suporte Discord</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Termos de Uso</a></li>
+                <div class="col-md-4 mb-4 text-center text-md-start">
+                    <h6 class="fw-bold text-white mb-3">Informações</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" onclick="showTermos()" class="text-decoration-none text-secondary hover-warning"><i class="fas fa-file-contract me-2"></i>Termos de Uso</a></li>
+                        <li class="mb-2"><a href="https://discord.gg/uV3XzeWAtb" target="_blank" class="text-decoration-none text-secondary"><i class="fab fa-discord me-2"></i>Suporte Discord</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold text-white mb-3">Pagamento Seguro</h6>
-                    <p class="small text-secondary">Aceitamos Cartões, Pix e Boleto através do nosso checkout seguro.</p>
-                    <div class="text-warning fs-4">
-                        <i class="fab fa-cc-visa me-2"></i><i class="fab fa-cc-mastercard me-2"></i><i class="fas fa-qrcode"></i>
-                    </div>
+                <div class="col-md-3 mb-4 text-center text-md-start">
+                    <h6 class="fw-bold text-white mb-3">Redes Sociais</h6>
+                    <a href="https://discord.gg/uV3XzeWAtb" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             <hr class="border-secondary mt-4">
-            <div class="text-center text-secondary small pb-2">
-                &copy; 2026 Bahamas Store - Todos os direitos reservados.
-            </div>
+            <div class="text-center text-secondary small">&copy; 2026 Bahamas Store - Apenas PIX Aceito.</div>
         </div>
     </footer>
 
-    <div class="cart-btn" onclick="openCart()"><i class="fas fa-shopping-cart"></i><span id="cart-badge" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">0</span></div>
+    <div class="cart-btn" onclick="openCart()"><i class="fas fa-shopping-basket"></i><span id="cart-badge" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">0</span></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -176,22 +146,41 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let storeData = { prods: {}, cats: {} };
+        let storeData = { prods: {}, cats: {}, termos: "Os termos de uso ainda não foram configurados pelo administrador." };
         let cart = [];
 
-        onValue(ref(db, 'store'), (snap) => { storeData = snap.val() || { prods: {}, cats: {} }; renderStore(); renderAdmin(); });
+        onValue(ref(db, 'store'), (snap) => { 
+            storeData = snap.val() || storeData; 
+            if(storeData.termos) document.getElementById('adm-termos-text').value = storeData.termos;
+            renderStore(); renderAdmin(); 
+        });
 
         window.showView = (v) => { document.querySelectorAll('.view').forEach(e => e.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); };
         
+        window.saveTermos = () => {
+            const texto = document.getElementById('adm-termos-text').value;
+            set(ref(db, 'store/termos'), texto);
+            Swal.fire('Sucesso', 'Termos atualizados!', 'success');
+        };
+
+        window.showTermos = () => {
+            Swal.fire({
+                title: 'Termos de Uso & Condições',
+                background: '#16191f', color: '#fff',
+                html: `<div class="termos-box">${storeData.termos.replace(/\n/g, '<br>')}</div>`,
+                confirmButtonText: 'Entendi'
+            });
+        };
+
         window.saveProduct = () => {
             const name = document.getElementById('p-name').value;
             const price = document.getElementById('p-price').value;
             const cat = document.getElementById('p-cat-select').value;
             const img = document.getElementById('p-img').value;
-            if(!name || !price || !cat) return Swal.fire('Erro', 'Preencha os campos principais!', 'error');
+            if(!name || !price || !cat) return Swal.fire('Erro', 'Preencha os campos!', 'error');
             const key = push(ref(db, 'store/prods')).key;
             set(ref(db, `store/prods/${key}`), { id: key, name, price, cat, img });
-            document.querySelectorAll('#view-admin input').forEach(i => i.value = '');
+            Swal.fire('Sucesso', 'Item publicado!', 'success');
         };
 
         window.addCategory = () => {
@@ -211,8 +200,8 @@
             const filtered = filter === 'Todos' ? items : items.filter(p => p.cat === filter);
             document.getElementById('prod-grid').innerHTML = filtered.map(p => `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="prod-card shadow-sm">
-                        <div class="img-container"><img src="${p.img || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'"></div>
+                    <div class="prod-card">
+                        <div class="img-container"><img src="${p.img || 'https://via.placeholder.com/200'}"></div>
                         <div class="p-3">
                             <small class="text-warning fw-bold">${p.cat}</small>
                             <h6 class="fw-bold mb-2 text-truncate">${p.name}</h6>
@@ -227,25 +216,32 @@
 
         window.renderAdmin = () => {
             const cats = Object.values(storeData.cats || {});
-            document.getElementById('adm-cat-list').innerHTML = cats.map(c => `<div class="list-group-item bg-dark text-white d-flex justify-content-between border-secondary">${c.name}<i class="fas fa-trash text-danger" onclick="removeData('cats/${c.id}')" style="cursor:pointer"></i></div>`).join('');
+            document.getElementById('adm-cat-list').innerHTML = cats.map(c => `<div class="list-group-item bg-dark text-white d-flex justify-content-between border-secondary py-1 small">${c.name}<i class="fas fa-trash text-danger" onclick="removeData('cats/${c.id}')" style="cursor:pointer"></i></div>`).join('');
             document.getElementById('p-cat-select').innerHTML = '<option value="">Escolha...</option>' + cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
             const prods = Object.values(storeData.prods || {});
-            document.getElementById('adm-table-prods').innerHTML = prods.map(p => `<tr><td><img src="${p.img}" width="30"></td><td><small>${p.name}</small></td><td><span class="badge bg-secondary">${p.cat}</span></td><td><i class="fas fa-trash text-danger" onclick="removeData('prods/${p.id}')" style="cursor:pointer"></i></td></tr>`).join('');
+            document.getElementById('adm-table-prods').innerHTML = prods.map(p => `<tr><td><small>${p.name}</small></td><td class="text-end text-warning">R$ ${p.price} <i class="fas fa-trash text-danger ms-2" onclick="removeData('prods/${p.id}')" style="cursor:pointer"></i></td></tr>`).join('');
         };
 
         window.removeData = (path) => remove(ref(db, `store/${path}`));
-        window.accessAdmin = () => Swal.fire({title: 'Senha', input: 'password'}).then(r => { if(r.value === '2707') showView('admin') });
+        window.accessAdmin = () => Swal.fire({title: 'Senha ADM', input: 'password'}).then(r => { if(r.value === '2707') showView('admin') });
         window.addToCart = (id) => { cart.push({...storeData.prods[id], cartId: Date.now()}); document.getElementById('cart-badge').innerText = cart.length; };
         
         window.openCart = () => {
             const total = cart.reduce((s, i) => s + parseFloat(i.price), 0);
             Swal.fire({
                 title: '🛒 Carrinho', background: '#16191f', color: '#fff',
-                html: cart.map(i => `<div class="d-flex justify-content-between border-bottom border-secondary py-2"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('') + `<h4 class="mt-3 text-warning">Total: R$ ${total.toFixed(2)}</h4>`,
-                showCancelButton: true, confirmButtonText: 'Pedir no Discord', cancelButtonText: 'Esvaziar'
+                html: `
+                    <div class="mb-3">${cart.map(i => `<div class="d-flex justify-content-between border-bottom border-secondary py-1 small"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('')}</div>
+                    <div class="mt-3 p-2 rounded" style="background: rgba(50, 188, 173, 0.1); border: 1px dashed var(--pix)">
+                        <span class="pix-badge"><i class="fas fa-bolt"></i> Pagamento via PIX</span>
+                        <p class="small text-secondary mt-1 mb-0">Envie o comprovante após o pedido no Discord.</p>
+                    </div>
+                    <h4 class="mt-3 text-warning">Total: R$ ${total.toFixed(2)}</h4>
+                `,
+                showCancelButton: true, confirmButtonText: 'Finalizar Pedido', cancelButtonText: 'Limpar', confirmButtonColor: '#32bcad'
             }).then(r => {
                 if(r.isConfirmed && cart.length > 0) {
-                    navigator.clipboard.writeText(`🛒 PEDIDO: \n${cart.map(i => i.name).join('\n')}\nTOTAL: R$ ${total.toFixed(2)}`);
+                    navigator.clipboard.writeText(`🛒 *PEDIDO BAHAMAS*\n${cart.map(i => `• ${i.name}`).join('\n')}\n💰 *TOTAL:* R$ ${total.toFixed(2)}\n💠 *PAGAMENTO:* PIX`);
                     window.open('https://discord.gg/uV3XzeWAtb', '_blank');
                     cart = []; document.getElementById('cart-badge').innerText = 0;
                 } else if(r.dismiss === Swal.DismissReason.cancel) { cart = []; document.getElementById('cart-badge').innerText = 0; }
