@@ -11,26 +11,38 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --bg-darker: #08090b; --pix: #32bcad; }
-        body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        :root { --primary: #FFD700; --bg-card: rgba(22, 25, 31, 0.9); --bg-darker: rgba(8, 9, 11, 0.95); --pix: #32bcad; }
         
-        .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); z-index: 1050; }
+        body { 
+            /* Link da imagem de fundo enviada */
+            background: linear-gradient(rgba(13, 15, 18, 0.8), rgba(13, 15, 18, 0.8)), 
+                        url('https://r2.erweima.ai/ai_image/1736995648585of2h83h0.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white; 
+            font-family: 'Montserrat', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        
+        .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); z-index: 1050; backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; color: var(--primary) !important; letter-spacing: 1px; }
 
-        .category-container { background: var(--bg-darker); padding: 12px 0; border-bottom: 1px solid #222; position: sticky; top: 56px; z-index: 1000; }
+        .category-container { background: var(--bg-darker); padding: 12px 0; border-bottom: 1px solid #222; position: sticky; top: 56px; z-index: 1000; backdrop-filter: blur(5px); }
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 8px 24px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
         main { flex: 1; }
 
-        .prod-card { background: var(--bg-card); border-radius: 15px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
+        .prod-card { background: var(--bg-card); border-radius: 15px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; backdrop-filter: blur(10px); }
         .prod-card:hover { border-color: var(--primary); transform: translateY(-8px); }
         .img-container { width: 100%; height: 170px; overflow: hidden; background: #222; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Termos e Rodapé */
-        footer { background: var(--bg-card); border-top: 1px solid #333; padding: 40px 0 20px 0; margin-top: 50px; }
+        footer { background: var(--bg-card); border-top: 1px solid #333; padding: 40px 0 20px 0; margin-top: 50px; backdrop-filter: blur(10px); }
         .footer-logo { font-weight: 800; color: var(--primary); font-size: 1.5rem; }
         .social-link { color: white; font-size: 1.2rem; margin-right: 15px; transition: 0.3s; }
         .social-link:hover { color: var(--primary); }
@@ -40,8 +52,10 @@
         .view { display: none; padding-top: 20px; }
         .view.active { display: block; }
 
-        /* Estilo do Modal de Termos */
         .termos-box { background: #000; border: 1px solid #333; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #ccc; max-height: 400px; overflow-y: auto; text-align: left; }
+        
+        /* Ajuste para o painel ADM ficar legível com o fundo */
+        #view-admin .bg-card { background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); }
     </style>
 </head>
 <body>
@@ -63,7 +77,6 @@
 
         <div id="view-admin" class="view container">
             <h3 class="fw-bold text-warning mb-4"><i class="fas fa-tools me-2"></i>Dashboard Administrativo</h3>
-            
             <div class="row">
                 <div class="col-md-4">
                     <div class="bg-card p-3 rounded border border-secondary mb-3 shadow">
@@ -72,27 +85,23 @@
                         <button class="btn btn-warning btn-sm w-100 mb-3" onclick="addCategory()">+ Criar Categoria</button>
                         <div id="adm-cat-list" class="list-group"></div>
                     </div>
-
                     <div class="bg-card p-3 rounded border border-secondary shadow">
                         <h5 class="fw-bold mb-2">📜 Termos de Uso</h5>
-                        <p class="text-secondary small">Regras da loja que o cliente deve aceitar.</p>
                         <textarea id="adm-termos-text" class="form-control bg-dark text-white border-secondary mb-2" rows="6"></textarea>
                         <button class="btn btn-outline-warning btn-sm w-100" onclick="saveTermos()">Atualizar Termos</button>
                     </div>
                 </div>
-
                 <div class="col-md-8">
                     <div class="bg-card p-4 rounded border border-secondary mb-3 shadow">
                         <h5 class="fw-bold mb-3">🎁 Novo Produto</h5>
                         <div class="row">
                             <div class="col-md-6 mb-3"><input type="text" id="p-name" class="form-control bg-dark text-white border-secondary" placeholder="Nome"></div>
-                            <div class="col-md-6 mb-3"><input type="number" id="p-price" class="form-control bg-dark text-white border-secondary" placeholder="Preço (Somente números)"></div>
+                            <div class="col-md-6 mb-3"><input type="number" id="p-price" class="form-control bg-dark text-white border-secondary" placeholder="Preço"></div>
                             <div class="col-md-6 mb-3"><select id="p-cat-select" class="form-select bg-dark text-white border-warning"></select></div>
                             <div class="col-md-6 mb-3"><input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="Link da Imagem"></div>
                         </div>
                         <button class="btn btn-warning w-100 fw-bold" onclick="saveProduct()">CADASTRAR ITEM</button>
                     </div>
-
                     <div class="bg-card p-3 rounded border border-secondary shadow">
                         <h5 class="fw-bold mb-3">📋 Itens Ativos</h5>
                         <div class="table-responsive"><table class="table table-dark align-middle"><tbody id="adm-table-prods"></tbody></table></div>
