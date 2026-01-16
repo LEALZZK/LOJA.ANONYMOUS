@@ -12,34 +12,38 @@
 
     <style>
         :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --bg-darker: #08090b; }
-        body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* Navbar */
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); z-index: 1050; }
         .navbar-brand { font-weight: 800; color: var(--primary) !important; letter-spacing: 1px; }
 
-        /* Categorias */
-        .category-container { background: var(--bg-darker); padding: 12px 0; border-bottom: 1px solid #222; sticky-top: 56px; z-index: 1000; position: sticky; top: 70px; }
+        .category-container { background: var(--bg-darker); padding: 12px 0; border-bottom: 1px solid #222; position: sticky; top: 56px; z-index: 1000; }
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-        .category-scroll::-webkit-scrollbar { display: none; }
         .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 8px 24px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
+        /* Conteúdo Principal */
+        main { flex: 1; }
+
         /* Cards Loja */
-        .img-container { width: 100%; height: 170px; overflow: hidden; background: #222; position: relative; }
+        .img-container { width: 100%; height: 170px; overflow: hidden; background: #222; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .prod-card { background: var(--bg-card); border-radius: 15px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
-        .prod-card:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .prod-card:hover img { transform: scale(1.1); }
-        
-        /* Botão Carrinho */
-        .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.6); transition: 0.3s; }
-        .cart-btn:hover { transform: scale(1.1); background: #ffea00; }
+        .prod-card:hover { border-color: var(--primary); transform: translateY(-8px); }
 
-        /* View ADM */
+        /* ADM Helpers */
+        .field-label { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 4px; display: block; }
+        .field-desc { font-size: 0.7rem; color: #888; margin-bottom: 8px; }
+
+        /* Footer */
+        footer { background: var(--bg-card); border-top: 1px solid #333; padding: 40px 0 20px 0; margin-top: 50px; }
+        .footer-logo { font-weight: 800; color: var(--primary); font-size: 1.5rem; }
+        .social-link { color: white; font-size: 1.2rem; margin-right: 15px; transition: 0.3s; }
+        .social-link:hover { color: var(--primary); }
+
+        .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
         .view { display: none; padding-top: 20px; }
         .view.active { display: block; }
-        .adm-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #333; padding: 20px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -47,75 +51,114 @@
     <nav class="navbar navbar-expand navbar-dark sticky-top shadow">
         <div class="container">
             <a class="navbar-brand" href="#" onclick="showView('store')">BAHAMAS STORE</a>
-            <div class="ms-auto">
-                <button class="btn btn-sm btn-warning fw-bold px-3" onclick="accessAdmin()"><i class="fas fa-user-shield me-1"></i> PAINEL ADM</button>
-            </div>
+            <button class="btn btn-sm btn-warning fw-bold px-3" onclick="accessAdmin()"><i class="fas fa-user-shield me-1"></i> PAINEL ADM</button>
         </div>
     </nav>
 
-    <div id="view-store" class="view active">
-        <div class="category-container shadow-sm">
-            <div class="container">
-                <div class="category-scroll" id="cat-list"></div>
+    <main>
+        <div id="view-store" class="view active">
+            <div class="category-container shadow-sm">
+                <div class="container"><div class="category-scroll" id="cat-list"></div></div>
             </div>
+            <div class="container py-4"><div class="row g-4" id="prod-grid"></div></div>
         </div>
 
-        <div class="container py-4">
-            <div class="row g-4" id="prod-grid"></div>
-        </div>
-    </div>
-
-    <div id="view-admin" class="view container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold text-warning"><i class="fas fa-database me-2"></i>Gestão Cloud</h3>
-            <button class="btn btn-outline-danger btn-sm" onclick="showView('store')">Sair do Painel</button>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="adm-card shadow">
-                    <h5 class="fw-bold border-bottom border-secondary pb-2 mb-3">1. Categorias</h5>
-                    <div class="input-group mb-3">
-                        <input type="text" id="new-cat-name" class="form-control bg-dark text-white border-secondary" placeholder="Nome (Ex: VIPs)">
-                        <button class="btn btn-warning" onclick="addCategory()"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div id="adm-cat-list" class="list-group"></div>
-                </div>
-            </div>
-
-            <div class="col-md-8">
-                <div class="adm-card shadow">
-                    <h5 class="fw-bold border-bottom border-secondary pb-2 mb-3">2. Novo Produto</h5>
-                    <div class="row g-2">
-                        <div class="col-md-6"><input type="text" id="p-name" class="form-control bg-dark text-white mb-2" placeholder="Nome do Produto"></div>
-                        <div class="col-md-3"><input type="number" id="p-price" class="form-control bg-dark text-white mb-2" placeholder="Preço (R$)"></div>
-                        <div class="col-md-3">
-                            <select id="p-cat-select" class="form-select bg-dark text-white mb-2 border-warning">
-                                <option value="">Categoria...</option>
-                            </select>
+        <div id="view-admin" class="view container">
+            <h3 class="fw-bold text-warning mb-4"><i class="fas fa-database me-2"></i>Gerenciamento de Conteúdo</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="bg-card p-3 rounded border border-secondary mb-3 shadow">
+                        <h5 class="fw-bold mb-3">📁 Categorias</h5>
+                        
+                        <label class="field-label">Nome da Categoria</label>
+                        <p class="field-desc">Ex: Carros, VIPs, Mansões. Isso cria os filtros no topo da loja.</p>
+                        <div class="input-group mb-3">
+                            <input type="text" id="new-cat-name" class="form-control bg-dark text-white border-secondary" placeholder="Digite aqui...">
+                            <button class="btn btn-warning" onclick="addCategory()"><i class="fas fa-plus"></i></button>
                         </div>
-                        <div class="col-12"><input type="text" id="p-img" class="form-control bg-dark text-white mb-3" placeholder="Link da Imagem (URL)"></div>
+                        <div id="adm-cat-list" class="list-group"></div>
                     </div>
-                    <button class="btn btn-warning w-100 fw-bold py-2" onclick="saveProduct()">CADASTRAR PRODUTO</button>
                 </div>
 
-                <div class="adm-card shadow">
-                    <h5 class="fw-bold border-bottom border-secondary pb-2 mb-3">Produtos na Nuvem</h5>
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle">
-                            <thead><tr><th>Imagem</th><th>Nome</th><th>Categoria</th><th>Preço</th><th class="text-end">Ação</th></tr></thead>
-                            <tbody id="adm-table-prods"></tbody>
-                        </table>
+                <div class="col-md-8">
+                    <div class="bg-card p-4 rounded border border-secondary mb-3 shadow">
+                        <h5 class="fw-bold mb-3">🎁 Novo Produto</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="field-label">Título do Item</label>
+                                <p class="field-desc">O nome que o cliente verá no card.</p>
+                                <input type="text" id="p-name" class="form-control bg-dark text-white border-secondary" placeholder="Ex: Combo VIP Bahamas">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="field-label">Valor do Produto (R$)</label>
+                                <p class="field-desc">Apenas números. Ex: 150</p>
+                                <input type="number" id="p-price" class="form-control bg-dark text-white border-secondary" placeholder="0.00">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="field-label">Selecionar Categoria</label>
+                                <p class="field-desc">Onde esse item será filtrado.</p>
+                                <select id="p-cat-select" class="form-select bg-dark text-white border-warning"></select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="field-label">Link da Imagem (URL)</label>
+                                <p class="field-desc">Use links do Imgur ou Discord.</p>
+                                <input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="https://i.imgur.com/...">
+                            </div>
+                        </div>
+                        <button class="btn btn-warning w-100 fw-bold py-2 mt-2" onclick="saveProduct()">PUBLICAR ITEM NA LOJA</button>
+                    </div>
+
+                    <div class="bg-card p-3 rounded border border-secondary shadow">
+                        <h5 class="fw-bold mb-3">📋 Itens Publicados</h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle">
+                                <tbody id="adm-table-prods"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="cart-btn" onclick="openCart()">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">0</span>
-    </div>
+    <footer>
+        <div class="container text-center text-md-start">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <span class="footer-logo">BAHAMAS STORE</span>
+                    <p class="text-secondary mt-2 small" style="max-width: 400px;">
+                        A melhor experiência em itens e benefícios para o seu jogo. Entrega automática e suporte 24h via Discord.
+                    </p>
+                    <div class="mt-3">
+                        <a href="https://discord.gg/uV3XzeWAtb" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold text-white mb-3">Links Úteis</h6>
+                    <ul class="list-unstyled small text-secondary">
+                        <li class="mb-2"><a href="#" onclick="showView('store')" class="text-decoration-none text-secondary">Início</a></li>
+                        <li class="mb-2"><a href="https://discord.gg/uV3XzeWAtb" target="_blank" class="text-decoration-none text-secondary">Suporte Discord</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Termos de Uso</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold text-white mb-3">Pagamento Seguro</h6>
+                    <p class="small text-secondary">Aceitamos Cartões, Pix e Boleto através do nosso checkout seguro.</p>
+                    <div class="text-warning fs-4">
+                        <i class="fab fa-cc-visa me-2"></i><i class="fab fa-cc-mastercard me-2"></i><i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary mt-4">
+            <div class="text-center text-secondary small pb-2">
+                &copy; 2026 Bahamas Store - Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <div class="cart-btn" onclick="openCart()"><i class="fas fa-shopping-cart"></i><span id="cart-badge" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">0</span></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -133,91 +176,49 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
         let storeData = { prods: {}, cats: {} };
         let cart = [];
 
-        // --- CARREGAMENTO EM TEMPO REAL ---
-        onValue(ref(db, 'store'), (snapshot) => {
-            const data = snapshot.val();
-            storeData = data || { prods: {}, cats: {} };
-            renderStore();
-            renderAdmin();
-        });
+        onValue(ref(db, 'store'), (snap) => { storeData = snap.val() || { prods: {}, cats: {} }; renderStore(); renderAdmin(); });
 
-        // --- FUNÇÕES DE NAVEGAÇÃO ---
-        window.showView = (v) => {
-            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
-            window.scrollTo(0,0);
-        };
-
-        window.accessAdmin = () => {
-            Swal.fire({ title: 'Acesso Restrito', input: 'password', background: '#16191f', color: '#fff' }).then(r => {
-                if(r.value === '2707') showView('admin');
-            });
-        };
-
-        // --- GERENCIAMENTO DE CATEGORIAS ---
-        window.addCategory = () => {
-            const name = document.getElementById('new-cat-name').value;
-            if(!name) return;
-            const newKey = push(ref(db, 'store/cats')).key;
-            set(ref(db, `store/cats/${newKey}`), { id: newKey, name: name });
-            document.getElementById('new-cat-name').value = '';
-        };
-
-        window.removeCategory = (id) => {
-            remove(ref(db, `store/cats/${id}`));
-        };
-
-        // --- GERENCIAMENTO DE PRODUTOS ---
+        window.showView = (v) => { document.querySelectorAll('.view').forEach(e => e.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); };
+        
         window.saveProduct = () => {
             const name = document.getElementById('p-name').value;
             const price = document.getElementById('p-price').value;
             const cat = document.getElementById('p-cat-select').value;
             const img = document.getElementById('p-img').value;
-
-            if(!name || !price || !cat) return Swal.fire('Atenção', 'Preencha Nome, Preço e Categoria!', 'warning');
-
-            const newKey = push(ref(db, 'store/prods')).key;
-            set(ref(db, `store/prods/${newKey}`), { id: newKey, name, price, cat, img });
-            
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-img').value = '';
-            Swal.fire('Sucesso', 'Produto adicionado!', 'success');
+            if(!name || !price || !cat) return Swal.fire('Erro', 'Preencha os campos principais!', 'error');
+            const key = push(ref(db, 'store/prods')).key;
+            set(ref(db, `store/prods/${key}`), { id: key, name, price, cat, img });
+            document.querySelectorAll('#view-admin input').forEach(i => i.value = '');
         };
 
-        window.deleteProduct = (id) => {
-            remove(ref(db, `store/prods/${id}`));
+        window.addCategory = () => {
+            const name = document.getElementById('new-cat-name').value;
+            if(!name) return;
+            const key = push(ref(db, 'store/cats')).key;
+            set(ref(db, `store/cats/${key}`), { id: key, name });
+            document.getElementById('new-cat-name').value = '';
         };
 
-        // --- RENDERIZAÇÃO ---
         window.renderStore = (filter = 'Todos') => {
-            // Categorias
-            const catList = document.getElementById('cat-list');
-            const cats = storeData.cats ? Object.values(storeData.cats) : [];
-            catList.innerHTML = `<div class="cat-btn ${filter==='Todos'?'active':''}" onclick="renderStore('Todos')">Todos</div>` + 
+            const cats = Object.values(storeData.cats || {});
+            document.getElementById('cat-list').innerHTML = `<div class="cat-btn ${filter==='Todos'?'active':''}" onclick="renderStore('Todos')">Todos</div>` + 
                 cats.map(c => `<div class="cat-btn ${filter===c.name?'active':''}" onclick="renderStore('${c.name}')">${c.name}</div>`).join('');
 
-            // Grid
-            const grid = document.getElementById('prod-grid');
-            const prods = storeData.prods ? Object.values(storeData.prods) : [];
-            const filtered = filter === 'Todos' ? prods : prods.filter(p => p.cat === filter);
-
-            grid.innerHTML = filtered.map(p => `
+            const items = Object.values(storeData.prods || {});
+            const filtered = filter === 'Todos' ? items : items.filter(p => p.cat === filter);
+            document.getElementById('prod-grid').innerHTML = filtered.map(p => `
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="prod-card shadow-sm">
-                        <div class="img-container">
-                            <img src="${p.img || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'">
-                        </div>
-                        <div class="p-3 d-flex flex-column flex-grow-1">
-                            <small class="text-warning mb-1" style="font-size: 0.65rem; text-transform: uppercase; font-weight: bold;">${p.cat}</small>
-                            <h6 class="fw-bold mb-2 text-truncate" style="font-size: 0.9rem;">${p.name}</h6>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-white">R$ ${p.price}</span>
-                                <button class="btn btn-sm btn-warning" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i></button>
+                        <div class="img-container"><img src="${p.img || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200'"></div>
+                        <div class="p-3">
+                            <small class="text-warning fw-bold">${p.cat}</small>
+                            <h6 class="fw-bold mb-2 text-truncate">${p.name}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">R$ ${p.price}</span>
+                                <button class="btn btn-sm btn-warning" onclick="addToCart('${p.id}')">+</button>
                             </div>
                         </div>
                     </div>
@@ -225,102 +226,31 @@
         };
 
         window.renderAdmin = () => {
-            // Lista Categorias no ADM
-            const admCatList = document.getElementById('adm-cat-list');
-            const cats = storeData.cats ? Object.values(storeData.cats) : [];
-            admCatList.innerHTML = cats.map(c => `
-                <div class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center border-secondary">
-                    ${c.name}
-                    <button class="btn btn-sm btn-outline-danger border-0" onclick="removeCategory('${c.id}')"><i class="fas fa-trash"></i></button>
-                </div>
-            `).join('');
-
-            // Select Categoria no Cadastro
-            const select = document.getElementById('p-cat-select');
-            select.innerHTML = '<option value="">Categoria...</option>' + cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-
-            // Tabela Produtos
-            const table = document.getElementById('adm-table-prods');
-            const prods = storeData.prods ? Object.values(storeData.prods) : [];
-            table.innerHTML = prods.map(p => `
-                <tr>
-                    <td><img src="${p.img || 'https://via.placeholder.com/50'}" style="width:40px;height:40px;object-fit:cover;border-radius:5px"></td>
-                    <td><small>${p.name}</small></td>
-                    <td><span class="badge bg-secondary">${p.cat}</span></td>
-                    <td class="text-warning">R$ ${p.price}</td>
-                    <td class="text-end"><button class="btn btn-sm btn-danger" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button></td>
-                </tr>
-            `).join('');
+            const cats = Object.values(storeData.cats || {});
+            document.getElementById('adm-cat-list').innerHTML = cats.map(c => `<div class="list-group-item bg-dark text-white d-flex justify-content-between border-secondary">${c.name}<i class="fas fa-trash text-danger" onclick="removeData('cats/${c.id}')" style="cursor:pointer"></i></div>`).join('');
+            document.getElementById('p-cat-select').innerHTML = '<option value="">Escolha...</option>' + cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            const prods = Object.values(storeData.prods || {});
+            document.getElementById('adm-table-prods').innerHTML = prods.map(p => `<tr><td><img src="${p.img}" width="30"></td><td><small>${p.name}</small></td><td><span class="badge bg-secondary">${p.cat}</span></td><td><i class="fas fa-trash text-danger" onclick="removeData('prods/${p.id}')" style="cursor:pointer"></i></td></tr>`).join('');
         };
 
-        // --- CARRINHO MELHORADO ---
-        window.addToCart = (id) => {
-            const prod = storeData.prods[id];
-            cart.push({...prod, cartId: Date.now()});
-            updateCartBadge();
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Adicionado!', showConfirmButton: false, timer: 1000 });
-        };
-
-        window.removeFromCart = (cartId) => {
-            cart = cart.filter(item => item.cartId !== cartId);
-            openCart(); // Recarrega o modal do carrinho
-            updateCartBadge();
-        };
-
-        window.updateCartBadge = () => {
-            document.getElementById('cart-badge').innerText = cart.length;
-        };
-
+        window.removeData = (path) => remove(ref(db, `store/${path}`));
+        window.accessAdmin = () => Swal.fire({title: 'Senha', input: 'password'}).then(r => { if(r.value === '2707') showView('admin') });
+        window.addToCart = (id) => { cart.push({...storeData.prods[id], cartId: Date.now()}); document.getElementById('cart-badge').innerText = cart.length; };
+        
         window.openCart = () => {
-            const total = cart.reduce((sum, item) => sum + parseFloat(item.price), 0);
-            
+            const total = cart.reduce((s, i) => s + parseFloat(i.price), 0);
             Swal.fire({
-                title: '🛒 Seu Carrinho',
-                background: '#16191f', color: '#fff',
-                html: `
-                    <div class="text-start" style="max-height: 300px; overflow-y: auto;">
-                        ${cart.length === 0 ? '<p class="text-center text-secondary py-3">O carrinho está vazio.</p>' : 
-                        cart.map(item => `
-                            <div class="d-flex justify-content-between align-items-center border-bottom border-secondary py-2">
-                                <div>
-                                    <div class="fw-bold" style="font-size: 0.9rem;">${item.name}</div>
-                                    <div class="text-warning small">R$ ${item.price}</div>
-                                </div>
-                                <button class="btn btn-sm text-danger" onclick="window.removeFromCart(${item.cartId})">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                    ${cart.length > 0 ? `
-                        <div class="d-flex justify-content-between mt-3 px-1">
-                            <span class="fw-bold">TOTAL:</span>
-                            <span class="fw-bold text-warning">R$ ${total.toFixed(2)}</span>
-                        </div>
-                    ` : ''}
-                `,
-                showCancelButton: cart.length > 0,
-                showConfirmButton: cart.length > 0,
-                confirmButtonText: '<i class="fab fa-discord me-2"></i> Pedir no Discord',
-                cancelButtonText: 'Limpar Carrinho',
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#5865F2',
-                reverseButtons: true
-            }).then(result => {
-                if(result.isConfirmed) {
-                    const msg = `🛒 **NOVO PEDIDO BAHAMAS**\n` + 
-                                cart.map(i => `• ${i.name} (R$ ${i.price})`).join('\n') + 
-                                `\n\n💰 **VALOR TOTAL: R$ ${total.toFixed(2)}**`;
-                    navigator.clipboard.writeText(msg);
+                title: '🛒 Carrinho', background: '#16191f', color: '#fff',
+                html: cart.map(i => `<div class="d-flex justify-content-between border-bottom border-secondary py-2"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('') + `<h4 class="mt-3 text-warning">Total: R$ ${total.toFixed(2)}</h4>`,
+                showCancelButton: true, confirmButtonText: 'Pedir no Discord', cancelButtonText: 'Esvaziar'
+            }).then(r => {
+                if(r.isConfirmed && cart.length > 0) {
+                    navigator.clipboard.writeText(`🛒 PEDIDO: \n${cart.map(i => i.name).join('\n')}\nTOTAL: R$ ${total.toFixed(2)}`);
                     window.open('https://discord.gg/uV3XzeWAtb', '_blank');
-                    cart = []; updateCartBadge();
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    cart = []; updateCartBadge();
-                    Swal.fire('Carrinho Vazio', '', 'info');
-                }
+                    cart = []; document.getElementById('cart-badge').innerText = 0;
+                } else if(r.dismiss === Swal.DismissReason.cancel) { cart = []; document.getElementById('cart-badge').innerText = 0; }
             });
         };
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
