@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahamas Store | Painel Administrativo</title>
+    <title>Bahamas Store | Oficial</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,31 +15,44 @@
         body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; }
         
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); }
-        .navbar-brand { font-weight: 800; color: var(--primary) !important; letter-spacing: 1px; }
+        .navbar-brand { font-weight: 800; color: var(--primary) !important; }
 
-        /* Categorias Store */
+        /* Correção das Imagens */
+        .img-container {
+            width: 100%;
+            height: 160px; /* Altura fixa para manter o padrão */
+            overflow: hidden;
+            background: #222;
+            border-bottom: 1px solid #333;
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+            transition: transform 0.3s;
+        }
+        .prod-card:hover img { transform: scale(1.1); }
+
+        /* Categorias */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: var(--bg-darker); scrollbar-width: none; }
         .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 10px 22px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 600; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
         /* Cards Loja */
         .prod-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; height: 100%; }
-        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         
         /* Dashboard ADM */
         .adm-sidebar { background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid #333; }
         .adm-nav-link { color: #ccc; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; margin-bottom: 5px; }
         .adm-nav-link:hover, .adm-nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
         
-        .stat-card { background: var(--bg-darker); border-left: 4px solid var(--primary); padding: 20px; border-radius: 8px; }
-
-        /* Carrinho */
-        .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        
         .view { display: none; }
         .view.active { display: block; }
         .adm-tab { display: none; }
         .adm-tab.active { display: block; }
+
+        .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -48,7 +61,7 @@
         <div class="container">
             <a class="navbar-brand" href="#" onclick="showView('store')" id="nav-store-name">BAHAMAS STORE</a>
             <div class="ms-auto">
-                <button class="btn btn-sm btn-warning fw-bold" onclick="accessAdmin()"><i class="fas fa-user-crown me-1"></i> PAINEL ADM</button>
+                <button class="btn btn-sm btn-warning fw-bold" onclick="accessAdmin()"><i class="fas fa-crown"></i> ADMIN</button>
             </div>
         </div>
     </nav>
@@ -64,50 +77,24 @@
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="adm-sidebar shadow">
-                    <h5 class="fw-bold text-primary mb-4">Gerenciamento</h5>
-                    <div class="adm-nav-link active" onclick="switchAdmTab('stats', this)"><i class="fas fa-chart-line"></i> Resumo</div>
-                    <div class="adm-nav-link" onclick="switchAdmTab('prods', this)"><i class="fas fa-box"></i> Produtos</div>
+                    <h5 class="fw-bold text-primary mb-4">Bahamas Painel</h5>
+                    <div class="adm-nav-link active" onclick="switchAdmTab('prods', this)"><i class="fas fa-box"></i> Produtos</div>
                     <div class="adm-nav-link" onclick="switchAdmTab('cats', this)"><i class="fas fa-tags"></i> Categorias</div>
-                    <div class="adm-nav-link" onclick="switchAdmTab('config', this)"><i class="fas fa-tools"></i> Configurações</div>
+                    <div class="adm-nav-link" onclick="switchAdmTab('config', this)"><i class="fas fa-cog"></i> Configs</div>
                     <hr class="border-secondary">
-                    <button class="btn btn-outline-danger w-100 btn-sm" onclick="showView('store')">Sair do Painel</button>
+                    <button class="btn btn-outline-danger w-100 btn-sm" onclick="showView('store')">Sair</button>
                 </div>
             </div>
 
             <div class="col-md-9">
-                <div id="adm-stats" class="adm-tab active">
-                    <h4 class="mb-4">Visão Geral</h4>
-                    <div class="row g-3">
-                        <div class="col-6 col-md-4">
-                            <div class="stat-card">
-                                <small class="text-secondary d-block">Produtos Ativos</small>
-                                <h2 class="fw-bold mb-0" id="stat-total-prods">0</h2>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <div class="stat-card">
-                                <small class="text-secondary d-block">Categorias</small>
-                                <h2 class="fw-bold mb-0" id="stat-total-cats">0</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="adm-prods" class="adm-tab">
+                <div id="adm-prods" class="adm-tab active">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="mb-0">Meus Produtos</h4>
-                        <button class="btn btn-warning btn-sm fw-bold" onclick="openAddProdModal()"><i class="fas fa-plus"></i> Novo Item</button>
+                        <h4 class="mb-0">Gerenciar Itens</h4>
+                        <button class="btn btn-warning btn-sm fw-bold" onclick="openAddProdModal()"><i class="fas fa-plus"></i> Novo</button>
                     </div>
-                    <div class="table-responsive bg-card rounded p-3 border border-secondary">
+                    <div class="table-responsive bg-card rounded border border-secondary p-2">
                         <table class="table table-dark table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Categoria</th>
-                                    <th>Preço</th>
-                                    <th class="text-end">Ações</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Preview</th><th>Nome</th><th>Preço</th><th class="text-end">Ação</th></tr></thead>
                             <tbody id="adm-table-prods"></tbody>
                         </table>
                     </div>
@@ -115,28 +102,21 @@
 
                 <div id="adm-cats" class="adm-tab">
                     <h4>Categorias</h4>
-                    <div class="bg-card p-3 rounded border border-secondary mb-4">
-                        <h6>Adicionar Categoria</h6>
+                    <div class="bg-card p-3 rounded border border-secondary mb-3">
                         <div class="input-group">
-                            <input type="text" id="new-cat-input" class="form-control bg-dark text-white border-secondary" placeholder="Ex: Armas, VIP, Carros...">
-                            <button class="btn btn-warning" onclick="addCat()">Salvar</button>
+                            <input type="text" id="new-cat-input" class="form-control bg-dark text-white border-secondary" placeholder="Nome da categoria...">
+                            <button class="btn btn-warning" onclick="addCat()">+ Adicionar</button>
                         </div>
                     </div>
                     <div id="adm-list-cats" class="row g-2"></div>
                 </div>
 
                 <div id="adm-config" class="adm-tab">
-                    <h4>Aparência e Links</h4>
+                    <h4>Configurações da Loja</h4>
                     <div class="bg-card p-4 rounded border border-secondary">
-                        <div class="mb-3">
-                            <label class="form-label small text-secondary">Nome da Loja</label>
-                            <input type="text" id="cfg-name" class="form-control bg-dark text-white border-secondary">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small text-secondary">Link do Convite Discord</label>
-                            <input type="text" id="cfg-discord" class="form-control bg-dark text-white border-secondary">
-                        </div>
-                        <button class="btn btn-warning fw-bold" onclick="saveConfigs()">Salvar Alterações</button>
+                        <div class="mb-3"><label class="small text-secondary">Nome da Loja</label><input type="text" id="cfg-name" class="form-control bg-dark text-white border-secondary"></div>
+                        <div class="mb-3"><label class="small text-secondary">Discord Convite (URL)</label><input type="text" id="cfg-discord" class="form-control bg-dark text-white border-secondary"></div>
+                        <button class="btn btn-warning fw-bold" onclick="saveConfigs()">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -146,33 +126,20 @@
     <div class="modal fade" id="prodModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-card text-white">
-                <div class="modal-header border-secondary">
-                    <h5 class="fw-bold">Novo Produto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header border-secondary"><h5 class="fw-bold">Novo Produto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="small text-secondary">Nome do Produto</label>
-                        <input type="text" id="p-name" class="form-control bg-dark text-white border-secondary">
-                    </div>
+                    <div class="mb-3"><label class="small text-secondary">Nome</label><input type="text" id="p-name" class="form-control bg-dark text-white border-secondary"></div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="small text-secondary">Preço (R$)</label>
-                            <input type="number" id="p-price" class="form-control bg-dark text-white border-secondary">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="small text-secondary">Categoria</label>
-                            <select id="p-cat" class="form-select bg-dark text-white border-secondary"></select>
-                        </div>
+                        <div class="col-6 mb-3"><label class="small text-secondary">Preço (R$)</label><input type="number" id="p-price" class="form-control bg-dark text-white border-secondary"></div>
+                        <div class="col-6 mb-3"><label class="small text-secondary">Categoria</label><select id="p-cat" class="form-select bg-dark text-white border-secondary"></select></div>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-secondary">URL da Imagem</label>
-                        <input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="https://...">
+                        <label class="small text-secondary">Link da Imagem (JPG/PNG)</label>
+                        <input type="text" id="p-img" class="form-control bg-dark text-white border-secondary" placeholder="Cole o link da imagem aqui">
+                        <small class="text-info mt-1 d-block">Dica: Use links do Imgur ou Discord.</small>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-warning w-100 fw-bold" onclick="saveProd()">CADASTRAR</button>
-                </div>
+                <div class="modal-footer border-0"><button class="btn btn-warning w-100 fw-bold" onclick="saveProd()">CADASTRAR</button></div>
             </div>
         </div>
     </div>
@@ -180,35 +147,21 @@
     <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-card text-white border-0">
-                <div class="modal-header border-secondary">
-                    <h5 class="fw-bold text-primary">Seu Carrinho</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="cart-items"></div>
-                    <div class="mt-3 p-3 bg-dark rounded text-center">
-                        <h3 class="text-primary fw-bold" id="cart-total">R$ 0,00</h3>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button class="btn btn-primary w-100 py-3 fw-bold" style="background:#5865F2; border:none;" onclick="finishToDiscord()">
-                        <i class="fab fa-discord me-2"></i> COPIAR E IR PARA O DISCORD
-                    </button>
-                </div>
+                <div class="modal-header border-secondary"><h5 class="fw-bold text-primary">Seu Carrinho</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body"><div id="cart-items"></div><div class="mt-3 p-3 bg-dark rounded text-center"><h3 class="text-primary fw-bold" id="cart-total">R$ 0,00</h3></div></div>
+                <div class="modal-footer border-0"><button class="btn btn-primary w-100 py-3 fw-bold" style="background:#5865F2; border:none;" onclick="finishToDiscord()"><i class="fab fa-discord me-2"></i> FINALIZAR NO DISCORD</button></div>
             </div>
         </div>
     </div>
 
-    <div class="cart-btn" onclick="openCart()">
-        <i class="fas fa-shopping-basket"></i>
-        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-    </div>
+    <div class="cart-btn" onclick="openCart()"><i class="fas fa-shopping-basket"></i><span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // BANCO DE DADOS
-        let store = JSON.parse(localStorage.getItem('bahamas_pro_v1')) || {
+        const IMG_DEFAULT = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=500&auto=format&fit=crop";
+
+        let store = JSON.parse(localStorage.getItem('bahamas_pro_v2')) || {
             name: "BAHAMAS STORE",
             discord: "https://discord.gg/uV3XzeWAtb",
             cats: ["VIPs", "Carros", "Itens"],
@@ -216,33 +169,11 @@
         };
         let cart = [];
 
-        function sync() {
-            localStorage.setItem('bahamas_pro_v1', JSON.stringify(store));
-            renderAll();
-        }
+        function sync() { localStorage.setItem('bahamas_pro_v2', JSON.stringify(store)); renderAll(); }
+        function showView(v) { document.querySelectorAll('.view').forEach(el => el.classList.remove('active')); document.getElementById('view-' + v).classList.add('active'); }
+        function switchAdmTab(tabId, el) { document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.adm-nav-link').forEach(l => l.classList.remove('active')); document.getElementById('adm-' + tabId).classList.add('active'); el.classList.add('active'); }
+        function accessAdmin() { Swal.fire({ title: 'Acesso ADM', input: 'password', background: '#16191f', color: '#fff', confirmButtonColor: '#FFD700' }).then(r => { if(r.value === '2707') { showView('admin'); renderAdmin(); } }); }
 
-        function showView(v) {
-            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + v).classList.add('active');
-        }
-
-        function switchAdmTab(tabId, el) {
-            document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.adm-nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('adm-' + tabId).classList.add('active');
-            el.classList.add('active');
-        }
-
-        function accessAdmin() {
-            Swal.fire({ title: 'Acesso Restrito', input: 'password', background: '#16191f', color: '#fff', confirmButtonColor: '#FFD700' }).then(r => { 
-                if(r.value === '2707') {
-                    showView('admin');
-                    renderAdmin();
-                }
-            });
-        }
-
-        // --- FUNÇÕES DA LOJA ---
         function renderStore(filter = 'Todos') {
             document.getElementById('nav-store-name').innerText = store.name;
             const catScroll = document.getElementById('cat-list');
@@ -253,15 +184,19 @@
             const list = filter === 'Todos' ? store.prods : store.prods.filter(p => p.cat === filter);
             grid.innerHTML = list.length ? list.map(p => `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="prod-card p-2 shadow">
-                        <img src="${p.img}" class="w-100 rounded mb-2" style="height:140px; object-fit:cover">
-                        <h6 class="fw-bold mb-1 small text-truncate">${p.name}</h6>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-primary fw-bold">R$ ${p.price}</span>
-                            <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})"><i class="fas fa-plus"></i></button>
+                    <div class="prod-card p-0 shadow">
+                        <div class="img-container">
+                            <img src="${p.img || IMG_DEFAULT}" onerror="this.src='${IMG_DEFAULT}'">
+                        </div>
+                        <div class="p-3">
+                            <h6 class="fw-bold mb-1 small text-truncate">${p.name}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">R$ ${p.price}</span>
+                                <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
-                </div>`).join('') : '<div class="col-12 text-center text-secondary py-5">Nenhum produto nesta categoria.</div>';
+                </div>`).join('') : '<div class="col-12 text-center text-secondary py-5">Nenhum produto aqui.</div>';
         }
 
         function addToCart(id) {
@@ -274,52 +209,31 @@
             let total = 0;
             document.getElementById('cart-items').innerHTML = cart.length ? cart.map((i, idx) => {
                 total += parseFloat(i.price);
-                return `<div class="d-flex justify-content-between border-bottom border-secondary py-2">
-                    <span>${i.name}</span>
-                    <div class="d-flex gap-2 align-items-center"><b>R$ ${i.price}</b><i class="fas fa-trash text-danger" onclick="removeFromCart(${idx})" style="cursor:pointer"></i></div>
-                </div>`;
+                return `<div class="d-flex justify-content-between border-bottom border-secondary py-2"><span>${i.name}</span><b>R$ ${i.price}</b></div>`;
             }).join('') : '<p class="text-center py-3">Vazio</p>';
             document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
             new bootstrap.Modal(document.getElementById('cartModal')).show();
         }
 
-        function removeFromCart(idx) { cart.splice(idx, 1); document.getElementById('cart-badge').innerText = cart.length; openCart(); }
-
         function finishToDiscord() {
             if(!cart.length) return;
-            const total = cart.reduce((a,b) => a + parseFloat(b.price), 0);
-            const text = `🛒 **NOVO PEDIDO - ${store.name}**\n\n${cart.map(i => `• ${i.name} (R$ ${i.price})`).join('\n')}\n\n💰 **TOTAL:** R$ ${total.toFixed(2)}\n💳 **PAGAMENTO:** PIX`;
+            const text = `🛒 **NOVO PEDIDO - ${store.name}**\n\n${cart.map(i => `• ${i.name} (R$ ${i.price})`).join('\n')}\n\n💰 **TOTAL:** R$ ${cart.reduce((a,b)=>a+parseFloat(b.price),0).toFixed(2)}`;
             navigator.clipboard.writeText(text).then(() => {
-                Swal.fire('Pedido Copiado!', 'O resumo foi copiado para o seu teclado. Cole no ticket do Discord.', 'success').then(() => {
-                    window.open(store.discord, '_blank');
-                    cart = []; document.getElementById('cart-badge').innerText = 0;
-                    bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
-                });
+                Swal.fire('Pedido Copiado!', 'Cole no Discord!', 'success').then(() => { window.open(store.discord, '_blank'); });
             });
         }
 
-        // --- FUNÇÕES ADM ---
         function renderAdmin() {
-            document.getElementById('stat-total-prods').innerText = store.prods.length;
-            document.getElementById('stat-total-cats').innerText = store.cats.length;
-
             document.getElementById('adm-table-prods').innerHTML = store.prods.map(p => `
                 <tr>
+                    <td><img src="${p.img || IMG_DEFAULT}" style="width:40px;height:40px;object-fit:cover;border-radius:4px" onerror="this.src='${IMG_DEFAULT}'"></td>
                     <td><small>${p.name}</small></td>
-                    <td><span class="badge bg-secondary">${p.cat}</span></td>
-                    <td class="text-primary fw-bold">R$ ${p.price}</td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})"><i class="fas fa-trash"></i></button>
-                    </td>
+                    <td class="text-primary">R$ ${p.price}</td>
+                    <td class="text-end"><button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})"><i class="fas fa-trash"></i></button></td>
                 </tr>`).join('');
 
             document.getElementById('adm-list-cats').innerHTML = store.cats.map(c => `
-                <div class="col-md-4">
-                    <div class="bg-dark p-2 rounded d-flex justify-content-between align-items-center border border-secondary">
-                        <span>${c}</span>
-                        <i class="fas fa-times text-danger" onclick="deleteCat('${c}')" style="cursor:pointer"></i>
-                    </div>
-                </div>`).join('');
+                <div class="col-md-4"><div class="bg-dark p-2 rounded d-flex justify-content-between align-items-center border border-secondary"><span>${c}</span><i class="fas fa-times text-danger" onclick="deleteCat('${c}')" style="cursor:pointer"></i></div></div>`).join('');
 
             document.getElementById('cfg-name').value = store.name;
             document.getElementById('cfg-discord').value = store.discord;
@@ -332,29 +246,13 @@
 
         function saveProd() {
             const n = document.getElementById('p-name').value, p = document.getElementById('p-price').value, c = document.getElementById('p-cat').value, i = document.getElementById('p-img').value;
-            if(n && p) {
-                store.prods.push({ id: Date.now(), name: n, price: p, cat: c, img: i || 'https://via.placeholder.com/150' });
-                sync();
-                bootstrap.Modal.getInstance(document.getElementById('prodModal')).hide();
-                Swal.fire('Sucesso', 'Produto adicionado!', 'success');
-            }
+            if(n && p) { store.prods.push({ id: Date.now(), name: n, price: p, cat: c, img: i }); sync(); bootstrap.Modal.getInstance(document.getElementById('prodModal')).hide(); }
         }
 
         function deleteProd(id) { store.prods = store.prods.filter(p => p.id !== id); sync(); }
-        
-        function addCat() { 
-            const val = document.getElementById('new-cat-input').value; 
-            if(val && !store.cats.includes(val)) { store.cats.push(val); document.getElementById('new-cat-input').value = ''; sync(); }
-        }
-        
+        function addCat() { const val = document.getElementById('new-cat-input').value; if(val) { store.cats.push(val); sync(); } }
         function deleteCat(c) { store.cats = store.cats.filter(x => x !== c); sync(); }
-
-        function saveConfigs() {
-            store.name = document.getElementById('cfg-name').value;
-            store.discord = document.getElementById('cfg-discord').value;
-            sync();
-            Swal.fire('Salvo!', 'Configurações atualizadas.', 'success');
-        }
+        function saveConfigs() { store.name = document.getElementById('cfg-name').value; store.discord = document.getElementById('cfg-discord').value; sync(); Swal.fire('Salvo!', '', 'success'); }
 
         function renderAll() { renderStore(); renderAdmin(); }
         renderAll();
