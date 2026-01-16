@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahamas Store | Luxo & RP</title>
+    <title>Bahamas Store | Pedido via Discord</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,338 +11,219 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        :root { --primary: #FFD700; --bg-body: #0d0f12; --bg-card: #16191f; --text-main: #ffffff; }
-        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Montserrat', sans-serif; }
+        :root { --primary: #FFD700; --discord: #5865F2; --bg-body: #0d0f12; --bg-card: #16191f; }
+        body { background-color: var(--bg-body); color: white; font-family: 'Montserrat', sans-serif; }
         
-        /* Navbar */
         .navbar { background: var(--bg-card); border-bottom: 2px solid var(--primary); }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; }
 
-        /* Categorias no Topo */
-        .category-container { display: flex; gap: 10px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
-        .category-btn { 
-            background: #1f232b; color: white; border: 1px solid #333; padding: 10px 25px; 
-            border-radius: 8px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-weight: 700;
-        }
-        .category-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        /* Categorias */
+        .category-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: #0a0b0e; scrollbar-width: none; }
+        .cat-btn { background: #1f232b; color: white; border: 1px solid #333; padding: 10px 20px; border-radius: 50px; cursor: pointer; white-space: nowrap; font-weight: 700; }
+        .cat-btn.active { background: var(--primary); color: #000; }
 
         /* Cards */
-        .prod-card { background: var(--bg-card); border-radius: 12px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; }
+        .prod-card { background: var(--bg-card); border-radius: 15px; border: 1px solid #2d3139; overflow: hidden; transition: 0.3s; }
         .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        /* TICKET ONLINE (CHAT) */
-        .ticket-box { background: #090a0c; border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column; height: 500px; }
-        .chat-header { padding: 15px; border-bottom: 1px solid #333; background: #16191f; border-radius: 12px 12px 0 0; }
-        .chat-content { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .chat-footer { padding: 15px; background: #16191f; border-top: 1px solid #333; border-radius: 0 0 12px 12px; }
         
-        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; position: relative; }
-        .bubble.admin { background: var(--primary); color: #000; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .bubble.user { background: #323742; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .bubble-time { font-size: 0.7rem; opacity: 0.6; display: block; margin-top: 5px; }
+        /* Carrinho */
+        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        
+        .btn-discord { background: var(--discord); color: white; font-weight: 700; border: none; }
+        .btn-discord:hover { background: #4752c4; color: white; }
 
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Carrinho */
-        .cart-btn {
-            position: fixed; bottom: 30px; right: 30px; background: var(--primary);
-            width: 60px; height: 60px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer;
-            z-index: 1000; color: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        footer { background: #08090b; padding: 40px 0; border-top: 2px solid var(--primary); margin-top: 60px; }
+        footer { background: #08090b; padding: 30px 0; border-top: 2px solid var(--primary); margin-top: 40px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#" onclick="showView('store')">BAHAMAS STORE</a>
-            <div class="ms-auto d-flex gap-2">
-                <button class="btn btn-outline-light btn-sm" onclick="showView('tickets')"><i class="fas fa-comments"></i> TICKETS</button>
-                <button class="btn btn-warning btn-sm fw-bold" onclick="accessAdmin()"><i class="fas fa-lock"></i> ADMIN</button>
+            <div class="ms-auto">
+                <button class="btn btn-sm btn-warning fw-bold" onclick="accessAdmin()"><i class="fas fa-cog"></i> ADMIN</button>
             </div>
         </div>
     </nav>
 
-    <div id="view-store" class="view active container py-4">
-        <div class="category-container" id="category-list"></div>
-        <div class="row g-3" id="product-grid"></div>
-    </div>
-
-    <div id="view-tickets" class="view container py-5">
-        <div class="row">
-            <div class="col-md-4">
-                <h5 class="mb-3 text-primary">Seus Pedidos</h5>
-                <div class="list-group shadow" id="ticket-history"></div>
-            </div>
-            <div class="col-md-8">
-                <div id="chat-window-wrapper" class="d-none">
-                    <div class="ticket-box shadow">
-                        <div class="chat-header d-flex justify-content-between">
-                            <span class="fw-bold" id="chat-id-label">Ticket #----</span>
-                            <span class="badge bg-success" id="chat-status-label">Online</span>
-                        </div>
-                        <div class="chat-content" id="chat-messages-container"></div>
-                        <div class="chat-footer">
-                            <div class="input-group">
-                                <input type="text" id="chat-input-field" class="form-control bg-dark text-white border-0" placeholder="Envie o comprovante ou mensagem...">
-                                <button class="btn btn-warning" onclick="sendUserMessage()"><i class="fas fa-paper-plane"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="no-chat-msg" class="text-center p-5 bg-card rounded border border-secondary">
-                    <i class="fas fa-comment-slash fa-3x mb-3 text-secondary"></i>
-                    <p>Selecione um ticket ao lado para falar com o suporte.</p>
-                </div>
-            </div>
+    <div id="view-store" class="view active">
+        <div class="category-scroll" id="cat-list"></div>
+        <div class="container py-4">
+            <div class="row g-3" id="prod-grid"></div>
         </div>
     </div>
 
     <div id="view-admin" class="view container py-5">
         <div class="d-flex justify-content-between mb-4">
-            <h4 class="text-warning fw-bold">Gestão Bahamas</h4>
+            <h4 class="text-warning fw-bold">Gerenciar Produtos</h4>
             <button class="btn btn-danger btn-sm" onclick="showView('store')">Sair</button>
         </div>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="bg-card p-3 rounded mb-3 border border-secondary">
-                    <h6>Criar Categoria</h6>
-                    <div class="input-group"><input type="text" id="adm-new-cat" class="form-control bg-dark text-white"><button class="btn btn-warning" onclick="addCategory()">+</button></div>
-                </div>
-                <div class="bg-card p-3 rounded border border-secondary">
-                    <h6>Novo Produto</h6>
-                    <input type="text" id="adm-p-name" class="form-control mb-2 bg-dark text-white" placeholder="Nome">
-                    <input type="number" id="adm-p-price" class="form-control mb-2 bg-dark text-white" placeholder="Preço">
-                    <select id="adm-p-cat" class="form-select mb-2 bg-dark text-white"></select>
-                    <input type="text" id="adm-p-img" class="form-control mb-2 bg-dark text-white" placeholder="URL Imagem">
-                    <button class="btn btn-warning w-100 fw-bold" onclick="addProduct()">ADICIONAR</button>
-                </div>
+        <div class="bg-card p-4 rounded border border-secondary shadow">
+            <div class="row g-3">
+                <div class="col-md-3"><input type="text" id="adm-name" class="form-control bg-dark text-white border-secondary" placeholder="Nome"></div>
+                <div class="col-md-2"><input type="number" id="adm-price" class="form-control bg-dark text-white border-secondary" placeholder="Preço"></div>
+                <div class="col-md-3"><input type="text" id="adm-cat" class="form-control bg-dark text-white border-secondary" placeholder="Categoria"></div>
+                <div class="col-md-4"><input type="text" id="adm-img" class="form-control bg-dark text-white border-secondary" placeholder="Link Imagem"></div>
+                <div class="col-12"><button class="btn btn-warning w-100 fw-bold" onclick="addProd()">ADICIONAR PRODUTO</button></div>
             </div>
-            <div class="col-md-8">
-                <div class="bg-card p-3 rounded border border-secondary">
-                    <h6 class="text-primary mb-3">Tickets Pendentes (Responder Clientes)</h6>
-                    <div id="adm-tickets-list"></div>
-                </div>
-            </div>
+            <hr class="border-secondary my-4">
+            <div id="adm-list"></div>
         </div>
     </div>
 
     <div class="modal fade" id="cartModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-card text-white border-0 shadow-lg">
+            <div class="modal-content bg-card text-white border-0">
                 <div class="modal-header border-secondary">
-                    <h5 class="fw-bold text-primary">Carrinho Final</h5>
+                    <h5 class="fw-bold text-primary">Seu Carrinho</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="cart-render-list"></div>
-                <div class="modal-footer border-0">
-                    <div class="w-100 p-3 bg-dark rounded d-flex justify-content-between mb-3">
-                        <span class="fw-bold">TOTAL PIX:</span>
-                        <span class="text-primary fw-bold" id="cart-total-val">R$ 0,00</span>
+                <div class="modal-body">
+                    <div id="cart-items"></div>
+                    <div class="mt-3 p-3 bg-dark rounded text-center">
+                        <span class="small text-secondary">Total do Pedido:</span>
+                        <h3 class="text-primary fw-bold" id="cart-total">R$ 0,00</h3>
                     </div>
-                    <button class="btn btn-warning w-100 fw-bold py-3" onclick="confirmPurchase()">CONFIRMAR E ABRIR TICKET</button>
+                    <div class="alert alert-info mt-3 small" style="background: #1a2a3a; border: none; color: #8ab4f8;">
+                        <i class="fas fa-info-circle me-2"></i> Ao finalizar, seu pedido será copiado. Cole-o no ticket do nosso Discord!
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-discord w-100 py-3 d-flex align-items-center justify-content-center gap-2" onclick="finishToDiscord()">
+                        <i class="fab fa-discord fs-4"></i> COPIAR E ABRIR TICKET
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="cart-btn" onclick="openCartModal()">
+    <div class="cart-btn" onclick="openCart()">
         <i class="fas fa-shopping-basket"></i>
         <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
     </div>
 
-    <footer>
-        <div class="container text-center">
-            <h5 class="text-primary fw-bold mb-3">BAHAMAS STORE</h5>
-            <p class="text-secondary small">Pagamento via PIX • Entrega Garantida em < 24h • 100% Confiável</p>
-            <hr class="border-secondary my-4">
-            <p class="small text-secondary mb-0">© 2024 Bahamas Store</p>
-        </div>
+    <footer class="text-center">
+        <p class="small text-secondary">BAHAMAS STORE © 2024 | O melhor para seu RP</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('bahamas_final_v10')) || {
-            cats: ["VIPs", "Dinheiro", "Carros"],
-            prods: [],
-            orders: []
-        };
+        let db = JSON.parse(localStorage.getItem('bahamas_dc_v1')) || { prods: [] };
         let cart = [];
-        let activeTicketId = null;
 
         function save() { 
-            localStorage.setItem('bahamas_final_v10', JSON.stringify(db)); 
-            renderStore();
-            renderAdmin();
+            localStorage.setItem('bahamas_dc_v1', JSON.stringify(db)); 
+            renderStore(); 
+            renderAdmin(); 
         }
 
         function showView(v) {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + v).classList.add('active');
-            if(v === 'tickets') renderTicketHistory();
         }
 
         function accessAdmin() {
-            Swal.fire({ title: 'Acesso Restrito', input: 'password', background: '#16191f', color: '#fff', confirmButtonColor: '#FFD700' }).then(r => {
-                if(r.value === '2707') showView('admin');
-            });
+            Swal.fire({ title: 'Senha Admin', input: 'password', background: '#16191f', color: '#fff', confirmButtonColor: '#FFD700' }).then(r => { if(r.value === '2707') showView('admin'); });
         }
 
-        // --- LOJA E CATEGORIAS ---
-        function renderStore(filter = 'Todos') {
-            const catList = document.getElementById('category-list');
-            catList.innerHTML = `<div class="category-btn ${filter==='Todos'?'active':''}" onclick="renderStore('Todos')">Todos</div>`;
-            db.cats.forEach(c => {
-                catList.innerHTML += `<div class="category-btn ${filter===c?'active':''}" onclick="renderStore('${c}')">${c}</div>`;
-            });
+        function addProd() {
+            const n = document.getElementById('adm-name').value, p = document.getElementById('adm-price').value, c = document.getElementById('adm-cat').value, i = document.getElementById('adm-img').value;
+            if(n && p) { db.prods.push({ id: Date.now(), name: n, price: p, cat: c || 'Geral', img: i || 'https://via.placeholder.com/150' }); save(); }
+        }
 
-            const grid = document.getElementById('product-grid');
+        function removeProd(id) { db.prods = db.prods.filter(p => p.id !== id); save(); }
+
+        function renderStore(filter = 'Todos') {
+            const cats = ['Todos', ...new Set(db.prods.map(p => p.cat))];
+            document.getElementById('cat-list').innerHTML = cats.map(c => `<div class="cat-btn ${filter===c?'active':''}" onclick="renderStore('${c}')">${c}</div>`).join('');
+            
             const filtered = filter === 'Todos' ? db.prods : db.prods.filter(p => p.cat === filter);
-            grid.innerHTML = filtered.map(p => `
+            document.getElementById('prod-grid').innerHTML = filtered.map(p => `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="prod-card p-3 shadow-sm">
-                        <img src="${p.img}" class="w-100 rounded mb-3" style="height:140px; object-fit:cover">
-                        <h6 class="fw-bold mb-1">${p.name}</h6>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="prod-card p-2">
+                        <img src="${p.img}" class="w-100 rounded mb-2" style="height:120px; object-fit:cover">
+                        <h6 class="fw-bold mb-1 small">${p.name}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="text-primary fw-bold">R$ ${p.price}</span>
-                            <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})"><i class="fas fa-plus"></i></button>
+                            <button class="btn btn-sm btn-warning" onclick="addToCart(${p.id})">+</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function addToCart(id) {
-            const p = db.prods.find(x => x.id === id);
-            cart.push({...p, cartId: Date.now()});
+            cart.push(db.prods.find(p => p.id === id));
             document.getElementById('cart-badge').innerText = cart.length;
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'No carrinho', showConfirmButton: false, timer: 1000 });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Adicionado!', showConfirmButton: false, timer: 1000 });
         }
 
-        function openCartModal() {
-            const list = document.getElementById('cart-render-list');
+        function openCart() {
             let total = 0;
-            list.innerHTML = cart.length ? cart.map(i => {
-                total += parseFloat(i.price);
-                return `<div class="d-flex justify-content-between mb-2"><span>${i.name}</span><b>R$ ${i.price}</b></div>`;
-            }).join('') : '<p class="text-center text-secondary">Vazio</p>';
-            document.getElementById('cart-total-val').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('cart-items').innerHTML = cart.length ? cart.map((i, idx) => { 
+                total += parseFloat(i.price); 
+                return `<div class="d-flex justify-content-between mb-2 border-bottom border-secondary pb-1">
+                            <span>${i.name}</span>
+                            <div class="d-flex gap-2 align-items-center">
+                                <b>R$ ${i.price}</b>
+                                <i class="fas fa-times text-danger" onclick="removeFromCart(${idx})" style="cursor:pointer"></i>
+                            </div>
+                        </div>` 
+            }).join('') : '<p class="text-center py-3">Carrinho vazio</p>';
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
             new bootstrap.Modal(document.getElementById('cartModal')).show();
         }
 
-        function confirmPurchase() {
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            document.getElementById('cart-badge').innerText = cart.length;
+            openCart();
+        }
+
+        function finishToDiscord() {
             if(!cart.length) return;
-            const id = Math.floor(1000 + Math.random() * 8999);
-            const total = cart.reduce((a,b) => a + parseFloat(b.price), 0);
-            db.orders.push({
-                id: id,
-                total: total.toFixed(2),
-                status: 'Aguardando Pagamento',
-                messages: [{sender: 'admin', text: 'Olá! Cole o link do comprovante PIX abaixo para entregarmos agora.', time: new Date().toLocaleTimeString()}]
-            });
-            cart = [];
-            document.getElementById('cart-badge').innerText = 0;
-            save();
-            bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
-            showView('tickets');
-            openTicketChat(id);
-        }
-
-        // --- TICKET ONLINE (CHAT) ---
-        function renderTicketHistory() {
-            const list = document.getElementById('ticket-history');
-            list.innerHTML = db.orders.map(o => `
-                <button onclick="openTicketChat(${o.id})" class="list-group-item list-group-item-action bg-card text-white border-secondary mb-2 rounded shadow">
-                    <b>Ticket #${o.id}</b> <br> <small class="text-warning">${o.status}</small>
-                </button>
-            `).join('');
-        }
-
-        function openTicketChat(id) {
-            activeTicketId = id;
-            const order = db.orders.find(o => o.id === id);
-            document.getElementById('chat-window-wrapper').classList.remove('d-none');
-            document.getElementById('no-chat-msg').classList.add('d-none');
-            document.getElementById('chat-id-label').innerText = `Ticket #${order.id}`;
-            document.getElementById('chat-status-label').innerText = order.status;
             
-            const container = document.getElementById('chat-messages-container');
-            container.innerHTML = order.messages.map(m => `
-                <div class="bubble ${m.sender}">
-                    ${m.text} <span class="bubble-time">${m.time}</span>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        }
+            let total = 0;
+            let itemList = cart.map(i => {
+                total += parseFloat(i.price);
+                return `• ${i.name} (R$ ${i.price})`;
+            }).join('\n');
 
-        function sendUserMessage() {
-            const input = document.getElementById('chat-input-field');
-            if(!input.value || !activeTicketId) return;
-            const order = db.orders.find(o => o.id === activeTicketId);
-            order.messages.push({ sender: 'user', text: input.value, time: new Date().toLocaleTimeString() });
-            input.value = '';
-            save();
-            openTicketChat(activeTicketId);
-        }
+            let orderText = `🛒 **NOVO PEDIDO - BAHAMAS STORE**\n\n` +
+                            `📦 **Itens:**\n${itemList}\n\n` +
+                            `💰 **Total:** R$ ${total.toFixed(2)}\n` +
+                            `💳 **Método:** PIX\n\n` +
+                            `Olá! Gostaria de finalizar este pedido.`;
 
-        // --- ADMIN LÓGICA ---
-        function addCategory() {
-            const v = document.getElementById('adm-new-cat').value;
-            if(v) { db.cats.push(v); document.getElementById('adm-new-cat').value = ''; save(); }
-        }
-
-        function addProduct() {
-            const n = document.getElementById('adm-p-name').value;
-            const p = document.getElementById('adm-p-price').value;
-            const c = document.getElementById('adm-p-cat').value;
-            const i = document.getElementById('adm-p-img').value;
-            if(n && p) {
-                db.prods.push({ id: Date.now(), name: n, price: p, cat: c, img: i || 'https://via.placeholder.com/150' });
-                save();
-            }
+            // Copia para a área de transferência
+            navigator.clipboard.writeText(orderText).then(() => {
+                Swal.fire({
+                    title: 'Pedido Copiado!',
+                    text: 'Agora cole a mensagem no canal de ticket do Discord.',
+                    icon: 'success',
+                    confirmButtonText: 'IR PARA DISCORD',
+                    confirmButtonColor: '#5865F2'
+                }).then(() => {
+                    window.open('https://discord.gg/uV3XzeWAtb', '_blank');
+                    cart = [];
+                    document.getElementById('cart-badge').innerText = 0;
+                    bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+                });
+            });
         }
 
         function renderAdmin() {
-            document.getElementById('adm-p-cat').innerHTML = db.cats.map(c => `<option value="${c}">${c}</option>`).join('');
-            const list = document.getElementById('adm-tickets-list');
-            list.innerHTML = db.orders.map(o => `
-                <div class="bg-dark p-3 rounded mb-3 border border-secondary shadow">
-                    <div class="d-flex justify-content-between mb-2">
-                        <b>Ticket #${o.id} (R$ ${o.total})</b>
-                        <button class="btn btn-sm btn-success" onclick="updateOrderStatus(${o.id})">Entregue</button>
-                    </div>
-                    <div class="chat-content border border-secondary bg-black mb-2" style="height: 120px; font-size: 0.8rem;">
-                        ${o.messages.map(m => `<div class="bubble ${m.sender}">${m.text}</div>`).join('')}
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="adm-reply-${o.id}" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Responder...">
-                        <button class="btn btn-sm btn-warning" onclick="adminReply(${o.id})">Enviar</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function adminReply(id) {
-            const input = document.getElementById(`adm-reply-${id}`);
-            if(!input.value) return;
-            const order = db.orders.find(o => o.id === id);
-            order.messages.push({ sender: 'admin', text: input.value, time: new Date().toLocaleTimeString() });
-            input.value = '';
-            save();
-        }
-
-        function updateOrderStatus(id) {
-            db.orders.find(o => o.id === id).status = 'Entregue';
-            save();
+            document.getElementById('adm-list').innerHTML = db.prods.map(p => `
+                <div class="d-flex justify-content-between align-items-center bg-dark p-2 mb-2 rounded">
+                    <span>${p.name} - R$ ${p.price} (${p.cat})</span>
+                    <button class="btn btn-sm btn-danger" onclick="removeProd(${p.id})">Excluir</button>
+                </div>`).join('');
         }
 
         renderStore();
-        renderAdmin();
     </script>
 </body>
 </html>
